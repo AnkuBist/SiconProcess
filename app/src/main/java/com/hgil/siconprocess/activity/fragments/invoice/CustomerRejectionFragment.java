@@ -220,7 +220,11 @@ public class CustomerRejectionFragment extends BaseFragment {
                     CRejectionModel rejectionModel = new CRejectionModel();
 
                     //TODO --GET product customer invoice no.
-
+                    if (!depotInvoiceView.customerInvoiceNumber(customer_id).isEmpty())
+                        rejectionModel.setInvoice_no(depotInvoiceView.customerInvoiceNumber(customer_id));
+                    else
+                        rejectionModel.setInvoice_no(depotInvoiceView.commonInvoiceNumber());
+                    
                     rejectionModel.setCashier_code(depotInvoiceView.getRouteCashierCode());
 
                     rejectionModel.setItem_id(pModel.getItem_id());

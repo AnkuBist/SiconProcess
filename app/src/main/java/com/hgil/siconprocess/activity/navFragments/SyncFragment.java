@@ -13,6 +13,7 @@ import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCashM
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCrateModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateStockCheck;
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.RejectionDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.VanStockCheck;
@@ -107,6 +108,7 @@ public class SyncFragment extends BaseFragment {
 
         // get rejections details
         ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection = rejectionTable.syncRejection(getRouteId());
+        ArrayList<RejectionDetailModel> syncRejectDetails = rejectionTable.syncRejectionDetails(getRouteId());
 
         ArrayList<CollectionCashModel> cashCollection = paymentTable.syncCashDetail();
         ArrayList<CollectionCrateModel> crateCollection = paymentTable.syncCrateDetail();
@@ -159,6 +161,7 @@ public class SyncFragment extends BaseFragment {
 
         syncData.setSyncInvoice(syncInvoice);
         syncData.setSyncInvoiceRejection(syncInvoiceRejection);
+        syncData.setSyncRejectDetails(syncRejectDetails);
         syncData.setCashCollection(cashCollection);
         syncData.setCrateCollection(crateCollection);
         syncData.setCrateStock(crateStock);

@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.RejectionDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.CRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.FreshRejectionModel;
@@ -368,6 +369,43 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         db.close();
         return arrayList;
     }
+
+    /*sync rejection details*/
+    public ArrayList<RejectionDetailModel> syncRejectionDetails(String route_id) {
+        ArrayList<RejectionDetailModel> arrayList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                RejectionDetailModel rejectionDetails = new RejectionDetailModel();
+                rejectionDetails.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
+                rejectionDetails.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
+                rejectionDetails.setRoute_id(route_id);
+                rejectionDetails.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                rejectionDetails.setItem_id(res.getString(res.getColumnIndex(ITEM_ID)));
+
+                rejectionDetails.setFresh_m_shaped(res.getInt(res.getColumnIndex(FRESH_M_SHAPED)));
+                rejectionDetails.setFresh_torn_polly(res.getInt(res.getColumnIndex(FRESH_TORN_POLLY)));
+                rejectionDetails.setFresh_fungus(res.getInt(res.getColumnIndex(FRESH_FUNGUS)));
+                rejectionDetails.setFresh_wet_bread(res.getInt(res.getColumnIndex(FRESH_WET_BREAD)));
+                rejectionDetails.setFresh_others(res.getInt(res.getColumnIndex(FRESH_OTHERS)));
+
+                rejectionDetails.setMarket_damaged(res.getInt(res.getColumnIndex(MARKET_DAMAGED)));
+                rejectionDetails.setMarket_expired(res.getInt(res.getColumnIndex(MARKET_EXPIRED)));
+                rejectionDetails.setMarket_rat_eaten(res.getInt(res.getColumnIndex(MARKET_RAT_EATEN)));
+
+                arrayList.add(rejectionDetails);
+                res.moveToNext();
+            }
+        }
+
+        res.close();
+        db.close();
+        return arrayList;
+    }
+
 
     // cancel customer prepared invoice
     public void cancelInvoice(String customer_id) {

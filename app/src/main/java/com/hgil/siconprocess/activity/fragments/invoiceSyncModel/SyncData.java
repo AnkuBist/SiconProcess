@@ -13,6 +13,7 @@ public class SyncData {
 
     private ArrayList<SyncInvoiceDetailModel> syncInvoice;
     private ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection;
+    private ArrayList<RejectionDetailModel> syncRejectDetails;
     private ArrayList<CollectionCashModel> cashCollection;
     private ArrayList<CollectionCrateModel> crateCollection;
     private CrateStockCheck crateStock;
@@ -61,6 +62,14 @@ public class SyncData {
 
     public void setSyncInvoiceRejection(ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection) {
         this.syncInvoiceRejection = syncInvoiceRejection;
+    }
+
+    public ArrayList<RejectionDetailModel> getSyncRejectDetails() {
+        return syncRejectDetails;
+    }
+
+    public void setSyncRejectDetails(ArrayList<RejectionDetailModel> syncRejectDetails) {
+        this.syncRejectDetails = syncRejectDetails;
     }
 
     public ArrayList<CollectionCashModel> getCashCollection() {

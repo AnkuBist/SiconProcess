@@ -434,6 +434,37 @@ from V_SD_DepotInvoice_Master where Route_management_Date='2017-01-30' and Route
         return array_list;
     }
 
+    /*get invoice number for customer if exists*/
+    //fetch invoice number of any invoice if there is any without customer_id
+    public String customerInvoiceNumber(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select distinct " + INVOICE_NO + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        String invoice_number = "";
+        if (res.moveToFirst()) {
+            invoice_number = res.getString(res.getColumnIndex(INVOICE_NO));
+        }
+        res.close();
+        db.close();
+        return invoice_number;
+    }
+
+    //fetch invoice number of any invoice if there is any without customer_id
+    public String commonInvoiceNumber() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select distinct " + INVOICE_NO + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=''";
+        Cursor res = db.rawQuery(query, null);
+
+        String invoice_number = "";
+        if (res.moveToFirst()) {
+            invoice_number = res.getString(res.getColumnIndex(INVOICE_NO));
+        }
+        res.close();
+        db.close();
+        return invoice_number;
+    }
+
 
     public InvoiceModel getDepotInvoiceByItemId(String customer_id, String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -451,7 +482,10 @@ from V_SD_DepotInvoice_Master where Route_management_Date='2017-01-30' and Route
             invoiceModel.setRKey(res.getString(res.getColumnIndex(RKEY)));
             invoiceModel.setRouteManagemnetDate(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_DATE)));
             //invoiceModel.setInvoiceNo(res.getString(res.getColumnIndex(INVOICE_NO)));
-            invoiceModel.setInvoiceNo(null);
+
+            // get invoice number if any with null customer_id attached to it
+            invoiceModel.setInvoiceNo(commonInvoiceNumber());
+
             invoiceModel.setInvoiceDate(res.getString(res.getColumnIndex(INVOICE_DATE)));
             invoiceModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
             invoiceModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
