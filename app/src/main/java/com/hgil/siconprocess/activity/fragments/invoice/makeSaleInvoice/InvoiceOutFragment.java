@@ -13,6 +13,7 @@ import com.hgil.siconprocess.activity.fragments.invoice.CustomerRejectionFragmen
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.adapter.invoice.invoiceOut.CustomerInvoiceOutAdapter;
 import com.hgil.siconprocess.base.BaseFragment;
+import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.utils.Utility;
 
@@ -87,9 +88,14 @@ public class InvoiceOutFragment extends BaseFragment {
 
         tvCustomerTotal = (TextView) view.findViewById(R.id.tvCustomerTotal);
 
+        DemandTargetTable demandTargetTable = new DemandTargetTable(getContext());
+
+        //total of demand target sale
+        double demandTargetSale = demandTargetTable.customerTargetSale(customer_id);
+
         /*target sale and average sale amount*/
-        tvTargetSale.setText("Target Sale:" + strRupee + "0.00");
-        tvAvgSale.setText("Avg Sale:" + strRupee + "0.00");
+        tvTargetSale.setText("Target Sale\n" + strRupee + Utility.roundTwoDecimals(demandTargetSale));
+        tvAvgSale.setText("Avg Sale\n" + strRupee + "0.00");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -122,7 +128,7 @@ public class InvoiceOutFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         updateSaveIcon();
-        tvCustomerTotal.setText(strRupee + String.valueOf(Utility.roundTwoDecimals(grandTotal)));
+        tvCustomerTotal.setText("Total\n"+strRupee + Utility.roundTwoDecimals(grandTotal));
         if (arrInvoiceItems.size() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
             rvCustomerInvoice.setVisibility(View.GONE);
@@ -132,8 +138,8 @@ public class InvoiceOutFragment extends BaseFragment {
         }
     }
 
-    public void setInvoiceTotal(String invoiceAmount) {
+   /* public void setInvoiceTotal(String invoiceAmount) {
         tvCustomerTotal.setText(invoiceAmount);
-    }
+    }*/
 
 }

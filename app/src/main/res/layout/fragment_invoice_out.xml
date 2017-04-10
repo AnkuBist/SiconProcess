@@ -82,7 +82,7 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_medium" />
 
-            <RelativeLayout
+          <!--  <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -97,11 +97,12 @@
                     android:gravity="left|center_vertical"
                     android:text="Total:"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_size_medium" />
+                    android:textSize="@dimen/text_size_medium" />-->
 
                 <TextView
                     android:id="@+id/tvInvoiceTotal"
-                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:background="@android:color/transparent"
@@ -111,7 +112,7 @@
                     android:text="0.00"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_size_medium" />
-            </RelativeLayout>
+         <!--   </RelativeLayout>-->
         </LinearLayout>
 
     </RelativeLayout>

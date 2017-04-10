@@ -115,7 +115,7 @@ public class CustomerInvoiceOutItem {
 
                 double updated_amount = itemInvoice.getOrderAmount();
                 InvoiceOutFragment.grandTotal += (-oldOrderAmount + updated_amount);
-                String customerTotalInvoiceAmount = strRupee + String.valueOf(Utility.roundTwoDecimals(InvoiceOutFragment.grandTotal));
+                String customerTotalInvoiceAmount = "Total\n" + strRupee + Utility.roundTwoDecimals(InvoiceOutFragment.grandTotal);
                 InvoiceOutFragment.tvCustomerTotal.setText(customerTotalInvoiceAmount);
             }
         });

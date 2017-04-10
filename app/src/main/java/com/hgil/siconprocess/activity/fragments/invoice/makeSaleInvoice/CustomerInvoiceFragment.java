@@ -15,6 +15,7 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.adapter.invoice.invoiceSale.CustomerInvoiceAdapter;
 import com.hgil.siconprocess.base.BaseFragment;
+import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -121,9 +122,14 @@ public class CustomerInvoiceFragment extends BaseFragment {
         // generate bill no
         bill_no = getBill_no();
 
+        DemandTargetTable demandTargetTable = new DemandTargetTable(getContext());
+
+        //total of demand target sale
+        double demandTargetSale = demandTargetTable.customerTargetSale(customer_id);
+
         /*target sale and average sale amount*/
-        tvTargetSale.setText("Target Sale:" + strRupee + "0.00");
-        tvAvgSale.setText("Avg Sale:" + strRupee + "0.00");
+        tvTargetSale.setText("Target Sale\n" + strRupee + Utility.roundTwoDecimals(demandTargetSale));
+        tvAvgSale.setText("Avg Sale\n" + strRupee + "0.00");
 
         // Do this code only first time, not after rotation or reuse fragment from backstack
         tvInvoiceTotal = (TextView) view.findViewById(R.id.tvInvoiceTotal);
@@ -200,7 +206,7 @@ public class CustomerInvoiceFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        tvInvoiceTotal.setText(strRupee + String.valueOf(Utility.roundTwoDecimals(grandTotal)));
+        tvInvoiceTotal.setText("Total\n" + strRupee + Utility.roundTwoDecimals(grandTotal));
         if (arrInvoiceItems.size() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
             rvCustomerInvoice.setVisibility(View.GONE);
@@ -210,9 +216,9 @@ public class CustomerInvoiceFragment extends BaseFragment {
         }
     }
 
-    public void setInvoiceTotal(String invoiceAmount) {
+   /* public void setInvoiceTotal(String invoiceAmount) {
         tvInvoiceTotal.setText(invoiceAmount);
-    }
+    }*/
 
     private String getBill_no() {
         String tempBill = null;

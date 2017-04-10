@@ -231,4 +231,31 @@ public class DemandTargetTable extends SQLiteOpenHelper {
         db.close();
         return array_list;
     }
+
+    /*get total of target amount*/
+    /* get demand target for dashboard target screen*/
+    public double customerTargetSale(String customer_id) {
+        double target_sale_amount = 0;
+
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT " + ITEM_ID + ", " + TARGET_QTY + " FROM " + TABLE_NAME + " where " + CUSTOMER_ID +"=?", new String[]{customer_id});
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                String item_id = res.getString(res.getColumnIndex(ITEM_ID));
+                int target = res.getInt(res.getColumnIndex(TARGET_QTY));
+
+                // get item price for customer
+                double amount = itemPriceTable.getItemPriceById(item_id, customer_id);
+
+
+                target_sale_amount += (amount * target);
+                res.moveToNext();
+            }
+        }
+        res.close();
+        db.close();
+        return target_sale_amount;
+    }
 }
