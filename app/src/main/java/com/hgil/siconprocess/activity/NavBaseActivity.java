@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -248,25 +249,30 @@ public class NavBaseActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            //close drawer first
+            mDrawer.closeDrawers();
         } else {
-            if (doubleBackToExitPressedOnce) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 super.onBackPressed();
                 overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-                return;
-            }
-
-            this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
+            } else {
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed();
+                    overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+                    return;
                 }
-            }, 2000);
+
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
+            }
         }
     }
 

@@ -37,6 +37,11 @@ public class CustomerInvoiceFragment extends BaseFragment {
 
     @BindView(R.id.tvCustomerName)
     TextView tvCustomerName;
+    @BindView(R.id.tvTargetSale)
+    TextView tvTargetSale;
+    @BindView(R.id.tvAvgSale)
+    TextView tvAvgSale;
+
     @BindView(R.id.rvCustomerInvoice)
     RecyclerView rvCustomerInvoice;
     @BindView(R.id.tvEmpty)
@@ -95,10 +100,6 @@ public class CustomerInvoiceFragment extends BaseFragment {
             double itemOrderAmount = arrInvoiceItems.get(i).getOrderAmount();
             grandTotal += itemOrderAmount;
         }
-
-        // generate bill no
-        bill_no = getBill_no();
-
     }
 
     @Override
@@ -116,6 +117,13 @@ public class CustomerInvoiceFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.e(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+
+        // generate bill no
+        bill_no = getBill_no();
+
+        /*target sale and average sale amount*/
+        tvTargetSale.setText("Target Sale:" + strRupee + "0.00");
+        tvAvgSale.setText("Avg Sale:" + strRupee + "0.00");
 
         // Do this code only first time, not after rotation or reuse fragment from backstack
         tvInvoiceTotal = (TextView) view.findViewById(R.id.tvInvoiceTotal);

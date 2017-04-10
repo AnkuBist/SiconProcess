@@ -30,6 +30,11 @@ public class InvoiceOutFragment extends BaseFragment {
     public static double grandTotal = 0;
     @BindView(R.id.tvCustomerName)
     TextView tvCustomerName;
+    @BindView(R.id.tvTargetSale)
+    TextView tvTargetSale;
+    @BindView(R.id.tvAvgSale)
+    TextView tvAvgSale;
+
     @BindView(R.id.rvCustomerInvoice)
     RecyclerView rvCustomerInvoice;
     @BindView(R.id.tvEmpty)
@@ -81,6 +86,10 @@ public class InvoiceOutFragment extends BaseFragment {
             tvCustomerName.setText(customer_name);
 
         tvCustomerTotal = (TextView) view.findViewById(R.id.tvCustomerTotal);
+
+        /*target sale and average sale amount*/
+        tvTargetSale.setText("Target Sale:" + strRupee + "0.00");
+        tvAvgSale.setText("Avg Sale:" + strRupee + "0.00");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

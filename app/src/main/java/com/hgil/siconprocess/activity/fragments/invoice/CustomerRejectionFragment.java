@@ -156,7 +156,7 @@ public class CustomerRejectionFragment extends BaseFragment {
                     customer_rejection_amount += ((market_total_rej + fresh_total_rej) * rejModel.getPrice());
                 }
 
-                if (customer_rejection_amount < customer_sale_amount) {
+                if (customer_rejection_amount <= customer_sale_amount) {
                     rejectionTable.insertCustRejections(arrRejection, customer_id);
 
                     // show snackbar message
@@ -224,7 +224,7 @@ public class CustomerRejectionFragment extends BaseFragment {
                         rejectionModel.setInvoice_no(depotInvoiceView.customerInvoiceNumber(customer_id));
                     else
                         rejectionModel.setInvoice_no(depotInvoiceView.commonInvoiceNumber());
-                    
+
                     rejectionModel.setCashier_code(depotInvoiceView.getRouteCashierCode());
 
                     rejectionModel.setItem_id(pModel.getItem_id());

@@ -127,6 +127,8 @@ public class FinalInvoiceFragment extends BaseFragment {
         PaymentTable paymentTable = new PaymentTable(getContext());
         MarketProductTable marketProductTable = new MarketProductTable(getContext());
 
+
+        // will erase the customer prepared all data
         customerRejectionTable.cancelInvoice(customer_id);
         invoiceOutTable.cancelInvoice(customer_id);
         //nextDayOrderTable.cancelInvoice(customer_id);

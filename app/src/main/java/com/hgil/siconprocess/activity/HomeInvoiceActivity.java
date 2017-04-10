@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -86,10 +87,10 @@ public class HomeInvoiceActivity extends BaseActivity {
         TextView tvNavHeader = (TextView) navHeaderView.findViewById(R.id.tvNavHeader);
 
         imgNavIcon.setImageResource(R.mipmap.harvest_logo);
-        //if (getRouteName() != null) {
-        //String output = getRouteName().substring(0, 1).toUpperCase() + getRouteName().substring(1).toLowerCase();
-        tvNavHeader.setText(customer_name);
-        //}
+        if (getRouteName() != null) {
+            String output = getRouteName().substring(0, 1).toUpperCase() + getRouteName().substring(1).toLowerCase();
+            tvNavHeader.setText(output);
+        }
 
         MenuItem menuItem = nvDrawer.getMenu().findItem(R.id.nav_today_sale);
 
@@ -240,13 +241,18 @@ public class HomeInvoiceActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            //close drawer first
+            mDrawer.closeDrawers();
         } else {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-            finish();
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                super.onBackPressed();
+                overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+            } else {
+                super.onBackPressed();
+                overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+                finish();
+            }
         }
     }
 
