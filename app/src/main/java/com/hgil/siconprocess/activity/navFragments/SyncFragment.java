@@ -235,4 +235,5 @@ public class SyncFragment extends BaseFragment {
         // nextDayOrderTable.eraseTable();
         marketProductTable.eraseTable();
     }
+
 }

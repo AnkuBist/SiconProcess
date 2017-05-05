@@ -1,6 +1,5 @@
 package com.hgil.siconprocess.database.tables;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -92,40 +91,6 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         db.close();
     }
 
-    //insert single
-    public boolean insertInvoice(InvoiceModel invoiceModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(BILL_NO, invoiceModel.getBill_no());
-        contentValues.put(INVOICE_NO, invoiceModel.getInvoiceNo());
-        contentValues.put(INVOICE_DATE, invoiceModel.getInvoiceDate());
-        contentValues.put(CUSTOMER_ID, invoiceModel.getCustomerId());
-        contentValues.put(ROUTE_ID, invoiceModel.getRouteId());
-        contentValues.put(VEHICLE_NO, invoiceModel.getVehicleNo());
-        contentValues.put(ITEM_ID, invoiceModel.getItemId());
-        contentValues.put(CASHIER_CODE, invoiceModel.getCashierCode());
-        contentValues.put(CRATE_ID, invoiceModel.getCrateId());
-        contentValues.put(INVQTY_CR, invoiceModel.getInvQtyCr());
-        contentValues.put(INVQTY_PS, invoiceModel.getInvQtyPs());
-        contentValues.put(ITEM_RATE, invoiceModel.getItemRate());
-        contentValues.put(TOTAL_AMOUNT, invoiceModel.getTotalAmount());
-        contentValues.put(FIXED_SAMPLE, invoiceModel.getFixedSample());
-        contentValues.put(DEMAND_TARGET_QUANTITY, invoiceModel.getDemandTargetQty());
-        contentValues.put(ORDER_AMOUNT, invoiceModel.getOrderAmount());
-        contentValues.put(STOCK_AVAIL, invoiceModel.getStockAvail());
-        contentValues.put(TEMP_STOCK, invoiceModel.getTempStock());
-        contentValues.put(ITEM_NAME, invoiceModel.getItemName());
-        contentValues.put(IMEI_NO, invoiceModel.getImei_no());
-        contentValues.put(LAT_LNG, invoiceModel.getLat_lng());
-        contentValues.put(CURTIME, Utility.timeStamp());
-        contentValues.put(LOGIN_ID, invoiceModel.getLogin_id());
-        contentValues.put(DATE, Utility.getCurDate());
-
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     // insert multiple
     public boolean insertInvoiceOut(List<InvoiceModel> arrList, String customer_id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -133,36 +98,71 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         // first erase the recent invoice belong to the same user
         eraseInvoiceUser(db, customer_id);
 
-        for (int i = 0; i < arrList.size(); i++) {
-            InvoiceModel invoiceModel = arrList.get(i);
-            if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getDemandTargetQty() > 0) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(BILL_NO, invoiceModel.getBill_no());
-                contentValues.put(INVOICE_NO, invoiceModel.getInvoiceNo());
-                contentValues.put(INVOICE_DATE, invoiceModel.getInvoiceDate());
-                contentValues.put(CUSTOMER_ID, invoiceModel.getCustomerId());
-                contentValues.put(ROUTE_ID, invoiceModel.getRouteId());
-                contentValues.put(VEHICLE_NO, invoiceModel.getVehicleNo());
-                contentValues.put(ITEM_ID, invoiceModel.getItemId());
-                contentValues.put(CASHIER_CODE, invoiceModel.getCashierCode());
-                contentValues.put(CRATE_ID, invoiceModel.getCrateId());
-                contentValues.put(INVQTY_CR, invoiceModel.getInvQtyCr());
-                contentValues.put(INVQTY_PS, invoiceModel.getInvQtyPs());
-                contentValues.put(ITEM_RATE, invoiceModel.getItemRate());
-                contentValues.put(TOTAL_AMOUNT, invoiceModel.getTotalAmount());
-                contentValues.put(FIXED_SAMPLE, invoiceModel.getFixedSample());
-                contentValues.put(DEMAND_TARGET_QUANTITY, invoiceModel.getDemandTargetQty());
-                contentValues.put(ORDER_AMOUNT, invoiceModel.getOrderAmount());
-                contentValues.put(STOCK_AVAIL, invoiceModel.getStockAvail());
-                contentValues.put(TEMP_STOCK, invoiceModel.getTempStock());
-                contentValues.put(ITEM_NAME, invoiceModel.getItemName());
-                contentValues.put(IMEI_NO, invoiceModel.getImei_no());
-                contentValues.put(LAT_LNG, invoiceModel.getLat_lng());
-                contentValues.put(CURTIME, Utility.timeStamp());
-                contentValues.put(LOGIN_ID, invoiceModel.getLogin_id());
-                contentValues.put(DATE, Utility.getCurDate());
-                db.insert(TABLE_NAME, null, contentValues);
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
+
+        // Get the numeric indexes for each of the columns that we're updating
+        final int billNoColumn = ih.getColumnIndex(BILL_NO);
+        final int invoiceNumberColumn = ih.getColumnIndex(INVOICE_NO);
+        final int invoiceDateColumn = ih.getColumnIndex(INVOICE_DATE);
+        final int customerIdColumn = ih.getColumnIndex(CUSTOMER_ID);
+        final int routeIdColumn = ih.getColumnIndex(ROUTE_ID);
+        final int vehicleNoColumn = ih.getColumnIndex(VEHICLE_NO);
+        final int itemIdColumn = ih.getColumnIndex(ITEM_ID);
+        final int cashierCodeColumn = ih.getColumnIndex(CASHIER_CODE);
+        final int crateIdColumn = ih.getColumnIndex(CRATE_ID);
+        final int invQtyCrColumn = ih.getColumnIndex(INVQTY_CR);
+        final int invQtyPsColumn = ih.getColumnIndex(INVQTY_PS);
+        final int itemRateColumn = ih.getColumnIndex(ITEM_RATE);
+        final int totalAmountColumn = ih.getColumnIndex(TOTAL_AMOUNT);
+        final int fixedSampleColumn = ih.getColumnIndex(FIXED_SAMPLE);
+        final int demandTargetQuantityColumn = ih.getColumnIndex(DEMAND_TARGET_QUANTITY);
+        final int orderAmountColumn = ih.getColumnIndex(ORDER_AMOUNT);
+        final int stockAvailColumn = ih.getColumnIndex(STOCK_AVAIL);
+        final int tempStockColumn = ih.getColumnIndex(TEMP_STOCK);
+        final int itemNameColumn = ih.getColumnIndex(ITEM_NAME);
+        final int imeiNoColumn = ih.getColumnIndex(IMEI_NO);
+        final int latLngColumn = ih.getColumnIndex(LAT_LNG);
+        final int curtimeColumn = ih.getColumnIndex(CURTIME);
+        final int loginIdColumn = ih.getColumnIndex(LOGIN_ID);
+        final int dateColumn = ih.getColumnIndex(DATE);
+
+        try {
+            db.beginTransaction();
+            for (InvoiceModel invoiceModel : arrList) {
+                if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getDemandTargetQty() > 0) {
+                    ih.prepareForInsert();
+
+                    ih.bind(billNoColumn, invoiceModel.getBill_no());
+                    ih.bind(invoiceNumberColumn, invoiceModel.getInvoiceNo());
+                    ih.bind(invoiceDateColumn, invoiceModel.getInvoiceDate());
+                    ih.bind(customerIdColumn, invoiceModel.getCustomerId());
+                    ih.bind(routeIdColumn, invoiceModel.getRouteId());
+                    ih.bind(vehicleNoColumn, invoiceModel.getVehicleNo());
+                    ih.bind(itemIdColumn, invoiceModel.getItemId());
+                    ih.bind(cashierCodeColumn, invoiceModel.getCashierCode());
+                    ih.bind(crateIdColumn, invoiceModel.getCrateId());
+                    ih.bind(invQtyCrColumn, invoiceModel.getInvQtyCr());
+                    ih.bind(invQtyPsColumn, invoiceModel.getInvQtyPs());
+                    ih.bind(itemRateColumn, invoiceModel.getItemRate());
+                    ih.bind(totalAmountColumn, invoiceModel.getTotalAmount());
+                    ih.bind(fixedSampleColumn, invoiceModel.getFixedSample());
+                    ih.bind(demandTargetQuantityColumn, invoiceModel.getDemandTargetQty());
+                    ih.bind(orderAmountColumn, invoiceModel.getOrderAmount());
+                    ih.bind(stockAvailColumn, invoiceModel.getStockAvail());
+                    ih.bind(tempStockColumn, invoiceModel.getTempStock());
+                    ih.bind(itemNameColumn, invoiceModel.getItemName());
+                    ih.bind(imeiNoColumn, invoiceModel.getImei_no());
+                    ih.bind(latLngColumn, invoiceModel.getLat_lng());
+                    ih.bind(curtimeColumn, Utility.timeStamp());
+                    ih.bind(loginIdColumn, invoiceModel.getLogin_id());
+                    ih.bind(dateColumn, Utility.getCurDate());
+
+                    ih.execute();
+                }
             }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
         db.close();
         return true;

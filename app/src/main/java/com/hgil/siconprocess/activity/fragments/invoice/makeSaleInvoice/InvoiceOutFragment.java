@@ -86,7 +86,7 @@ public class InvoiceOutFragment extends BaseFragment {
         if (customer_name != null)
             tvCustomerName.setText(customer_name);
 
-        tvCustomerTotal = (TextView) view.findViewById(R.id.tvCustomerTotal);
+        tvCustomerTotal = (TextView) view.findViewById(R.id.tvInvoiceTotal);
 
         DemandTargetTable demandTargetTable = new DemandTargetTable(getContext());
 

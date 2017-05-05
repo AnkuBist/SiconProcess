@@ -1,6 +1,5 @@
 package com.hgil.siconprocess.database.tables;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -61,26 +60,6 @@ public class NextDayOrderTable extends SQLiteOpenHelper {
         db.close();
     }
 
-    //insert single
-    public boolean insertNextDayOrder(NextDayOrderModel nextDayOrderModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CUSTOMER_ID, nextDayOrderModel.getCustomerId());
-        contentValues.put(CUSTOMER_NAME, nextDayOrderModel.getCustomerName());
-        contentValues.put(ITEM_ID, nextDayOrderModel.getItemId());
-        contentValues.put(ITEM_NAME, nextDayOrderModel.getItemName());
-        contentValues.put(ITEM_QTY, nextDayOrderModel.getQuantity());
-        contentValues.put(IMEI_NO, nextDayOrderModel.getImei_no());
-        contentValues.put(LAT_LNG, nextDayOrderModel.getLat_lng());
-        contentValues.put(CURTIME, Utility.timeStamp());
-        contentValues.put(LOGIN_ID, nextDayOrderModel.getLogin_id());
-        contentValues.put(DATE, Utility.getCurDate());
-
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     // insert multiple
     public boolean insertNextOrder(List<NextDayOrderModel> arrList, String customer_id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -88,24 +67,43 @@ public class NextDayOrderTable extends SQLiteOpenHelper {
         // first erase the recent invoice belong to the same user
         eraseUserOrder(db, customer_id);
 
-        for (int i = 0; i < arrList.size(); i++) {
-            NextDayOrderModel nextDayOrderModel = arrList.get(i);
-            if (nextDayOrderModel.getQuantity() > 0) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(CUSTOMER_ID, nextDayOrderModel.getCustomerId());
-                contentValues.put(CUSTOMER_NAME, nextDayOrderModel.getCustomerName());
-                contentValues.put(ITEM_ID, nextDayOrderModel.getItemId());
-                contentValues.put(ITEM_NAME, nextDayOrderModel.getItemName());
-                contentValues.put(ITEM_QTY, nextDayOrderModel.getQuantity());
-                contentValues.put(IMEI_NO, nextDayOrderModel.getImei_no());
-                contentValues.put(LAT_LNG, nextDayOrderModel.getLat_lng());
-                contentValues.put(CURTIME, Utility.timeStamp());
-                contentValues.put(LOGIN_ID, nextDayOrderModel.getLogin_id());
-                contentValues.put(DATE, Utility.getCurDate());
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
-                db.insert(TABLE_NAME, null, contentValues);
+        // Get the numeric indexes for each of the columns that we're updating
+        final int customerIdColumn = ih.getColumnIndex(CUSTOMER_ID);
+        final int customerNameColumn = ih.getColumnIndex(CUSTOMER_NAME);
+        final int itemIdColumn = ih.getColumnIndex(ITEM_ID);
+        final int itemNameColumn = ih.getColumnIndex(ITEM_NAME);
+        final int itemQtyColumn = ih.getColumnIndex(ITEM_QTY);
+        final int imeiNoColumn = ih.getColumnIndex(IMEI_NO);
+        final int latLngColumn = ih.getColumnIndex(LAT_LNG);
+        final int curtimeColumn = ih.getColumnIndex(CURTIME);
+        final int loginIdColumn = ih.getColumnIndex(LOGIN_ID);
+        final int dateColumn = ih.getColumnIndex(DATE);
+
+        try {
+            db.beginTransaction();
+            for (NextDayOrderModel nextDayOrderModel : arrList) {
+                ih.prepareForInsert();
+                if (nextDayOrderModel.getQuantity() > 0) {
+                    ih.bind(customerIdColumn, nextDayOrderModel.getCustomerId());
+                    ih.bind(customerNameColumn, nextDayOrderModel.getCustomerName());
+                    ih.bind(itemIdColumn, nextDayOrderModel.getItemId());
+                    ih.bind(itemNameColumn, nextDayOrderModel.getItemName());
+                    ih.bind(itemQtyColumn, nextDayOrderModel.getQuantity());
+                    ih.bind(imeiNoColumn, nextDayOrderModel.getImei_no());
+                    ih.bind(latLngColumn, nextDayOrderModel.getLat_lng());
+                    ih.bind(curtimeColumn, Utility.timeStamp());
+                    ih.bind(loginIdColumn, nextDayOrderModel.getLogin_id());
+                    ih.bind(dateColumn, Utility.getCurDate());
+                    ih.execute();
+                }
             }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
+
         db.close();
         return true;
     }

@@ -1,6 +1,5 @@
 package com.hgil.siconprocess.database.masterTables;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -65,22 +64,43 @@ public class RouteView extends SQLiteOpenHelper {
     //insert single
     public boolean insertRoute(RouteModel routeModel) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(REC_ID, routeModel.getRecId());
-        contentValues.put(SUB_COMPANY_ID, routeModel.getSubCompanyId());
-        contentValues.put(DEPOT_ID, routeModel.getDepotId());
-        contentValues.put(SUBDEPOT_ID, routeModel.getSubDepotId());
-        contentValues.put(ROUTE_ID, routeModel.getRouteId());
-        contentValues.put(ROUTE_NAME, routeModel.getRouteName());
-        contentValues.put(ROUTE_DESCRIPTION, routeModel.getRouteDescription());
-        contentValues.put(SALE_DATE_PARAMETER, routeModel.getSaleDateParameter());
-        contentValues.put(LOADING_TYPE, routeModel.getLoadingType());
-        contentValues.put(TCC, routeModel.getTCC());
-        //contentValues.put(MAINDEPOT, routeModel.getMainDepot());
-        contentValues.put(FLAG, routeModel.getFlag());
-        //contentValues.put(LAST_INVOICE_NO, routeModel.getExpectedLastInvoiceNo());
-        contentValues.put(LAST_BILL_NO, routeModel.getExpectedLastBillNo());
-        db.insert(TABLE_NAME, null, contentValues);
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
+
+        // Get the numeric indexes for each of the columns that we're updating
+        final int recIdColumn = ih.getColumnIndex(REC_ID);
+        final int subCompanyIdColumn = ih.getColumnIndex(SUB_COMPANY_ID);
+        final int depotIdColumn = ih.getColumnIndex(DEPOT_ID);
+        final int subDepotIdColumn = ih.getColumnIndex(SUBDEPOT_ID);
+        final int routeIdColumn = ih.getColumnIndex(ROUTE_ID);
+        final int routeNameColumn = ih.getColumnIndex(ROUTE_NAME);
+        final int routeDescColumn = ih.getColumnIndex(ROUTE_DESCRIPTION);
+        final int saleDateParameterColumn = ih.getColumnIndex(SALE_DATE_PARAMETER);
+        final int loadingTypeColumn = ih.getColumnIndex(LOADING_TYPE);
+        final int tccColumn = ih.getColumnIndex(TCC);
+        final int flagColumn = ih.getColumnIndex(FLAG);
+        final int lastBillNoColumn = ih.getColumnIndex(LAST_BILL_NO);
+
+        try {
+            db.beginTransaction();
+            ih.prepareForInsert();
+            ih.bind(recIdColumn, routeModel.getRecId());
+            ih.bind(subCompanyIdColumn, routeModel.getSubCompanyId());
+            ih.bind(depotIdColumn, routeModel.getDepotId());
+            ih.bind(subDepotIdColumn, routeModel.getSubDepotId());
+            ih.bind(routeIdColumn, routeModel.getRouteId());
+            ih.bind(routeNameColumn, routeModel.getRouteName());
+            ih.bind(routeDescColumn, routeModel.getRouteDescription());
+            ih.bind(saleDateParameterColumn, routeModel.getSaleDateParameter());
+            ih.bind(loadingTypeColumn, routeModel.getLoadingType());
+            ih.bind(tccColumn, routeModel.getTCC());
+            ih.bind(flagColumn, routeModel.getFlag());
+            ih.bind(lastBillNoColumn, routeModel.getExpectedLastBillNo());
+            ih.execute();
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
         db.close();
         return true;
     }
@@ -101,9 +121,7 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setSaleDateParameter(res.getString(res.getColumnIndex(SALE_DATE_PARAMETER)));
             routeModel.setLoadingType(res.getString(res.getColumnIndex(LOADING_TYPE)));
             routeModel.setTCC(res.getInt(res.getColumnIndex(TCC)));
-            //routeModel.setMainDepot(res.getString(res.getColumnIndex(MAINDEPOT)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
-            //routeModel.setExpectedLastInvoiceNo(res.getString(res.getColumnIndex(LAST_INVOICE_NO)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
         }
         res.close();

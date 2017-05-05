@@ -70,35 +70,6 @@ public class RejectionTargetTable extends SQLiteOpenHelper {
         db.close();
     }
 
-    //insert single
-    public boolean insertRejectionTarget(RejectionTargetModel rejectionTargetModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(REC_ID, rejectionTargetModel.getRecId());
-        contentValues.put(TARGET_FROM_DATE, rejectionTargetModel.getTargetFromDate());
-        //contentValues.put(TARGET_TO_DATE, rejectionTargetModel.getTargetToDate());
-        contentValues.put(DEPOT_ID, rejectionTargetModel.getDepotID());
-        //contentValues.put(ROUTE_ID, rejectionTargetModel.getRouteID());
-        //contentValues.put(CUSTOMER_ID, rejectionTargetModel.getCustomerID());
-        //contentValues.put(PSM_ID, rejectionTargetModel.getPSMID());
-        //contentValues.put(TARGET_TYPE, rejectionTargetModel.getTargetType());
-        contentValues.put(DDATE, rejectionTargetModel.getDDate());
-        contentValues.put(ITEM_ID, rejectionTargetModel.getItemId());
-        contentValues.put(TARGET_QTY, rejectionTargetModel.getTargetQty());
-        contentValues.put(TARGET_REJ, rejectionTargetModel.getTargetRej());
-        contentValues.put(TARGET_LEFTOVER, rejectionTargetModel.getTargetLeftover());
-        //contentValues.put(REJ_FORMULA, rejectionTargetModel.getRejFormula());
-        //contentValues.put(LEFTOVER_FORMULA, rejectionTargetModel.getLeftoverFormula());
-        contentValues.put(ACTIVE, rejectionTargetModel.getActive());
-        contentValues.put(UPDATEBY_PAYCODE, rejectionTargetModel.getUpdatebyPaycode());
-        contentValues.put(UPDATEBY_DATE, rejectionTargetModel.getUpdatebyDate());
-        contentValues.put(UPDATED_IP, rejectionTargetModel.getUpdatedIp());
-        contentValues.put(ITEM_ACTIVE, rejectionTargetModel.getItemActive());
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     // insert multiple
     public boolean insertRejectionTarget(List<RejectionTargetModel> arrList) {
         SQLiteDatabase db = this.getWritableDatabase();

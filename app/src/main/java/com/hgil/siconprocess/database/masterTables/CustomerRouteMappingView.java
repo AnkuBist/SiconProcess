@@ -23,26 +23,26 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Sicon_route_map";
     private static final String TABLE_NAME = "V_SD_Customer_Route_Mapping";
 
-    private static final String REC_ID = "Rec_id";
-    private static final String SUB_COMPANY_ID = "Sub_Company_id";
-    private static final String DEPOT = "Depot";
+    /*  private static final String REC_ID = "Rec_id";
+      private static final String SUB_COMPANY_ID = "Sub_Company_id";
+      private static final String DEPOT = "Depot";*/
     private static final String ROUTE_ID = "Route_id";
     private static final String ROUTE_NAME = "Route_Name";
-    private static final String SALE_DATE_PARAMETER = "Sale_Date_Parameter";
-    private static final String PSMID = "PSMID";
+    /*  private static final String SALE_DATE_PARAMETER = "Sale_Date_Parameter";
+      private static final String PSMID = "PSMID";*/
     private static final String CUSTOMER_ID = "Customer_id";
     private static final String CUSTOMER_NAME = "Customer_Name";
     private static final String PRICEGROUP = "PRICEGROUP";
     private static final String LINEDISC = "LINEDISC";
     private static final String C_TYPE = "C_Type";
-    private static final String COMMISSIONGROUP = "COMMISSIONGROUP";
+   /* private static final String COMMISSIONGROUP = "COMMISSIONGROUP";
     private static final String SALESGROUP = "SALESGROUP";
     private static final String SUBDEPOT_ID = "SubDepot_id";
     private static final String CUSTCLASSIFICATIONID = "CUSTCLASSIFICATIONID";
     private static final String FLAG = "Flag";
     private static final String RFLAG = "RFlag";
     private static final String ACCOUNTNUM = "ACCOUNTNUM";
-    private static final String MANDT = "Mandt";
+    private static final String MANDT = "Mandt";*/
 
     // customer status
     private static final String CUST_STATUS = "Customer_status";

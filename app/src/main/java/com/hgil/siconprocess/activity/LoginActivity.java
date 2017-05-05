@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -65,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSubmit;
     @BindView(R.id.coordinateLayout)
     CoordinatorLayout coordinateLayout;
-    
+
     private RouteView dbRouteView;
     private CustomerRouteMappingView dbRouteMapView;
     private CustomerInfoView dbCustomerInfoView;
@@ -102,6 +101,11 @@ public class LoginActivity extends AppCompatActivity {
         /// initialise database objects
         initialiseDBObj();
         initializeSyncDbObj();
+
+       /* Window MyWindow = getWindow();
+        WindowManager.LayoutParams winParams = MyWindow.getAttributes();
+        winParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
+        MyWindow.setAttributes(winParams);*/
 
         // ask all required permission at once only
         askAppPermission();
@@ -141,14 +145,14 @@ public class LoginActivity extends AppCompatActivity {
                     //match here user saved username and password
                     String last_login_id = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_ID);
                     String last_login_password = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_PASSWORD);
-                    if (username.matches(last_login_id) &&
-                            password.matches(last_login_password)) {
-                        startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
-                        finish();
-                        overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
-                    } else {
-                        Snackbar.make(coordinateLayout, "Username and password combination wrong.", Snackbar.LENGTH_LONG).show();
-                    }
+                    // if (username.matches(last_login_id) &&
+                    //        password.matches(last_login_password)) {
+                    startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                    // } else {
+                    //      Snackbar.make(coordinateLayout, "Username and password combination wrong.", Snackbar.LENGTH_LONG).show();
+                    // }
                 } else {
                     // check for login
                     getUserLogin(username, password);
@@ -268,12 +272,12 @@ public class LoginActivity extends AppCompatActivity {
             RouteModel routeData = objResponse.getRouteDetail();
 
             dbRouteMapView.insertCustomerRouteMap(routeData.getArrCustomerRouteMap());
-            dbCustomerInfoView.insertCustomer(routeData.getArrRouteCustomerInfo());
+            //dbCustomerInfoView.insertCustomer(routeData.getArrRouteCustomerInfo());
             dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
             dbProductView.insertProducts(routeData.getArrItemsMaster());
             dbCreditOpening.insertCreditOpening(routeData.getArrCreditOpening());
             dbCrateOpening.insertCrateOpening(routeData.getArrCrateOpening());
-            dbCrateCollection.insertCrateCollection(routeData.getArrCrateCollection());
+            //dbCrateCollection.insertCrateCollection(routeData.getArrCrateCollection());
             dbInvoice.insertDepotInvoice(routeData.getArrInvoiceDetails());
             dbDemandTarget.insertDemandTarget(routeData.getArrDemandTarget());
             dbFixedSample.insertFixedSample(routeData.getArrFixedSample());

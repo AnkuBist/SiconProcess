@@ -1,6 +1,5 @@
 package com.hgil.siconprocess.database.tables;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -101,52 +100,84 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         // first erase data belong to the same user
         eraseCustRejections(db, customer_id);
 
-        for (int i = 0; i < arrList.size(); i++) {
-            CRejectionModel rejectionModel = arrList.get(i);
-            // if (rejectionModel.getTotal() > 0 && rejectionModel.getRej_qty() > 0) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(BILL_NO, rejectionModel.getBill_no());
-            contentValues.put(INVOICE_NO, rejectionModel.getInvoice_no());
-            contentValues.put(CASHIER_CODE, rejectionModel.getCashier_code());
-            contentValues.put(ITEM_ID, rejectionModel.getItem_id());
-            contentValues.put(ITEM_NAME, rejectionModel.getItem_name());
-            contentValues.put(CUSTOMER_ID, rejectionModel.getCustomer_id());
-            contentValues.put(CUSTOMER_NAME, rejectionModel.getCustomer_name());
-            contentValues.put(VAN_STOCK, rejectionModel.getVan_stock());
-            contentValues.put(REJ_QTY, rejectionModel.getRej_qty());
-            contentValues.put(PRICE, rejectionModel.getPrice());
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
-            FreshRejectionModel freshRejection = rejectionModel.getFreshRejection();
-            MarketRejectionModel marketRejection = rejectionModel.getMarketRejection();
+        // Get the numeric indexes for each of the columns that we're updating
+        final int billNoColumn = ih.getColumnIndex(BILL_NO);
+        final int invoiceNumberColumn = ih.getColumnIndex(INVOICE_NO);
+        final int cashierCodeColumn = ih.getColumnIndex(CASHIER_CODE);
+        final int itemIdColumn = ih.getColumnIndex(ITEM_ID);
+        final int itemNameColumn = ih.getColumnIndex(ITEM_NAME);
+        final int customerIdColumn = ih.getColumnIndex(CUSTOMER_ID);
+        final int customerNameColumn = ih.getColumnIndex(CUSTOMER_NAME);
+        final int vanStockColumn = ih.getColumnIndex(VAN_STOCK);
+        final int rejQtyColumn = ih.getColumnIndex(REJ_QTY);
+        final int priceColumn = ih.getColumnIndex(PRICE);
+        final int freshMShapedColumn = ih.getColumnIndex(FRESH_M_SHAPED);
+        final int freshTornPollyColumn = ih.getColumnIndex(FRESH_TORN_POLLY);
+        final int freshFungusColumn = ih.getColumnIndex(FRESH_FUNGUS);
+        final int freshWetBreadColumn = ih.getColumnIndex(FRESH_WET_BREAD);
+        final int freshOthersColumn = ih.getColumnIndex(FRESH_OTHERS);
+        final int marketDamagedColumn = ih.getColumnIndex(MARKET_DAMAGED);
+        final int marketExpiredColumn = ih.getColumnIndex(MARKET_EXPIRED);
+        final int marketRatEatenColumn = ih.getColumnIndex(MARKET_RAT_EATEN);
+        final int grandTotalColumn = ih.getColumnIndex(GRAND_TOTAL);
+        final int imeiNoColumn = ih.getColumnIndex(IMEI_NO);
+        final int latLngColumn = ih.getColumnIndex(LAT_LNG);
+        final int curtimeColumn = ih.getColumnIndex(CURTIME);
+        final int loginIdColumn = ih.getColumnIndex(LOGIN_ID);
+        final int dateColumn = ih.getColumnIndex(DATE);
 
-            int fresh_total_rej = 0, market_total_rej = 0;
-            if (freshRejection != null) {
-                contentValues.put(FRESH_M_SHAPED, freshRejection.getmShaped());
-                contentValues.put(FRESH_TORN_POLLY, freshRejection.getTornPolly());
-                contentValues.put(FRESH_FUNGUS, freshRejection.getFungus());
-                contentValues.put(FRESH_WET_BREAD, freshRejection.getWetBread());
-                contentValues.put(FRESH_OTHERS, freshRejection.getOthers());
-                fresh_total_rej = freshRejection.getTotal();
+        try {
+            db.beginTransaction();
+            for (CRejectionModel rejectionModel : arrList) {
+                ih.prepareForInsert();
+
+                ih.bind(billNoColumn, rejectionModel.getBill_no());
+                ih.bind(invoiceNumberColumn, rejectionModel.getInvoice_no());
+                ih.bind(cashierCodeColumn, rejectionModel.getCashier_code());
+                ih.bind(itemIdColumn, rejectionModel.getItem_id());
+                ih.bind(itemNameColumn, rejectionModel.getItem_name());
+                ih.bind(customerIdColumn, rejectionModel.getCustomer_id());
+                ih.bind(customerNameColumn, rejectionModel.getCustomer_name());
+                ih.bind(vanStockColumn, rejectionModel.getVan_stock());
+                ih.bind(rejQtyColumn, rejectionModel.getRej_qty());
+                ih.bind(priceColumn, rejectionModel.getPrice());
+
+                FreshRejectionModel freshRejection = rejectionModel.getFreshRejection();
+                MarketRejectionModel marketRejection = rejectionModel.getMarketRejection();
+
+                int fresh_total_rej = 0, market_total_rej = 0;
+                if (freshRejection != null) {
+                    ih.bind(freshMShapedColumn, freshRejection.getmShaped());
+                    ih.bind(freshTornPollyColumn, freshRejection.getTornPolly());
+                    ih.bind(freshFungusColumn, freshRejection.getFungus());
+                    ih.bind(freshWetBreadColumn, freshRejection.getWetBread());
+                    ih.bind(freshOthersColumn, freshRejection.getOthers());
+                    fresh_total_rej = freshRejection.getTotal();
+                }
+
+                if (marketRejection != null) {
+                    ih.bind(marketDamagedColumn, marketRejection.getDamaged());
+                    ih.bind(marketExpiredColumn, marketRejection.getExpired());
+                    ih.bind(marketRatEatenColumn, marketRejection.getRatEaten());
+                    market_total_rej = marketRejection.getTotal();
+                }
+
+                double grand_total = (market_total_rej + fresh_total_rej) * rejectionModel.getPrice();
+
+                ih.bind(grandTotalColumn, grand_total);
+                ih.bind(imeiNoColumn, rejectionModel.getImei_no());
+                ih.bind(latLngColumn, rejectionModel.getLat_lng());
+                ih.bind(curtimeColumn, Utility.timeStamp());
+                ih.bind(loginIdColumn, rejectionModel.getLogin_id());
+                ih.bind(dateColumn, Utility.getCurDate());
+                if (grand_total > 0)
+                    ih.execute();
             }
-
-            if (marketRejection != null) {
-                contentValues.put(MARKET_DAMAGED, marketRejection.getDamaged());
-                contentValues.put(MARKET_EXPIRED, marketRejection.getExpired());
-                contentValues.put(MARKET_RAT_EATEN, marketRejection.getRatEaten());
-                market_total_rej = marketRejection.getTotal();
-            }
-
-            double grand_total = (market_total_rej + fresh_total_rej) * rejectionModel.getPrice();
-
-            contentValues.put(GRAND_TOTAL, grand_total);
-            contentValues.put(IMEI_NO, rejectionModel.getImei_no());
-            contentValues.put(LAT_LNG, rejectionModel.getLat_lng());
-            contentValues.put(CURTIME, Utility.timeStamp());
-            contentValues.put(LOGIN_ID, rejectionModel.getLogin_id());
-            contentValues.put(DATE, Utility.getCurDate());
-            if (grand_total > 0)
-                db.insert(TABLE_NAME, null, contentValues);
-            // }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
         db.close();
     }
