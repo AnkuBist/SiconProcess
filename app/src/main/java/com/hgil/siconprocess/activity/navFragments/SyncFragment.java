@@ -1,6 +1,7 @@
 package com.hgil.siconprocess.activity.navFragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -54,6 +55,7 @@ public class SyncFragment extends BaseFragment {
     private PaymentTable paymentTable;
     private NextDayOrderTable nextDayOrderTable;
     private MarketProductTable marketProductTable;
+    private Handler updateBarHandler;
 
     public SyncFragment() {
         // Required empty public constructor
@@ -74,6 +76,7 @@ public class SyncFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setTitle("Sync");
         hideSaveButton();
+        updateBarHandler = new Handler();
 
         if (getRouteName() != null)
             tvRouteName.setText(getRouteName());
@@ -189,13 +192,22 @@ public class SyncFragment extends BaseFragment {
     // sync process retrofit call
     /*retrofit call test example*/
     public void syncRouteInvoice(final String route_id, JSONObject route_data) {
-        RetrofitUtil.showDialog(getContext());
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+            }
+        });
         RetrofitService service = RetrofitUtil.retrofitClient();
         Call<syncResponse> apiCall = service.syncRouteData(route_id, route_data.toString());
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {
-                RetrofitUtil.hideDialog();
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
                 syncResponse syncResponse = response.body();
                 // rest call to read data from api service
                 if (syncResponse.getReturnCode()) {
@@ -219,9 +231,14 @@ public class SyncFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<syncResponse> call, Throwable t) {
-                RetrofitUtil.hideDialog();
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
                 // show some error toast or message to display the api call issue
-                RetrofitUtil.showToast(getContext(), "Unable to access API");
+                new SampleDialog("", getString(R.string.str_retrofit_failure), getContext());
             }
         });
     }

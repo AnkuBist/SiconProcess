@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">SiconProcess</string>
+    <!--  <string name="app_name">SiconProcess</string>-->
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--server calls ERROR messages-->
+    <string name="str_retrofit_failure">Error Server Response</string>
+    <string name="str_login">Login</string>
+    <string name="str_login_detail_fetch">Fetching Login Data</string>
+    <string name="str_login_successful">User Login</string>
+    <string name="str_error_login">Error While Login</string>
+    <string name="str_sync_complete">Sync Data Completed</string>
+    <string name="str_error_sync_data">Error While Synchronizing Data</string>
+    <string name="str_synchronizing_data">Synchronizing Data</string>
+    <string name="str_synchronizing_data_started">Synchronizing Data Started</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

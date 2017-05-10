@@ -18,39 +18,26 @@ import java.util.List;
  */
 
 public class CreditOpeningTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_credit_opening";
     private static final String TABLE_NAME = "SD_CreditOpening_Master";
 
-    private static final String RCE_ID = "Rce_id";
-    private static final String SUBCOMPANY_ID = "Subcompany_id";
-    private static final String DEPOT_ID = "Depot_Id";
-    private static final String SUBDEPOT_ID = "Subdepot_id";
     private static final String ROUTE_ID = "Route_id";
     private static final String CUSTOMER_ID = "Customer_id";
     private static final String DDATE = "DDate";
     private static final String OPENING = "Opening";
-    private static final String SALE_AMT = "Sale_Amt";
-    private static final String RECEIVE_AMT = "Receive_Amt";
-    private static final String DISCOUNT_AMT = "Discount_Amt";
-    private static final String BALANCE = "Balance";
-    private static final String UPDATEBY_PAYCODE = "updateby_paycode";
-    private static final String UPDATEBY_DATE = "updateby_Date";
-    private static final String UPDATED_IP = "updated_ip";
-    private static final String CHEQUEAMT = "ChequeAmt";
+    private Context mContext;
 
     public CreditOpeningTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + RCE_ID + " NUMERIC NOT NULL, "
-                + SUBCOMPANY_ID + " TEXT NULL, " + DEPOT_ID + " TEXT NULL, " + SUBDEPOT_ID + " TEXT NULL, "
-                + ROUTE_ID + " TEXT NULL, " + CUSTOMER_ID + " TEXT NULL, " + DDATE + " TEXT NULL, "
-                + OPENING + " REAL NULL, " + SALE_AMT + " REAL NULL, " + RECEIVE_AMT + " REAL NULL, "
-                + DISCOUNT_AMT + " REAL NULL, " + BALANCE + " REAL NULL, " + UPDATEBY_PAYCODE + " TEXT NOT NULL, "
-                + UPDATEBY_DATE + " TEXT NOT NULL, " + UPDATED_IP + " TEXT NOT NULL, " + CHEQUEAMT + " REAL NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_ID + " TEXT NULL, "
+                + CUSTOMER_ID + " TEXT NULL, " + DDATE + " TEXT NULL, " + OPENING + " REAL NULL)");
     }
 
     @Override
@@ -69,22 +56,10 @@ public class CreditOpeningTable extends SQLiteOpenHelper {
     public boolean insertCreditOpening(CreditOpeningModel creditOpeningModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RCE_ID, creditOpeningModel.getRceId());
-        contentValues.put(SUBCOMPANY_ID, creditOpeningModel.getSubcompanyId());
-        contentValues.put(DEPOT_ID, creditOpeningModel.getDepotId());
-        //contentValues.put(SUBDEPOT_ID, creditOpeningModel.getSubdepotid());
         contentValues.put(ROUTE_ID, creditOpeningModel.getRouteId());
         contentValues.put(CUSTOMER_ID, creditOpeningModel.getCustomerId());
         contentValues.put(DDATE, creditOpeningModel.getDDate());
         contentValues.put(OPENING, creditOpeningModel.getOpening());
-        contentValues.put(SALE_AMT, creditOpeningModel.getSaleAmt());
-        contentValues.put(RECEIVE_AMT, creditOpeningModel.getReceiveAmt());
-        contentValues.put(DISCOUNT_AMT, creditOpeningModel.getDiscountAmt());
-        contentValues.put(BALANCE, creditOpeningModel.getBalance());
-        contentValues.put(UPDATEBY_PAYCODE, creditOpeningModel.getUpdatebyPaycode());
-        contentValues.put(UPDATEBY_DATE, creditOpeningModel.getUpdatebyDate());
-        contentValues.put(UPDATED_IP, creditOpeningModel.getUpdatedIp());
-        contentValues.put(CHEQUEAMT, creditOpeningModel.getChequeAmt());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
         return true;
@@ -96,22 +71,10 @@ public class CreditOpeningTable extends SQLiteOpenHelper {
         for (int i = 0; i < arrList.size(); i++) {
             CreditOpeningModel creditOpeningModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
-            contentValues.put(RCE_ID, creditOpeningModel.getRceId());
-            contentValues.put(SUBCOMPANY_ID, creditOpeningModel.getSubcompanyId());
-            contentValues.put(DEPOT_ID, creditOpeningModel.getDepotId());
-            //contentValues.put(SUBDEPOT_ID, creditOpeningModel.getSubdepotid());
             contentValues.put(ROUTE_ID, creditOpeningModel.getRouteId());
             contentValues.put(CUSTOMER_ID, creditOpeningModel.getCustomerId());
             contentValues.put(DDATE, creditOpeningModel.getDDate());
             contentValues.put(OPENING, creditOpeningModel.getOpening());
-            contentValues.put(SALE_AMT, creditOpeningModel.getSaleAmt());
-            contentValues.put(RECEIVE_AMT, creditOpeningModel.getReceiveAmt());
-            contentValues.put(DISCOUNT_AMT, creditOpeningModel.getDiscountAmt());
-            contentValues.put(BALANCE, creditOpeningModel.getBalance());
-            contentValues.put(UPDATEBY_PAYCODE, creditOpeningModel.getUpdatebyPaycode());
-            contentValues.put(UPDATEBY_DATE, creditOpeningModel.getUpdatebyDate());
-            contentValues.put(UPDATED_IP, creditOpeningModel.getUpdatedIp());
-            contentValues.put(CHEQUEAMT, creditOpeningModel.getChequeAmt());
             db.insert(TABLE_NAME, null, contentValues);
         }
         db.close();
@@ -124,22 +87,10 @@ public class CreditOpeningTable extends SQLiteOpenHelper {
 
         CreditOpeningModel creditOpeningModel = new CreditOpeningModel();
         if (res.moveToFirst()) {
-            creditOpeningModel.setRceId(res.getLong(res.getColumnIndex(RCE_ID)));
-            creditOpeningModel.setSubcompanyId(res.getString(res.getColumnIndex(SUBCOMPANY_ID)));
-            creditOpeningModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
-            //creditOpeningModel.setSubdepotid(res.getString(res.getColumnIndex(SUBDEPOT_ID)));
             creditOpeningModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             creditOpeningModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
             creditOpeningModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
             creditOpeningModel.setOpening(res.getFloat(res.getColumnIndex(OPENING)));
-            creditOpeningModel.setSaleAmt(res.getFloat(res.getColumnIndex(SALE_AMT)));
-            creditOpeningModel.setReceiveAmt(res.getFloat(res.getColumnIndex(RECEIVE_AMT)));
-            creditOpeningModel.setDiscountAmt(res.getFloat(res.getColumnIndex(DISCOUNT_AMT)));
-            creditOpeningModel.setBalance(res.getFloat(res.getColumnIndex(BALANCE)));
-            creditOpeningModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-            creditOpeningModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-            creditOpeningModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
-            creditOpeningModel.setChequeAmt(res.getFloat(res.getColumnIndex(CHEQUEAMT)));
         }
         res.close();
         db.close();
@@ -178,22 +129,10 @@ public class CreditOpeningTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CreditOpeningModel creditOpeningModel = new CreditOpeningModel();
-                creditOpeningModel.setRceId(res.getLong(res.getColumnIndex(RCE_ID)));
-                creditOpeningModel.setSubcompanyId(res.getString(res.getColumnIndex(SUBCOMPANY_ID)));
-                creditOpeningModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
-                //creditOpeningModel.setSubdepotid(res.getString(res.getColumnIndex(SUBDEPOT_ID)));
                 creditOpeningModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 creditOpeningModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
                 creditOpeningModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
                 creditOpeningModel.setOpening(res.getFloat(res.getColumnIndex(OPENING)));
-                creditOpeningModel.setSaleAmt(res.getFloat(res.getColumnIndex(SALE_AMT)));
-                creditOpeningModel.setReceiveAmt(res.getFloat(res.getColumnIndex(RECEIVE_AMT)));
-                creditOpeningModel.setDiscountAmt(res.getFloat(res.getColumnIndex(DISCOUNT_AMT)));
-                creditOpeningModel.setBalance(res.getFloat(res.getColumnIndex(BALANCE)));
-                creditOpeningModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-                creditOpeningModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-                creditOpeningModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
-                creditOpeningModel.setChequeAmt(res.getFloat(res.getColumnIndex(CHEQUEAMT)));
 
                 array_list.add(creditOpeningModel);
                 res.moveToNext();

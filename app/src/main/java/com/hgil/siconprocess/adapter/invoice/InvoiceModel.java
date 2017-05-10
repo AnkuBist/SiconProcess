@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 public class InvoiceModel implements Serializable {
 
-    private String mkey;
-    private String rKey;
     private String routeManagemnetDate;
     private String bill_no;
 
@@ -18,23 +16,14 @@ public class InvoiceModel implements Serializable {
     private String customerId;
     private String routeId;
     private String vehicleNo;
+    private String driverCode;
     private String cashierCode;
-    private String supervisorPaycode;
     private String itemId;
     private String crateId;
-    private float invQtyCr;
     private float invQtyPs;
-    private String groupId;
-    private String groupPriceDate;
     private float itemRate;
     private float itemDiscount;
-    private float itemCST;
-    private float itemVAT;
-    private float itemSurcharge;
     private float discountAmount;
-    private float cSTAmount;
-    private float vATAmount;
-    private float surchargeAmount;
     private float totalAmount;
 
     // new added value
@@ -128,22 +117,6 @@ public class InvoiceModel implements Serializable {
         this.demandTargetQty = demandTargetQty;
     }
 
-    public String getMkey() {
-        return mkey;
-    }
-
-    public void setMkey(String mkey) {
-        this.mkey = mkey;
-    }
-
-    public String getRKey() {
-        return rKey;
-    }
-
-    public void setRKey(String rKey) {
-        this.rKey = rKey;
-    }
-
     public String getRouteManagemnetDate() {
         return routeManagemnetDate;
     }
@@ -192,20 +165,20 @@ public class InvoiceModel implements Serializable {
         this.vehicleNo = vehicleNo;
     }
 
+    public String getDriverCode() {
+        return driverCode;
+    }
+
+    public void setDriverCode(String driverCode) {
+        this.driverCode = driverCode;
+    }
+
     public String getCashierCode() {
         return cashierCode;
     }
 
     public void setCashierCode(String cashierCode) {
         this.cashierCode = cashierCode;
-    }
-
-    public String getSupervisorPaycode() {
-        return supervisorPaycode;
-    }
-
-    public void setSupervisorPaycode(String supervisorPaycode) {
-        this.supervisorPaycode = supervisorPaycode;
     }
 
     public String getItemId() {
@@ -224,38 +197,6 @@ public class InvoiceModel implements Serializable {
         this.crateId = crateId;
     }
 
-    public float getInvQtyCr() {
-        return invQtyCr;
-    }
-
-    public void setInvQtyCr(float invQtyCr) {
-        this.invQtyCr = invQtyCr;
-    }
-
-    public float getInvQtyPs() {
-        return invQtyPs;
-    }
-
-    public void setInvQtyPs(float invQtyPs) {
-        this.invQtyPs = invQtyPs;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getGroupPriceDate() {
-        return groupPriceDate;
-    }
-
-    public void setGroupPriceDate(String groupPriceDate) {
-        this.groupPriceDate = groupPriceDate;
-    }
-
     public float getItemRate() {
         return itemRate;
     }
@@ -272,60 +213,12 @@ public class InvoiceModel implements Serializable {
         this.itemDiscount = itemDiscount;
     }
 
-    public float getItemCST() {
-        return itemCST;
-    }
-
-    public void setItemCST(float itemCST) {
-        this.itemCST = itemCST;
-    }
-
-    public float getItemVAT() {
-        return itemVAT;
-    }
-
-    public void setItemVAT(float itemVAT) {
-        this.itemVAT = itemVAT;
-    }
-
-    public float getItemSurcharge() {
-        return itemSurcharge;
-    }
-
-    public void setItemSurcharge(float itemSurcharge) {
-        this.itemSurcharge = itemSurcharge;
-    }
-
     public float getDiscountAmount() {
         return discountAmount;
     }
 
     public void setDiscountAmount(float discountAmount) {
         this.discountAmount = discountAmount;
-    }
-
-    public float getCSTAmount() {
-        return cSTAmount;
-    }
-
-    public void setCSTAmount(float cSTAmount) {
-        this.cSTAmount = cSTAmount;
-    }
-
-    public float getVATAmount() {
-        return vATAmount;
-    }
-
-    public void setVATAmount(float vATAmount) {
-        this.vATAmount = vATAmount;
-    }
-
-    public float getSurchargeAmount() {
-        return surchargeAmount;
-    }
-
-    public void setSurchargeAmount(float surchargeAmount) {
-        this.surchargeAmount = surchargeAmount;
     }
 
     public float getTotalAmount() {
@@ -336,4 +229,11 @@ public class InvoiceModel implements Serializable {
         this.totalAmount = totalAmount;
     }
 
+    public float getInvQtyPs() {
+        return invQtyPs;
+    }
+
+    public void setInvQtyPs(float invQtyPs) {
+        this.invQtyPs = invQtyPs;
+    }
 }

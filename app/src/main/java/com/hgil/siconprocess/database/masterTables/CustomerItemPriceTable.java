@@ -16,6 +16,7 @@ import java.util.List;
  */
 
 public class CustomerItemPriceTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_item_price_db";
     private static final String TABLE_NAME = "customer_item_price_table";
@@ -28,11 +29,10 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
     private static final String DISCOUNT_TYPE = "discountType";
     private static final String DISCOUNTED_PRICE = "discounted_prc";
 
-
     private Context mContext;
 
     public CustomerItemPriceTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 

@@ -26,9 +26,9 @@ public class SelectedOutletInfoActivity extends BaseToolbarActivity {
     @Nullable
     @BindView(R.id.etDealerType)
     TextView etDealerType;
-    @Nullable
+/*    @Nullable
     @BindView(R.id.etDealerAcntNum)
-    TextView etDealerAcntNum;
+    TextView etDealerAcntNum;*/
 
 
     @Override
@@ -53,7 +53,7 @@ public class SelectedOutletInfoActivity extends BaseToolbarActivity {
         etDealerCode.setText(customerRouteMapModel.getCustomerId());
         etRouteName.setText(customerRouteMapModel.getRouteName());
         etDealerType.setText(customerRouteMapModel.getCType());
-        etDealerAcntNum.setText(customerRouteMapModel.getACCOUNTNUM());
+        //etDealerAcntNum.setText(customerRouteMapModel.getACCOUNTNUM());
 
 
     }

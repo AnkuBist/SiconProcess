@@ -41,16 +41,19 @@ public class RetrofitUtil {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                // .client(retrofitClient)
+                .client(okHttpClient)
                 .build();
 
         RetrofitService service = retrofit.create(RetrofitService.class);
         return service;
     }
 
-    public static void showDialog(Context context) {
-        loading = ProgressDialog.show(context, "Fetching Data", "Please ...", false, false);
+    public static void showDialog(Context context, String title) {
+        loading = ProgressDialog.show(context, title, "Please Wait...", false, false);
+    }
 
+    public static void updateDialogTitle(String title) {
+        loading.setTitle(title);
     }
 
     public static void hideDialog() {

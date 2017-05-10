@@ -17,6 +17,7 @@ import java.util.List;
  */
 
 public class NextDayOrderTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "next_day_order_db";
     private static final String TABLE_NAME = "next_day_order_table";
@@ -35,7 +36,7 @@ public class NextDayOrderTable extends SQLiteOpenHelper {
     private Context mContext;
 
     public NextDayOrderTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 

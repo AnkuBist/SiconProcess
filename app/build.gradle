@@ -12,12 +12,82 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    /*keystore signature*/
+    /*signingConfigs {
         release {
+            keyAlias 'Sicon'
+            keyPassword 'Harvest'
+            storeFile file('C:/Users/mohan.giri/AndroidStudioProjects/SiconProcess_version2/keystore/sicon_view_keystore.jks')
+            storePassword 'Harvest'
+        }
+    }*/
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            //signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
         }
     }
+    productFlavors {
+        realseFlavour {
+            def appName = "SiconProcess"
+            //def versionName = defaultConfig.versionName
+            versionCode 1
+            versionName "1.0"
+            resValue "string", "app_name", (appName + "_" + versionName)
+        }
+
+        debugFlavour {
+            def appName = "SiconProcess"
+            versionCode 1
+            versionName "1.0"
+            resValue "string", "app_name", (appName + "_" + versionName)
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def appId = variant.applicationId   // com.hgil.siconprocess_view
+            def appName = "SiconProcess"
+            def versionName = variant.versionName      //
+            def versionCode = variant.versionCode
+            def flavorName = variant.flavorName // e. g. free
+            def buildType = variant.buildType // e. g. debug
+            def variantName = variant.name // e. g. freeDebug--realse
+
+            def apkName = appName + '_v_' + versionName + '_' + versionCode + '.apk';
+            output.outputFile = new File(output.outputFile.parentFile, apkName)
+        }
+    }
+
+    sourceSets {
+        main {
+            /* manifest.srcFile 'AndroidManifest.xml'
+             java.srcDirs = ['src']
+             resources.srcDirs = ['src']
+             aidl.srcDirs = ['src']
+             renderscript.srcDirs = ['src']
+             res.srcDirs = ['res']
+             assets.srcDirs = ['assets']*/
+        }
+
+        release {
+            manifest.srcFile 'src/release/AndroidManifest.xml'
+        }
+        debug {
+            manifest.srcFile 'src/debug/AndroidManifest.xml'
+        }
+    }
+
 }
 
 /* release key and password details*/

@@ -17,15 +17,11 @@ import java.util.List;
  */
 
 public class CrateCollectionView extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "sicon_crate_collection";
     private static final String TABLE_NAME = "V_SD_Crate_Collection_Master";
 
-    // private static final String REC_ID = "Rec_id";
-    private static final String DDATE = "DDate";
-    private static final String SUB_COMPANY_ID = "Sub_Company_id";
-    private static final String DEPOT_ID = "Depot_id";
-    private static final String SUB_DEPOT_ID = "Sub_depot_id";
     private static final String ROUTE_ID = "Route_id";
     private static final String ROUTE_MANAGEMENT_ID = "Route_Management_id";
     private static final String ROUTE_MANAGEMENT_DATE = "Route_Management_Date";
@@ -34,29 +30,19 @@ public class CrateCollectionView extends SQLiteOpenHelper {
     private static final String INVOICE_DATE = "Invoice_Date";
     private static final String CRATE_ID = "Crate_Id";
     private static final String CRATE_QTY = "Crate_Qty";
-    private static final String RECEIVE_QTY = "Receive_Qty";
-    private static final String BALANCE_QTY = "Balance_Qty";
-    private static final String CASHIER_PAYCODE = "Cashier_paycode";
-    private static final String LOADING_PAYCODE = "Loading_paycode";
-    private static final String ACTIVE = "Active";
-    private static final String UPDATEBY_PAYCODE = "updateby_paycode";
-    private static final String UPDATEBY_DATE = "updateby_Date";
-    private static final String UPDATED_IP = "updated_ip";
+    private Context mContext;
 
     public CrateCollectionView(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" //+ REC_ID + " NUMERIC NOT NULL, "
-                + DDATE + " TEXT NULL, " + SUB_COMPANY_ID + " TEXT NULL, " + DEPOT_ID + " TEXT NULL, "
-                + SUB_DEPOT_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, " + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
-                + ROUTE_MANAGEMENT_DATE + " TEXT NULL, " + CUSTOMER_ID + " TEXT NULL, " + INVOICE_NO + " TEXT NULL, " + INVOICE_DATE + " TEXT NULL, "
-                + CRATE_ID + " TEXT NULL, " + CRATE_QTY + " REAL NULL, " + RECEIVE_QTY + " REAL NULL, "
-                + BALANCE_QTY + " REAL NULL, " + CASHIER_PAYCODE + " TEXT NULL, " + LOADING_PAYCODE + " TEXT NULL, "
-                + ACTIVE + " TEXT NULL, " + UPDATEBY_PAYCODE + " TEXT NULL, "
-                + UPDATEBY_DATE + " TEXT NULL, " + UPDATED_IP + " TEXT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_ID + " TEXT NULL, "
+                + ROUTE_MANAGEMENT_ID + " TEXT NULL, " + ROUTE_MANAGEMENT_DATE + " TEXT NULL, " + CUSTOMER_ID + " TEXT NULL, "
+                + INVOICE_NO + " TEXT NULL, " + INVOICE_DATE + " TEXT NULL, "
+                + CRATE_ID + " TEXT NULL, " + CRATE_QTY + " REAL NULL)");
     }
 
     @Override
@@ -75,11 +61,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
     public boolean insertCrateCollection(CrateCollectionModel crateCollectionModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        // contentValues.put(REC_ID, crateCollectionModel.getRecId());
-        contentValues.put(DDATE, crateCollectionModel.getDDate());
-        contentValues.put(SUB_COMPANY_ID, crateCollectionModel.getSubCompanyId());
-        contentValues.put(DEPOT_ID, crateCollectionModel.getDepotId());
-        //contentValues.put(SUB_DEPOT_ID, crateCollectionModel.getSubDepotId());
         contentValues.put(ROUTE_ID, crateCollectionModel.getRouteId());
         contentValues.put(ROUTE_MANAGEMENT_ID, crateCollectionModel.getRouteManagementId());
         contentValues.put(ROUTE_MANAGEMENT_DATE, crateCollectionModel.getRouteManagementDate());
@@ -88,14 +69,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
         contentValues.put(INVOICE_DATE, crateCollectionModel.getInvoiceDate());
         contentValues.put(CRATE_ID, crateCollectionModel.getCrateId());
         contentValues.put(CRATE_QTY, crateCollectionModel.getCrateQty());
-        contentValues.put(RECEIVE_QTY, crateCollectionModel.getReceiveQty());
-        contentValues.put(BALANCE_QTY, crateCollectionModel.getBalanceQty());
-        contentValues.put(CASHIER_PAYCODE, crateCollectionModel.getCashierPaycode());
-        contentValues.put(LOADING_PAYCODE, crateCollectionModel.getLoadingPaycode());
-        contentValues.put(ACTIVE, crateCollectionModel.getActive());
-        contentValues.put(UPDATEBY_PAYCODE, crateCollectionModel.getUpdatebyPaycode());
-        contentValues.put(UPDATEBY_DATE, crateCollectionModel.getUpdatebyDate());
-        contentValues.put(UPDATED_IP, crateCollectionModel.getUpdatedIp());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
         return true;
@@ -107,11 +80,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
         for (int i = 0; i < arrList.size(); i++) {
             CrateCollectionModel crateCollectionModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
-            // contentValues.put(REC_ID, crateCollectionModel.getRecId());
-            contentValues.put(DDATE, crateCollectionModel.getDDate());
-            contentValues.put(SUB_COMPANY_ID, crateCollectionModel.getSubCompanyId());
-            contentValues.put(DEPOT_ID, crateCollectionModel.getDepotId());
-            //contentValues.put(SUB_DEPOT_ID, crateCollectionModel.getSubDepotId());
             contentValues.put(ROUTE_ID, crateCollectionModel.getRouteId());
             contentValues.put(ROUTE_MANAGEMENT_ID, crateCollectionModel.getRouteManagementId());
             contentValues.put(ROUTE_MANAGEMENT_DATE, crateCollectionModel.getRouteManagementDate());
@@ -120,14 +88,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
             contentValues.put(INVOICE_DATE, crateCollectionModel.getInvoiceDate());
             contentValues.put(CRATE_ID, crateCollectionModel.getCrateId());
             contentValues.put(CRATE_QTY, crateCollectionModel.getCrateQty());
-            contentValues.put(RECEIVE_QTY, crateCollectionModel.getReceiveQty());
-            contentValues.put(BALANCE_QTY, crateCollectionModel.getBalanceQty());
-            contentValues.put(CASHIER_PAYCODE, crateCollectionModel.getCashierPaycode());
-            contentValues.put(LOADING_PAYCODE, crateCollectionModel.getLoadingPaycode());
-            contentValues.put(ACTIVE, crateCollectionModel.getActive());
-            contentValues.put(UPDATEBY_PAYCODE, crateCollectionModel.getUpdatebyPaycode());
-            contentValues.put(UPDATEBY_DATE, crateCollectionModel.getUpdatebyDate());
-            contentValues.put(UPDATED_IP, crateCollectionModel.getUpdatedIp());
             db.insert(TABLE_NAME, null, contentValues);
         }
         db.close();
@@ -140,11 +100,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
 
         CrateCollectionModel crateCollectionModel = new CrateCollectionModel();
         if (res.moveToFirst()) {
-            // crateCollectionModel.setRecId(res.getLong(res.getColumnIndex(REC_ID)));
-            crateCollectionModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
-            crateCollectionModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
-            crateCollectionModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
-            //crateCollectionModel.setSubDepotId(res.getString(res.getColumnIndex(SUB_DEPOT_ID)));
             crateCollectionModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             crateCollectionModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
             crateCollectionModel.setRouteManagementDate(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_DATE)));
@@ -153,14 +108,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
             crateCollectionModel.setInvoiceDate(res.getString(res.getColumnIndex(INVOICE_DATE)));
             crateCollectionModel.setCrateId(res.getString(res.getColumnIndex(CRATE_ID)));
             crateCollectionModel.setCrateQty(res.getFloat(res.getColumnIndex(CRATE_QTY)));
-            crateCollectionModel.setReceiveQty(res.getFloat(res.getColumnIndex(RECEIVE_QTY)));
-            crateCollectionModel.setBalanceQty(res.getFloat(res.getColumnIndex(BALANCE_QTY)));
-            crateCollectionModel.setCashierPaycode(res.getString(res.getColumnIndex(CASHIER_PAYCODE)));
-            crateCollectionModel.setLoadingPaycode(res.getString(res.getColumnIndex(LOADING_PAYCODE)));
-            crateCollectionModel.setActive(res.getString(res.getColumnIndex(ACTIVE)));
-            crateCollectionModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-            crateCollectionModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-            crateCollectionModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
         }
         res.close();
         db.close();
@@ -199,11 +146,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CrateCollectionModel crateCollectionModel = new CrateCollectionModel();
-                //   crateCollectionModel.setRecId(res.getLong(res.getColumnIndex(REC_ID)));
-                crateCollectionModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
-                crateCollectionModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
-                crateCollectionModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
-                //crateCollectionModel.setSubDepotId(res.getString(res.getColumnIndex(SUB_DEPOT_ID)));
                 crateCollectionModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 crateCollectionModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 crateCollectionModel.setRouteManagementDate(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_DATE)));
@@ -212,14 +154,6 @@ public class CrateCollectionView extends SQLiteOpenHelper {
                 crateCollectionModel.setInvoiceDate(res.getString(res.getColumnIndex(INVOICE_DATE)));
                 crateCollectionModel.setCrateId(res.getString(res.getColumnIndex(CRATE_ID)));
                 crateCollectionModel.setCrateQty(res.getFloat(res.getColumnIndex(CRATE_QTY)));
-                crateCollectionModel.setReceiveQty(res.getFloat(res.getColumnIndex(RECEIVE_QTY)));
-                crateCollectionModel.setBalanceQty(res.getFloat(res.getColumnIndex(BALANCE_QTY)));
-                crateCollectionModel.setCashierPaycode(res.getString(res.getColumnIndex(CASHIER_PAYCODE)));
-                crateCollectionModel.setLoadingPaycode(res.getString(res.getColumnIndex(LOADING_PAYCODE)));
-                crateCollectionModel.setActive(res.getString(res.getColumnIndex(ACTIVE)));
-                crateCollectionModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-                crateCollectionModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-                crateCollectionModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
 
                 array_list.add(crateCollectionModel);
                 res.moveToNext();

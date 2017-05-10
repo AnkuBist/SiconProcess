@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +21,6 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
 import com.hgil.siconprocess.database.masterTables.CrateOpeningTable;
 import com.hgil.siconprocess.database.masterTables.CreditOpeningTable;
-import com.hgil.siconprocess.database.masterTables.CustomerInfoView;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
@@ -67,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private RouteView dbRouteView;
     private CustomerRouteMappingView dbRouteMapView;
-    private CustomerInfoView dbCustomerInfoView;
     private CustomerItemPriceTable dbCustomerItemPrice;
     private ProductView dbProductView;
     private CreditOpeningTable dbCreditOpening;
@@ -85,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
     private NextDayOrderTable nextDayOrderTable;
     private MarketProductTable marketProductTable;
     private String existing_id = "", saved_id = "";
+    private Handler updateBarHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,11 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         initialiseDBObj();
         initializeSyncDbObj();
 
-       /* Window MyWindow = getWindow();
-        WindowManager.LayoutParams winParams = MyWindow.getAttributes();
-        winParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
-        MyWindow.setAttributes(winParams);*/
-
+        updateBarHandler = new Handler();
         // ask all required permission at once only
         askAppPermission();
     }
@@ -114,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
     private void initialiseDBObj() {
         dbRouteView = new RouteView(this);
         dbRouteMapView = new CustomerRouteMappingView(this);
-        dbCustomerInfoView = new CustomerInfoView(this);
         dbCustomerItemPrice = new CustomerItemPriceTable(this);
         dbProductView = new ProductView(this);
         dbCreditOpening = new CreditOpeningTable(this);
@@ -141,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             if (checkUserId(username)) {
                 // if the user is logged in today but somehow logged out then check for the last logged in date
                 // and local data in invoice if there exists any data then simply make user in
-                if ((Utility.getCurDate()).matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE))) {
+               /* if ((Utility.getCurDate()).matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE))) {
                     //match here user saved username and password
                     String last_login_id = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_ID);
                     String last_login_password = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_PASSWORD);
@@ -153,7 +148,8 @@ public class LoginActivity extends AppCompatActivity {
                     // } else {
                     //      Snackbar.make(coordinateLayout, "Username and password combination wrong.", Snackbar.LENGTH_LONG).show();
                     // }
-                } else {
+                } else */
+                {
                     // check for login
                     getUserLogin(username, password);
                 }
@@ -183,7 +179,6 @@ public class LoginActivity extends AppCompatActivity {
     private void eraseAllTableData() {
         dbRouteView.eraseTable();
         dbRouteMapView.eraseTable();
-        dbCustomerInfoView.eraseTable();
         dbCustomerItemPrice.eraseTable();
         dbProductView.eraseTable();
         dbCreditOpening.eraseTable();
@@ -214,79 +209,134 @@ public class LoginActivity extends AppCompatActivity {
 
     /*retrofit call test to fetch data from server*/
     public void getUserLogin(final String user_id, final String password) {
-        RetrofitUtil.showDialog(this);
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.showDialog(LoginActivity.this, getString(R.string.str_login));
+            }
+        });
         RetrofitService service = RetrofitUtil.retrofitClient();
         Call<loginResponse> apiCall = service.postUserLogin(user_id, password);
         apiCall.enqueue(new Callback<loginResponse>() {
             @Override
             public void onResponse(Call<loginResponse> call, Response<loginResponse> response) {
+                updateBarHandler.post(new Runnable() {
+                    public void run() {
+                        RetrofitUtil.updateDialogTitle(getString(R.string.str_login_detail_fetch));
+                    }
+                });
+                try {
+                    final loginResponse loginResult = response.body();
 
-                loginResponse loginResult = response.body();
+                    // rest call to read data from api service
+                    if (loginResult.getReturnCode()) {
+                        if (cbSignIn.isChecked()) {
+                            // save the password for the next login too
+                            Utility.savePreference(LoginActivity.this, Utility.USER_ID, user_id);
+                        }
+                        // save user password for local login purpose
+                        Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_PASSWORD, password);
 
-                // rest call to read data from api service
-                if (loginResult.getReturnCode()) {
-                    // save user password for local login purpose
-                    Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_PASSWORD, password);
-
-                    // sync data from server to local database using the downloaded data object
-                    // syncToLocal(loginResult, user_id);
-
-                    new loginSync(loginResult, user_id).execute();
-                } else {
-                    RetrofitUtil.hideDialog();
-                    new SampleDialog("", loginResult.getStrMessage(), LoginActivity.this);
+                        new loginSync(loginResult, user_id).execute();
+                    } else {
+                        updateBarHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                RetrofitUtil.hideDialog();
+                            }
+                        }, 500);
+                        new SampleDialog("", loginResult.getStrMessage(), LoginActivity.this);
+                    }
+                } catch (Exception e) {
+                    updateBarHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RetrofitUtil.hideDialog();
+                        }
+                    }, 500);
+                    new SampleDialog("", getString(R.string.str_error_login), LoginActivity.this);
                 }
             }
 
             @Override
             public void onFailure(Call<loginResponse> call, Throwable t) {
-                RetrofitUtil.hideDialog();
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
                 // show some error toast or message to display the api call issue
-                new SampleDialog("", "Unable to access API", LoginActivity.this);
+                new SampleDialog("", getString(R.string.str_retrofit_failure), LoginActivity.this);
             }
         });
     }
 
-    // data processing and local db update
-    private void syncToLocal(loginResponse loginResult, String user_id) {
-        // rest call to read data from api service
-        if (loginResult.getReturnCode()) {
-            if (cbSignIn.isChecked()) {
-                // save the password for the next login too
-                Utility.savePreference(LoginActivity.this, Utility.USER_ID, user_id);
+    // AsyncTask copy one
+    private class loginSync extends AsyncTask<Void, Void, Boolean> implements Serializable {
+
+        loginResponse loginResponse;
+        String user_id;
+
+        public loginSync(loginResponse loginResponse, String user_id) {
+            this.loginResponse = loginResponse;
+            this.user_id = user_id;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // rest call to read data from api service
+            if (loginResponse.getReturnCode()) {
+                // erase all masterTables data
+                eraseAllTableData();
+
+                // erase table to sync
+                //do not erase these sync tables if the last login by the user in the same date in case it will erase all data
+               // if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
+                    eraseAllSyncTables();
+
+                ObjLoginResponse objResponse = loginResponse.getObjLoginResponse();
+
+                // sync data to local table and views
+                dbRouteView.insertRoute(objResponse.getRouteDetail());
+
+                RouteModel routeData = objResponse.getRouteDetail();
+
+                dbRouteMapView.insertCustomerRouteMap(routeData.getArrCustomerRouteMap());
+                dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
+                dbProductView.insertProducts(routeData.getArrItemsMaster());
+                dbCreditOpening.insertCreditOpening(routeData.getArrCreditOpening());
+                dbCrateOpening.insertCrateOpening(routeData.getArrCrateOpening());
+                dbCrateCollection.insertCrateCollection(routeData.getArrCrateCollection());
+                dbInvoice.insertDepotInvoice(routeData.getArrInvoiceDetails());
+                dbDemandTarget.insertDemandTarget(routeData.getArrDemandTarget());
+                dbFixedSample.insertFixedSample(routeData.getArrFixedSample());
+                dbRejectionTarget.insertRejectionTarget(routeData.getArrRejectionTarget());
+                dbEmployee.insertDepotEmployee(routeData.getArrEmployees());
+
+                Utility.saveLoginStatus(LoginActivity.this, Utility.LOGIN_STATUS, true);
+                Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_ID, user_id);
+                Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_DATE, Utility.getCurDate());
+                return loginResponse.getReturnCode();
+            } else {
+                return false;
             }
+        }
 
-            // erase all masterTables data
-            eraseAllTableData();
-
-            // erase table to sync
-            //do not erase these sync tables if the last login by the user in the same date in case it will erase all data
-            if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
-                eraseAllSyncTables();
-
-            ObjLoginResponse objResponse = loginResult.getObjLoginResponse();
-
-            // sync data to local table and views
-            dbRouteView.insertRoute(objResponse.getRouteDetail());
-
-            RouteModel routeData = objResponse.getRouteDetail();
-
-            dbRouteMapView.insertCustomerRouteMap(routeData.getArrCustomerRouteMap());
-            //dbCustomerInfoView.insertCustomer(routeData.getArrRouteCustomerInfo());
-            dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
-            dbProductView.insertProducts(routeData.getArrItemsMaster());
-            dbCreditOpening.insertCreditOpening(routeData.getArrCreditOpening());
-            dbCrateOpening.insertCrateOpening(routeData.getArrCrateOpening());
-            //dbCrateCollection.insertCrateCollection(routeData.getArrCrateCollection());
-            dbInvoice.insertDepotInvoice(routeData.getArrInvoiceDetails());
-            dbDemandTarget.insertDemandTarget(routeData.getArrDemandTarget());
-            dbFixedSample.insertFixedSample(routeData.getArrFixedSample());
-            dbRejectionTarget.insertRejectionTarget(routeData.getArrRejectionTarget());
-            dbEmployee.insertDepotEmployee(routeData.getArrEmployees());
-
-            Utility.saveLoginStatus(LoginActivity.this, Utility.LOGIN_STATUS, true);
-            Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_ID, user_id);
-            Utility.savePreference(LoginActivity.this, Utility.LAST_LOGIN_DATE, Utility.getCurDate());
+        @Override
+        protected void onPostExecute(Boolean status) {
+            updateBarHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    RetrofitUtil.hideDialog();
+                }
+            }, 500);
+            if (status) {
+                startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
+                finish();
+                overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+            } else {
+                new SampleDialog("", getString(R.string.str_error_sync_data), LoginActivity.this);
+            }
         }
     }
 
@@ -325,36 +375,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    // AsyncTask copy one
-    private class loginSync extends AsyncTask<Void, Void, Boolean> implements Serializable {
-
-        loginResponse loginResponse;
-        String user_id;
-
-        public loginSync(loginResponse loginResponse, String user_id) {
-            this.loginResponse = loginResponse;
-            this.user_id = user_id;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            syncToLocal(loginResponse, user_id);
-            return loginResponse.getReturnCode();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean status) {
-            RetrofitUtil.hideDialog();
-            if (status) {
-                startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
-                finish();
-                overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
-            } else {
-                new SampleDialog("", "Some error occurred while synchronising data", LoginActivity.this);
-            }
         }
     }
 

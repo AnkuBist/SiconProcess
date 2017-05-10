@@ -17,34 +17,25 @@ import java.util.List;
  */
 
 public class FixedSampleTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_fixed_sample";
     private static final String TABLE_NAME = "SD_FixedSample_Master";
 
-    private static final String ID = "ID";
-    private static final String STARTDT = "StartDt";
-    private static final String DDAY = "DDay";
-    private static final String DEPOTID = "DepotID";
     private static final String ROUTE = "Route";
     private static final String CUSTOMER_ID = "Customer_id";
     private static final String ITEM_ID = "Item_id";
     private static final String SQTY = "SQty";
-    private static final String ENDDT = "EndDt";
-    private static final String UPDATEBY_PAYCODE = "updateby_paycode";
-    private static final String UPDATEBY_DATE = "updateby_Date";
-    private static final String UPDATED_IP = "updated_ip";
 
     public FixedSampleTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ID + " INTEGER NOT NULL, "
-                + STARTDT + " TEXT NOT NULL, " + DDAY + " TEXT NOT NULL, " + DEPOTID + " TEXT NOT NULL, "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
                 + ROUTE + " TEXT NOT NULL, " + CUSTOMER_ID + " TEXT NOT NULL, " + ITEM_ID + " TEXT NOT NULL, "
-                + SQTY + " INTEGER NOT NULL, " + ENDDT + " TEXT NULL, " + UPDATEBY_PAYCODE + " TEXT NOT NULL, "
-                + UPDATEBY_DATE + " TEXT NOT NULL, " + UPDATED_IP + " TEXT NOT NULL)");
+                + SQTY + " INTEGER NOT NULL)");
     }
 
     @Override
@@ -59,45 +50,16 @@ public class FixedSampleTable extends SQLiteOpenHelper {
         db.close();
     }
 
-    //insert single
-    public boolean insertFixedSample(FixedSampleModel fixedSampleModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ID, fixedSampleModel.getID());
-        contentValues.put(STARTDT, fixedSampleModel.getStartDt());
-        contentValues.put(DDAY, fixedSampleModel.getDDay());
-        contentValues.put(DEPOTID, fixedSampleModel.getDepotID());
-        contentValues.put(ROUTE, fixedSampleModel.getRoute());
-        contentValues.put(CUSTOMER_ID, fixedSampleModel.getCustomerId());
-        contentValues.put(ITEM_ID, fixedSampleModel.getItemId());
-        contentValues.put(SQTY, fixedSampleModel.getSQty());
-        //contentValues.put(ENDDT, fixedSampleModel.getEndDt());
-        contentValues.put(UPDATEBY_PAYCODE, fixedSampleModel.getUpdatebyPaycode());
-        contentValues.put(UPDATEBY_DATE, fixedSampleModel.getUpdatebyDate());
-        contentValues.put(UPDATED_IP, fixedSampleModel.getUpdatedIp());
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     // insert multiple
     public boolean insertFixedSample(List<FixedSampleModel> arrList) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (int i = 0; i < arrList.size(); i++) {
             FixedSampleModel fixedSampleModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
-            contentValues.put(ID, fixedSampleModel.getID());
-            contentValues.put(STARTDT, fixedSampleModel.getStartDt());
-            contentValues.put(DDAY, fixedSampleModel.getDDay());
-            contentValues.put(DEPOTID, fixedSampleModel.getDepotID());
             contentValues.put(ROUTE, fixedSampleModel.getRoute());
             contentValues.put(CUSTOMER_ID, fixedSampleModel.getCustomerId());
             contentValues.put(ITEM_ID, fixedSampleModel.getItemId());
             contentValues.put(SQTY, fixedSampleModel.getSQty());
-            //contentValues.put(ENDDT, fixedSampleModel.getEndDt());
-            contentValues.put(UPDATEBY_PAYCODE, fixedSampleModel.getUpdatebyPaycode());
-            contentValues.put(UPDATEBY_DATE, fixedSampleModel.getUpdatebyDate());
-            contentValues.put(UPDATED_IP, fixedSampleModel.getUpdatedIp());
             db.insert(TABLE_NAME, null, contentValues);
         }
         db.close();
@@ -110,18 +72,10 @@ public class FixedSampleTable extends SQLiteOpenHelper {
 
         FixedSampleModel fixedSampleModel = new FixedSampleModel();
         if (res.moveToFirst()) {
-            fixedSampleModel.setID(res.getInt(res.getColumnIndex(ID)));
-            fixedSampleModel.setStartDt(res.getString(res.getColumnIndex(STARTDT)));
-            fixedSampleModel.setDDay(res.getString(res.getColumnIndex(DDAY)));
-            fixedSampleModel.setDepotID(res.getString(res.getColumnIndex(DEPOTID)));
             fixedSampleModel.setRoute(res.getString(res.getColumnIndex(ROUTE)));
             fixedSampleModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
             fixedSampleModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
             fixedSampleModel.setSQty(res.getInt(res.getColumnIndex(SQTY)));
-            //fixedSampleModel.setEndDt(res.getString(res.getColumnIndex(ENDDT)));
-            fixedSampleModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-            fixedSampleModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-            fixedSampleModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
         }
         res.close();
         db.close();
@@ -160,18 +114,10 @@ public class FixedSampleTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 FixedSampleModel fixedSampleModel = new FixedSampleModel();
-                fixedSampleModel.setID(res.getInt(res.getColumnIndex(ID)));
-                fixedSampleModel.setStartDt(res.getString(res.getColumnIndex(STARTDT)));
-                fixedSampleModel.setDDay(res.getString(res.getColumnIndex(DDAY)));
-                fixedSampleModel.setDepotID(res.getString(res.getColumnIndex(DEPOTID)));
                 fixedSampleModel.setRoute(res.getString(res.getColumnIndex(ROUTE)));
                 fixedSampleModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
                 fixedSampleModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
                 fixedSampleModel.setSQty(res.getInt(res.getColumnIndex(SQTY)));
-                //fixedSampleModel.setEndDt(res.getString(res.getColumnIndex(ENDDT)));
-                fixedSampleModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-                fixedSampleModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-                fixedSampleModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
 
                 array_list.add(fixedSampleModel);
                 res.moveToNext();

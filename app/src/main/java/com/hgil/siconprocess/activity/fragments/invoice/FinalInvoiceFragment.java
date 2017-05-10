@@ -15,7 +15,6 @@ import com.hgil.siconprocess.activity.NavBaseActivity;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;
 import com.hgil.siconprocess.database.masterTables.CreditOpeningTable;
-import com.hgil.siconprocess.database.masterTables.CustomerInfoView;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -93,7 +92,7 @@ public class FinalInvoiceFragment extends BaseFragment {
 
         //TODO
         // get customer contact details
-        mobile = new CustomerInfoView(getContext()).getCustomerContact(customer_id);
+        //mobile = new CustomerInfoView(getContext()).getCustomerContact(customer_id);
 
         // get customer credit outstanding
         CreditOpeningTable creditOpeningTable = new CreditOpeningTable(getContext());

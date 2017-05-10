@@ -22,34 +22,27 @@ import java.util.List;
  */
 
 public class ProductView extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_product";
     private static final String TABLE_NAME = "V_Item_Master";
 
     private static final String ITEMSEQUENCE = "ITEMSEQUENCE";
-    private static final String PRODUCTRANKING = "PRODUCTRANKING";
     private static final String ITEM_ID = "Item_id";
-    private static final String ITEM_SHORT_NAME = "Item_Shrt_Name";
     private static final String ITEM_NAME = "Item_Name";
-    private static final String ITEM_DESCRIPTION = "Item_Description";
-    private static final String DATAAREAID = "DATAAREAID";
-    private static final String NETWEIGHT = "NETWEIGHT";
     private static final String ITEMGROUPID = "ITEMGROUPID";
-    private static final String FLAG = "FLAG";
 
     private Context mContext;
 
     public ProductView(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ITEMSEQUENCE + " INTEGER NOT NULL, "
-                + PRODUCTRANKING + " INTEGER NULL, " + ITEM_ID + " TEXT NULL, " + ITEM_SHORT_NAME + " TEXT NULL, "
-                + ITEM_NAME + " TEXT NULL, " + ITEM_DESCRIPTION + " TEXT NULL, " + DATAAREAID + " TEXT NULL, "
-                + NETWEIGHT + " REAL NULL, " + ITEMGROUPID + " TEXT NULL, " + FLAG + " INTEGER NULL)");
+                + ITEM_ID + " TEXT NULL, " + ITEM_NAME + " TEXT NULL, " + ITEMGROUPID + " TEXT NULL)");
     }
 
     @Override
@@ -70,15 +63,9 @@ public class ProductView extends SQLiteOpenHelper {
         for (ProductModel productModel : arrayList) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(ITEMSEQUENCE, productModel.getITEMSEQUENCE());
-            contentValues.put(PRODUCTRANKING, productModel.getPRODUCTRANKING());
             contentValues.put(ITEM_ID, productModel.getItemId());
-            contentValues.put(ITEM_SHORT_NAME, productModel.getItemShrtName());
             contentValues.put(ITEM_NAME, productModel.getItemName());
-            contentValues.put(ITEM_DESCRIPTION, productModel.getItemDescription());
-            contentValues.put(DATAAREAID, productModel.getDATAAREAID());
-            contentValues.put(NETWEIGHT, productModel.getNETWEIGHT());
             contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
-            contentValues.put(FLAG, productModel.getFLAG());
             db.insert(TABLE_NAME, null, contentValues);
         }
         db.close();
@@ -90,15 +77,9 @@ public class ProductView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ITEMSEQUENCE, productModel.getITEMSEQUENCE());
-        contentValues.put(PRODUCTRANKING, productModel.getPRODUCTRANKING());
         contentValues.put(ITEM_ID, productModel.getItemId());
-        contentValues.put(ITEM_SHORT_NAME, productModel.getItemShrtName());
         contentValues.put(ITEM_NAME, productModel.getItemName());
-        contentValues.put(ITEM_DESCRIPTION, productModel.getItemDescription());
-        contentValues.put(DATAAREAID, productModel.getDATAAREAID());
-        contentValues.put(NETWEIGHT, productModel.getNETWEIGHT());
         contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
-        contentValues.put(FLAG, productModel.getFLAG());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
         return true;
@@ -111,15 +92,9 @@ public class ProductView extends SQLiteOpenHelper {
         ProductModel productModel = new ProductModel();
         if (res.moveToFirst()) {
             productModel.setITEMSEQUENCE(res.getInt(res.getColumnIndex(ITEMSEQUENCE)));
-            productModel.setPRODUCTRANKING(res.getInt(res.getColumnIndex(PRODUCTRANKING)));
             productModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
-            productModel.setItemShrtName(res.getString(res.getColumnIndex(ITEM_SHORT_NAME)));
             productModel.setItemName(res.getString(res.getColumnIndex(ITEM_NAME)));
-            productModel.setItemDescription(res.getString(res.getColumnIndex(ITEM_DESCRIPTION)));
-            productModel.setDATAAREAID(res.getString(res.getColumnIndex(DATAAREAID)));
-            productModel.setNETWEIGHT(res.getFloat(res.getColumnIndex(NETWEIGHT)));
             productModel.setITEMGROUPID(res.getString(res.getColumnIndex(ITEMGROUPID)));
-            productModel.setFLAG(res.getInt(res.getColumnIndex(FLAG)));
         }
         res.close();
         db.close();
@@ -180,15 +155,9 @@ public class ProductView extends SQLiteOpenHelper {
             while (res.isAfterLast() == false) {
                 ProductModel productModel = new ProductModel();
                 productModel.setITEMSEQUENCE(res.getInt(res.getColumnIndex(ITEMSEQUENCE)));
-                productModel.setPRODUCTRANKING(res.getInt(res.getColumnIndex(PRODUCTRANKING)));
                 productModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
-                productModel.setItemShrtName(res.getString(res.getColumnIndex(ITEM_SHORT_NAME)));
                 productModel.setItemName(res.getString(res.getColumnIndex(ITEM_NAME)));
-                productModel.setItemDescription(res.getString(res.getColumnIndex(ITEM_DESCRIPTION)));
-                productModel.setDATAAREAID(res.getString(res.getColumnIndex(DATAAREAID)));
-                productModel.setNETWEIGHT(res.getFloat(res.getColumnIndex(NETWEIGHT)));
                 productModel.setITEMGROUPID(res.getString(res.getColumnIndex(ITEMGROUPID)));
-                productModel.setFLAG(res.getInt(res.getColumnIndex(FLAG)));
 
                 array_list.add(productModel);
                 res.moveToNext();
@@ -246,7 +215,7 @@ public class ProductView extends SQLiteOpenHelper {
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
         CustomerRejectionTable customerRejTable = new CustomerRejectionTable(mContext);
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + FLAG + "=0", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 VanStockModel vanStockModel = new VanStockModel();

@@ -19,40 +19,29 @@ import java.util.List;
  */
 
 public class DemandTargetTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_demand_target";
     private static final String TABLE_NAME = "SD_DemandTarget_Master";
 
-    private static final String RCE_ID = "Rce_id";
     private static final String DDATE = "DDate";
-    private static final String DDAY = "DDay";
-    private static final String MMONTH = "MMonth";
-    private static final String DEPOT_ID = "Depot_ID";
-    private static final String PSM_ID = "PSM_ID";
     private static final String ROUTE_ID = "Route_ID";
     private static final String CUSTOMER_ID = "Customer_ID";
     private static final String ITEM_ID = "Item_id";
     private static final String TARGET_QTY = "Target_Qty";
-    private static final String ACTIVE = "Active";
-    private static final String UPDATEBY_PAYCODE = "updateby_paycode";
-    private static final String UPDATEBY_DATE = "updateby_Date";
-    private static final String UPDATED_IP = "updated_ip";
 
     private final Context mContext;
 
     public DemandTargetTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + RCE_ID + " NUMERIC NOT NULL, "
-                + DDATE + " TEXT NOT NULL, " + DDAY + " TEXT NOT NULL, " + MMONTH + " INTEGER NOT NULL, "
-                + DEPOT_ID + " TEXT NOT NULL, " + PSM_ID + " TEXT NOT NULL, " + ROUTE_ID + " TEXT NOT NULL, "
-                + CUSTOMER_ID + " TEXT NULL, " + ITEM_ID + " TEXT NOT NULL, " + TARGET_QTY + " REAL NOT NULL, "
-                + ACTIVE + " TEXT NULL, " + UPDATEBY_PAYCODE + " TEXT NOT NULL, "
-                + UPDATEBY_DATE + " TEXT NOT NULL, " + UPDATED_IP + " TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + DDATE + " TEXT NOT NULL, "
+                + ROUTE_ID + " TEXT NOT NULL, " + CUSTOMER_ID + " TEXT NULL, "
+                + ITEM_ID + " TEXT NOT NULL, " + TARGET_QTY + " REAL NOT NULL)");
     }
 
     @Override
@@ -67,49 +56,17 @@ public class DemandTargetTable extends SQLiteOpenHelper {
         db.close();
     }
 
-    //insert single
-    public boolean insertDemandTarget(DemandTargetModel demandTargetModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(RCE_ID, demandTargetModel.getRecId());
-        contentValues.put(DDATE, demandTargetModel.getDDate());
-        contentValues.put(DDAY, demandTargetModel.getDDay());
-        contentValues.put(MMONTH, demandTargetModel.getMMonth());
-        contentValues.put(DEPOT_ID, demandTargetModel.getDepotID());
-        contentValues.put(PSM_ID, demandTargetModel.getPSMID());
-        contentValues.put(ROUTE_ID, demandTargetModel.getRouteID());
-        contentValues.put(CUSTOMER_ID, demandTargetModel.getCustomerID());
-        contentValues.put(ITEM_ID, demandTargetModel.getItemId());
-        contentValues.put(TARGET_QTY, demandTargetModel.getTargetQty());
-        contentValues.put(ACTIVE, demandTargetModel.getActive());
-        contentValues.put(UPDATEBY_PAYCODE, demandTargetModel.getUpdatebyPaycode());
-        contentValues.put(UPDATEBY_DATE, demandTargetModel.getUpdatebyDate());
-        contentValues.put(UPDATED_IP, demandTargetModel.getUpdatedIp());
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     // insert multiple
     public boolean insertDemandTarget(List<DemandTargetModel> arrList) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (int i = 0; i < arrList.size(); i++) {
             DemandTargetModel demandTargetModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
-            contentValues.put(RCE_ID, demandTargetModel.getRecId());
             contentValues.put(DDATE, demandTargetModel.getDDate());
-            contentValues.put(DDAY, demandTargetModel.getDDay());
-            contentValues.put(MMONTH, demandTargetModel.getMMonth());
-            contentValues.put(DEPOT_ID, demandTargetModel.getDepotID());
-            contentValues.put(PSM_ID, demandTargetModel.getPSMID());
             contentValues.put(ROUTE_ID, demandTargetModel.getRouteID());
             contentValues.put(CUSTOMER_ID, demandTargetModel.getCustomerID());
             contentValues.put(ITEM_ID, demandTargetModel.getItemId());
             contentValues.put(TARGET_QTY, demandTargetModel.getTargetQty());
-            contentValues.put(ACTIVE, demandTargetModel.getActive());
-            contentValues.put(UPDATEBY_PAYCODE, demandTargetModel.getUpdatebyPaycode());
-            contentValues.put(UPDATEBY_DATE, demandTargetModel.getUpdatebyDate());
-            contentValues.put(UPDATED_IP, demandTargetModel.getUpdatedIp());
             db.insert(TABLE_NAME, null, contentValues);
         }
         db.close();
@@ -122,20 +79,11 @@ public class DemandTargetTable extends SQLiteOpenHelper {
 
         DemandTargetModel demandTargetModel = new DemandTargetModel();
         if (res.moveToFirst()) {
-            demandTargetModel.setRecId(res.getLong(res.getColumnIndex(RCE_ID)));
             demandTargetModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
-            demandTargetModel.setDDay(res.getString(res.getColumnIndex(DDAY)));
-            demandTargetModel.setMMonth(res.getInt(res.getColumnIndex(MMONTH)));
-            demandTargetModel.setDepotID(res.getString(res.getColumnIndex(DEPOT_ID)));
-            demandTargetModel.setPSMID(res.getString(res.getColumnIndex(PSM_ID)));
             demandTargetModel.setRouteID(res.getString(res.getColumnIndex(ROUTE_ID)));
             demandTargetModel.setCustomerID(res.getString(res.getColumnIndex(CUSTOMER_ID)));
             demandTargetModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
             demandTargetModel.setTargetQty(res.getFloat(res.getColumnIndex(TARGET_QTY)));
-            demandTargetModel.setActive(res.getString(res.getColumnIndex(ACTIVE)));
-            demandTargetModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-            demandTargetModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-            demandTargetModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
         }
         res.close();
         db.close();
@@ -174,20 +122,11 @@ public class DemandTargetTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 DemandTargetModel demandTargetModel = new DemandTargetModel();
-                demandTargetModel.setRecId(res.getLong(res.getColumnIndex(RCE_ID)));
                 demandTargetModel.setDDate(res.getString(res.getColumnIndex(DDATE)));
-                demandTargetModel.setDDay(res.getString(res.getColumnIndex(DDAY)));
-                demandTargetModel.setMMonth(res.getInt(res.getColumnIndex(MMONTH)));
-                demandTargetModel.setDepotID(res.getString(res.getColumnIndex(DEPOT_ID)));
-                demandTargetModel.setPSMID(res.getString(res.getColumnIndex(PSM_ID)));
                 demandTargetModel.setRouteID(res.getString(res.getColumnIndex(ROUTE_ID)));
                 demandTargetModel.setCustomerID(res.getString(res.getColumnIndex(CUSTOMER_ID)));
                 demandTargetModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
                 demandTargetModel.setTargetQty(res.getFloat(res.getColumnIndex(TARGET_QTY)));
-                demandTargetModel.setActive(res.getString(res.getColumnIndex(ACTIVE)));
-                demandTargetModel.setUpdatebyPaycode(res.getString(res.getColumnIndex(UPDATEBY_PAYCODE)));
-                demandTargetModel.setUpdatebyDate(res.getString(res.getColumnIndex(UPDATEBY_DATE)));
-                demandTargetModel.setUpdatedIp(res.getString(res.getColumnIndex(UPDATED_IP)));
 
                 array_list.add(demandTargetModel);
                 res.moveToNext();
@@ -240,7 +179,7 @@ public class DemandTargetTable extends SQLiteOpenHelper {
         CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT " + ITEM_ID + ", " + TARGET_QTY + " FROM " + TABLE_NAME + " where " + CUSTOMER_ID +"=?", new String[]{customer_id});
+        Cursor res = db.rawQuery("SELECT " + ITEM_ID + ", " + TARGET_QTY + " FROM " + TABLE_NAME + " where " + CUSTOMER_ID + "=?", new String[]{customer_id});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 String item_id = res.getString(res.getColumnIndex(ITEM_ID));
@@ -248,7 +187,6 @@ public class DemandTargetTable extends SQLiteOpenHelper {
 
                 // get item price for customer
                 double amount = itemPriceTable.getItemPriceById(item_id, customer_id);
-
 
                 target_sale_amount += (amount * target);
                 res.moveToNext();

@@ -1,6 +1,7 @@
 package com.hgil.siconprocess.activity.fragments.finalPayment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
@@ -52,6 +53,7 @@ public class ItemCheckFragment extends BaseFragment {
     private CashierSyncModel cashierSyncModel;
     private int items_loaded, items_sold, items_leftover, items_received, items_fresh_rejection,
             items_fresh_rej_received, items_market_rejection, items_market_rej_received;
+    private Handler updateBarHandler;
 
     public ItemCheckFragment() {
         // Required empty public constructor
@@ -83,6 +85,7 @@ public class ItemCheckFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         showSaveButton();
+        updateBarHandler = new Handler();
 
         DepotInvoiceView depot_invoice = new DepotInvoiceView(getContext());
         CustomerRejectionTable rejectionTable = new CustomerRejectionTable(getContext());
@@ -140,13 +143,22 @@ public class ItemCheckFragment extends BaseFragment {
     // sync process retrofit call
     /*retrofit call test example*/
     public void syncRouteByCashier(final String route_id, JSONObject cashier_data) {
-        RetrofitUtil.showDialog(getContext());
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+            }
+        });
         RetrofitService service = RetrofitUtil.retrofitClient();
         Call<syncResponse> apiCall = service.syncRouteCashierCheck(route_id, cashier_data.toString());
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {
-                RetrofitUtil.hideDialog();
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
                 syncResponse syncResponse = response.body();
                 // rest call to read data from api service
                 if (syncResponse.getReturnCode()) {
@@ -159,9 +171,14 @@ public class ItemCheckFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<syncResponse> call, Throwable t) {
-                RetrofitUtil.hideDialog();
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
                 // show some error toast or message to display the api call issue
-                RetrofitUtil.showToast(getContext(), "Unable to access API");
+                new SampleDialog("", getString(R.string.str_retrofit_failure), getContext());
             }
         });
     }

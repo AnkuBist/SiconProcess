@@ -21,6 +21,7 @@ import java.util.List;
  */
 
 public class InvoiceOutTable extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "invoice_out_db";
     private static final String TABLE_NAME = "depot_invoice_out";
@@ -60,7 +61,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     private Context mContext;
 
     public InvoiceOutTable(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 
@@ -141,7 +142,6 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
                     ih.bind(itemIdColumn, invoiceModel.getItemId());
                     ih.bind(cashierCodeColumn, invoiceModel.getCashierCode());
                     ih.bind(crateIdColumn, invoiceModel.getCrateId());
-                    ih.bind(invQtyCrColumn, invoiceModel.getInvQtyCr());
                     ih.bind(invQtyPsColumn, invoiceModel.getInvQtyPs());
                     ih.bind(itemRateColumn, invoiceModel.getItemRate());
                     ih.bind(totalAmountColumn, invoiceModel.getTotalAmount());

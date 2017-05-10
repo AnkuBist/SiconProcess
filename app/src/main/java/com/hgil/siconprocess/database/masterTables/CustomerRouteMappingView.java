@@ -19,30 +19,19 @@ import java.util.List;
  */
 
 public class CustomerRouteMappingView extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_route_map";
     private static final String TABLE_NAME = "V_SD_Customer_Route_Mapping";
 
-    /*  private static final String REC_ID = "Rec_id";
-      private static final String SUB_COMPANY_ID = "Sub_Company_id";
-      private static final String DEPOT = "Depot";*/
     private static final String ROUTE_ID = "Route_id";
     private static final String ROUTE_NAME = "Route_Name";
-    /*  private static final String SALE_DATE_PARAMETER = "Sale_Date_Parameter";
-      private static final String PSMID = "PSMID";*/
     private static final String CUSTOMER_ID = "Customer_id";
     private static final String CUSTOMER_NAME = "Customer_Name";
     private static final String PRICEGROUP = "PRICEGROUP";
     private static final String LINEDISC = "LINEDISC";
     private static final String C_TYPE = "C_Type";
-   /* private static final String COMMISSIONGROUP = "COMMISSIONGROUP";
-    private static final String SALESGROUP = "SALESGROUP";
-    private static final String SUBDEPOT_ID = "SubDepot_id";
     private static final String CUSTCLASSIFICATIONID = "CUSTCLASSIFICATIONID";
-    private static final String FLAG = "Flag";
-    private static final String RFLAG = "RFlag";
-    private static final String ACCOUNTNUM = "ACCOUNTNUM";
-    private static final String MANDT = "Mandt";*/
 
     // customer status
     private static final String CUST_STATUS = "Customer_status";
@@ -50,20 +39,17 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     private Context mContext;
 
     public CustomerRouteMappingView(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + REC_ID + " NUMERIC NOT NULL, "
-                + SUB_COMPANY_ID + " TEXT NULL, " + DEPOT + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
-                + ROUTE_NAME + " TEXT NULL, " + SALE_DATE_PARAMETER + " TEXT NULL, " + PSMID + " TEXT NULL, "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_ID + " TEXT NULL, "
+                + ROUTE_NAME + " TEXT NULL, "
                 + CUSTOMER_ID + " TEXT NULL, " + CUSTOMER_NAME + " TEXT NOT NULL, " + PRICEGROUP + " TEXT NOT NULL, "
-                + LINEDISC + " TEXT NOT NULL, " + C_TYPE + " TEXT NOT NULL, " + COMMISSIONGROUP + " TEXT NOT NULL, "
-                + SALESGROUP + " TEXT NOT NULL, " + SUBDEPOT_ID + " TEXT NULL, " + CUSTCLASSIFICATIONID + " TEXT NULL, "
-                + FLAG + " INTEGER NULL, " + RFLAG + " INTEGER NULL, " + ACCOUNTNUM + " TEXT NOT NULL, "
-                + MANDT + " INTEGER NOT NULL, " + CUST_STATUS + " TEXT NULL)");
+                + LINEDISC + " TEXT NOT NULL, " + C_TYPE + " TEXT NOT NULL, " + CUSTCLASSIFICATIONID + " TEXT NULL, "
+                + CUST_STATUS + " TEXT NULL)");
     }
 
     @Override
@@ -94,26 +80,14 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         for (int i = 0; i < arrList.size(); i++) {
             CustomerRouteMapModel customerRouteMapModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
-            contentValues.put(REC_ID, customerRouteMapModel.getRecId());
-            contentValues.put(SUB_COMPANY_ID, customerRouteMapModel.getSubCompanyId());
-            contentValues.put(DEPOT, customerRouteMapModel.getDepot());
             contentValues.put(ROUTE_ID, customerRouteMapModel.getRouteId());
             contentValues.put(ROUTE_NAME, customerRouteMapModel.getRouteName());
-            contentValues.put(SALE_DATE_PARAMETER, customerRouteMapModel.getSaleDateParameter());
-            contentValues.put(PSMID, customerRouteMapModel.getPSMID());
             contentValues.put(CUSTOMER_ID, customerRouteMapModel.getCustomerId());
             contentValues.put(CUSTOMER_NAME, customerRouteMapModel.getCustomerName());
             contentValues.put(PRICEGROUP, customerRouteMapModel.getPRICEGROUP());
             contentValues.put(LINEDISC, customerRouteMapModel.getLINEDISC());
             contentValues.put(C_TYPE, customerRouteMapModel.getCType());
-            contentValues.put(COMMISSIONGROUP, customerRouteMapModel.getCOMMISSIONGROUP());
-            contentValues.put(SALESGROUP, customerRouteMapModel.getSALESGROUP());
-            contentValues.put(SUBDEPOT_ID, customerRouteMapModel.getSubDepotId());
             contentValues.put(CUSTCLASSIFICATIONID, customerRouteMapModel.getCUSTCLASSIFICATIONID());
-            contentValues.put(FLAG, customerRouteMapModel.getFlag());
-            contentValues.put(RFLAG, customerRouteMapModel.getRFlag());
-            contentValues.put(ACCOUNTNUM, customerRouteMapModel.getACCOUNTNUM());
-            contentValues.put(MANDT, customerRouteMapModel.getMandt());
             contentValues.put(CUST_STATUS, customerRouteMapModel.getCustStatus());
             db.insert(TABLE_NAME, null, contentValues);
         }
@@ -125,26 +99,14 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     public boolean insertCustomerRouteMap(CustomerRouteMapModel customerRouteMapModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(REC_ID, customerRouteMapModel.getRecId());
-        contentValues.put(SUB_COMPANY_ID, customerRouteMapModel.getSubCompanyId());
-        contentValues.put(DEPOT, customerRouteMapModel.getDepot());
         contentValues.put(ROUTE_ID, customerRouteMapModel.getRouteId());
         contentValues.put(ROUTE_NAME, customerRouteMapModel.getRouteName());
-        contentValues.put(SALE_DATE_PARAMETER, customerRouteMapModel.getSaleDateParameter());
-        contentValues.put(PSMID, customerRouteMapModel.getPSMID());
         contentValues.put(CUSTOMER_ID, customerRouteMapModel.getCustomerId());
         contentValues.put(CUSTOMER_NAME, customerRouteMapModel.getCustomerName());
         contentValues.put(PRICEGROUP, customerRouteMapModel.getPRICEGROUP());
         contentValues.put(LINEDISC, customerRouteMapModel.getLINEDISC());
         contentValues.put(C_TYPE, customerRouteMapModel.getCType());
-        contentValues.put(COMMISSIONGROUP, customerRouteMapModel.getCOMMISSIONGROUP());
-        contentValues.put(SALESGROUP, customerRouteMapModel.getSALESGROUP());
-        contentValues.put(SUBDEPOT_ID, customerRouteMapModel.getSubDepotId());
         contentValues.put(CUSTCLASSIFICATIONID, customerRouteMapModel.getCUSTCLASSIFICATIONID());
-        contentValues.put(FLAG, customerRouteMapModel.getFlag());
-        contentValues.put(RFLAG, customerRouteMapModel.getRFlag());
-        contentValues.put(ACCOUNTNUM, customerRouteMapModel.getACCOUNTNUM());
-        contentValues.put(MANDT, customerRouteMapModel.getMandt());
         contentValues.put(CUST_STATUS, customerRouteMapModel.getCustStatus());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
@@ -157,26 +119,14 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
 
         CustomerRouteMapModel customerRouteMapModel = new CustomerRouteMapModel();
         if (res.moveToFirst()) {
-            customerRouteMapModel.setRecId(res.getLong(res.getColumnIndex(REC_ID)));
-            customerRouteMapModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
-            customerRouteMapModel.setDepot(res.getString(res.getColumnIndex(DEPOT)));
             customerRouteMapModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             customerRouteMapModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
-            customerRouteMapModel.setSaleDateParameter(res.getString(res.getColumnIndex(SALE_DATE_PARAMETER)));
-            customerRouteMapModel.setPSMID(res.getString(res.getColumnIndex(PSMID)));
             customerRouteMapModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
             customerRouteMapModel.setCustomerName(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
             customerRouteMapModel.setPRICEGROUP(res.getString(res.getColumnIndex(PRICEGROUP)));
             customerRouteMapModel.setLINEDISC(res.getString(res.getColumnIndex(LINEDISC)));
             customerRouteMapModel.setCType(res.getString(res.getColumnIndex(C_TYPE)));
-            customerRouteMapModel.setCOMMISSIONGROUP(res.getString(res.getColumnIndex(COMMISSIONGROUP)));
-            customerRouteMapModel.setSALESGROUP(res.getString(res.getColumnIndex(SALESGROUP)));
-            customerRouteMapModel.setSubDepotId(res.getString(res.getColumnIndex(SUBDEPOT_ID)));
             customerRouteMapModel.setCUSTCLASSIFICATIONID(res.getString(res.getColumnIndex(CUSTCLASSIFICATIONID)));
-            customerRouteMapModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
-            customerRouteMapModel.setRFlag(res.getInt(res.getColumnIndex(RFLAG)));
-            customerRouteMapModel.setACCOUNTNUM(res.getString(res.getColumnIndex(ACCOUNTNUM)));
-            customerRouteMapModel.setMandt(res.getInt(res.getColumnIndex(MANDT)));
             customerRouteMapModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
         }
         res.close();
@@ -216,26 +166,14 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CustomerRouteMapModel customerRouteMapModel = new CustomerRouteMapModel();
-                customerRouteMapModel.setRecId(res.getLong(res.getColumnIndex(REC_ID)));
-                customerRouteMapModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
-                customerRouteMapModel.setDepot(res.getString(res.getColumnIndex(DEPOT)));
                 customerRouteMapModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 customerRouteMapModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
-                customerRouteMapModel.setSaleDateParameter(res.getString(res.getColumnIndex(SALE_DATE_PARAMETER)));
-                customerRouteMapModel.setPSMID(res.getString(res.getColumnIndex(PSMID)));
                 customerRouteMapModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
                 customerRouteMapModel.setCustomerName(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
                 customerRouteMapModel.setPRICEGROUP(res.getString(res.getColumnIndex(PRICEGROUP)));
                 customerRouteMapModel.setLINEDISC(res.getString(res.getColumnIndex(LINEDISC)));
                 customerRouteMapModel.setCType(res.getString(res.getColumnIndex(C_TYPE)));
-                customerRouteMapModel.setCOMMISSIONGROUP(res.getString(res.getColumnIndex(COMMISSIONGROUP)));
-                customerRouteMapModel.setSALESGROUP(res.getString(res.getColumnIndex(SALESGROUP)));
-                customerRouteMapModel.setSubDepotId(res.getString(res.getColumnIndex(SUBDEPOT_ID)));
                 customerRouteMapModel.setCUSTCLASSIFICATIONID(res.getString(res.getColumnIndex(CUSTCLASSIFICATIONID)));
-                customerRouteMapModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
-                customerRouteMapModel.setRFlag(res.getInt(res.getColumnIndex(RFLAG)));
-                customerRouteMapModel.setACCOUNTNUM(res.getString(res.getColumnIndex(ACCOUNTNUM)));
-                customerRouteMapModel.setMandt(res.getInt(res.getColumnIndex(MANDT)));
                 customerRouteMapModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
 
                 array_list.add(customerRouteMapModel);
