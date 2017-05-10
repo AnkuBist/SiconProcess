@@ -13,7 +13,7 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.adapter.vanStock.VanStockAdapter;
 import com.hgil.siconprocess.adapter.vanStock.VanStockModel;
 import com.hgil.siconprocess.base.BaseToolbarActivity;
-import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.ProductView;
 import com.hgil.siconprocess.database.tables.PaymentTable;
 
@@ -64,10 +64,10 @@ public class ViewVanStockActivity extends BaseToolbarActivity {
         hideSaveBtn();
 
         // get crate info
-        CrateCollectionView crateCollectionView = new CrateCollectionView(this);
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(this);
         PaymentTable paymentTable = new PaymentTable(this);
 
-        int crateLoaded = crateCollectionView.vanTotalCrate();
+        int crateLoaded = routeCustomerView.vanTotalCrate();
         int crateOs = 0;
         int crateIssued = paymentTable.routeIssuedCrate();
         int crateReturned = paymentTable.routeReceivedCrate();

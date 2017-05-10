@@ -34,15 +34,6 @@ public class RouteModel implements Serializable {
     @SerializedName("arrItemsMaster")
     @Expose
     private List<ProductModel> arrItemsMaster;
-    @SerializedName("arrCreditOpening")
-    @Expose
-    private List<CreditOpeningModel> arrCreditOpening;
-    @SerializedName("arrCrateOpening")
-    @Expose
-    private List<CrateOpeningModel> arrCrateOpening;
-    @SerializedName("arrCrateCollection")
-    @Expose
-    private List<CrateCollectionModel> arrCrateCollection;
     @SerializedName("arrInvoiceDetails")
     @Expose
     private List<InvoiceDetailModel> arrInvoiceDetails;
@@ -52,9 +43,6 @@ public class RouteModel implements Serializable {
     @SerializedName("arrFixedSample")
     @Expose
     private List<FixedSampleModel> arrFixedSample;
-    @SerializedName("arrRejectionTarget")
-    @Expose
-    private List<RejectionTargetModel> arrRejectionTarget;
     @SerializedName("arrEmployees")
     @Expose
     private List<EmployeeModel> arrEmployees;
@@ -140,30 +128,6 @@ public class RouteModel implements Serializable {
         this.arrItemsMaster = arrItemsMaster;
     }
 
-    public List<CreditOpeningModel> getArrCreditOpening() {
-        return arrCreditOpening;
-    }
-
-    public void setArrCreditOpening(List<CreditOpeningModel> arrCreditOpening) {
-        this.arrCreditOpening = arrCreditOpening;
-    }
-
-    public List<CrateOpeningModel> getArrCrateOpening() {
-        return arrCrateOpening;
-    }
-
-    public void setArrCrateOpening(List<CrateOpeningModel> arrCrateOpening) {
-        this.arrCrateOpening = arrCrateOpening;
-    }
-
-    public List<CrateCollectionModel> getArrCrateCollection() {
-        return arrCrateCollection;
-    }
-
-    public void setArrCrateCollection(List<CrateCollectionModel> arrCrateCollection) {
-        this.arrCrateCollection = arrCrateCollection;
-    }
-
     public List<InvoiceDetailModel> getArrInvoiceDetails() {
         return arrInvoiceDetails;
     }
@@ -186,14 +150,6 @@ public class RouteModel implements Serializable {
 
     public void setArrFixedSample(List<FixedSampleModel> arrFixedSample) {
         this.arrFixedSample = arrFixedSample;
-    }
-
-    public List<RejectionTargetModel> getArrRejectionTarget() {
-        return arrRejectionTarget;
-    }
-
-    public void setArrRejectionTarget(List<RejectionTargetModel> arrRejectionTarget) {
-        this.arrRejectionTarget = arrRejectionTarget;
     }
 
     public List<EmployeeModel> getArrEmployees() {

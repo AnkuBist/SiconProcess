@@ -19,7 +19,7 @@ import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.VanStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -48,7 +48,7 @@ public class SyncFragment extends BaseFragment {
     @BindView(R.id.btnSyncData)
     Button btnSyncData;
     private String TAG = this.getClass().getName();
-    private CrateCollectionView crateCollectionView;
+    private CustomerRouteMappingView routeCustomerView;
     private DepotInvoiceView depot_invoice;
     private InvoiceOutTable invoiceOutTable;
     private CustomerRejectionTable rejectionTable;
@@ -92,7 +92,7 @@ public class SyncFragment extends BaseFragment {
     }
 
     public void initializeTableObjects() {
-        crateCollectionView = new CrateCollectionView(getContext());
+        routeCustomerView = new CustomerRouteMappingView(getContext());
         depot_invoice = new DepotInvoiceView(getContext());
         invoiceOutTable = new InvoiceOutTable(getContext());
         rejectionTable = new CustomerRejectionTable(getContext());
@@ -123,7 +123,7 @@ public class SyncFragment extends BaseFragment {
         CashCheck cashCheck = paymentTable.routeTotalAmountCollection();
         
         /*get items loaded and received stock*/
-        int crates_loaded_in_van = crateCollectionView.vanTotalCrate();
+        int crates_loaded_in_van = routeCustomerView.vanTotalCrate();
         // int crates_delivered_by_cashier = 0; // ui task
 
         CrateCheck crateCheck = new CrateCheck();

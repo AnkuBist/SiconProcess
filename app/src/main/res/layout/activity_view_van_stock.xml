@@ -56,7 +56,7 @@
                     <TextView
                         style="@style/VanStockAdapterTitle"
                         android:layout_marginRight="0dp"
-                        android:text="Lefover" />
+                        android:text="Left" />
 
                 </LinearLayout>
 

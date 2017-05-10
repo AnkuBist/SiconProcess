@@ -20,6 +20,9 @@ public class ProductModel implements Serializable {
     @SerializedName("Item_Name")
     @Expose
     private String itemName;
+    @SerializedName("Target_Rej")
+    @Expose
+    private float targetRej;
     @SerializedName("ITEMGROUPID")
     @Expose
     private String iTEMGROUPID;
@@ -46,6 +49,14 @@ public class ProductModel implements Serializable {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public float getTargetRej() {
+        return targetRej;
+    }
+
+    public void setTargetRej(float targetRej) {
+        this.targetRej = targetRej;
     }
 
     public String getITEMGROUPID() {

@@ -17,9 +17,7 @@ import com.hgil.siconprocess.database.dbModels.ChequeDetailsModel;
 import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;
 import com.hgil.siconprocess.database.dbModels.UpiPaymentModel;
-import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
-import com.hgil.siconprocess.database.masterTables.CrateOpeningTable;
-import com.hgil.siconprocess.database.masterTables.CreditOpeningTable;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -322,7 +320,7 @@ public class PaymentTable extends SQLiteOpenHelper {
     public ArrayList<CollectionCashModel> syncCashDetail() {
         ArrayList<CollectionCashModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        CreditOpeningTable creditOpeningTable = new CreditOpeningTable(mContext);
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
@@ -330,7 +328,7 @@ public class PaymentTable extends SQLiteOpenHelper {
                 CollectionCashModel cashModel = new CollectionCashModel();
                 cashModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_ID)));
                 cashModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
-                cashModel.setOpening(creditOpeningTable.custCreditAmount(cashModel.getCustomer_id()));
+                cashModel.setOpening(routeCustomerView.custCreditAmount(cashModel.getCustomer_id()));
                 cashModel.setSale(res.getDouble(res.getColumnIndex(SALE_AMOUNT)));
                 cashModel.setReceive(res.getDouble(res.getColumnIndex(CASH_PAID)));
 
@@ -392,16 +390,16 @@ public class PaymentTable extends SQLiteOpenHelper {
     public ArrayList<CollectionCrateModel> syncCrateDetail() {
         ArrayList<CollectionCrateModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        CrateOpeningTable crateOpeningTable = new CrateOpeningTable(mContext);
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CollectionCrateModel crateModel = new CollectionCrateModel();
                 crateModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
-                crateModel.setOpening(crateOpeningTable.custCreditCrates(crateModel.getCustomer_id()));
+                crateModel.setOpening(routeCustomerView.custCreditCrates(crateModel.getCustomer_id()));
                 crateModel.setIssued(res.getInt(res.getColumnIndex(ISSUED_CRATES)));
                 crateModel.setReceive(res.getInt(res.getColumnIndex(RECEIVED_CRATES)));
-                crateModel.setBalance(crateModel.getOpening() - crateModel.getIssued() + crateModel.getReceive());
+                crateModel.setBalance(crateModel.getOpening() + crateModel.getIssued() - crateModel.getReceive());
                 crateModel.setImei_no(res.getString(res.getColumnIndex(IMEI_NO)));
                 crateModel.setLat_lng(res.getString(res.getColumnIndex(LAT_LNG)));
                 crateModel.setTime_stamp(res.getString(res.getColumnIndex(CURTIME)));
@@ -421,16 +419,16 @@ public class PaymentTable extends SQLiteOpenHelper {
     public CrateStockCheck syncCrateStock(String route_id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        CrateCollectionView crateCollectionView = new CrateCollectionView(mContext);
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         CrateStockCheck crateStock = new CrateStockCheck();
 
         Cursor res = db.rawQuery("SELECT sum(" + ISSUED_CRATES + ") as issued, sum(" + RECEIVED_CRATES + ") as received  FROM " + TABLE_NAME, null);
         if (res.moveToFirst()) {
             crateStock.setRouteId(route_id);
-            crateStock.setOpening(crateCollectionView.vanTotalCrate());
+            crateStock.setOpening(routeCustomerView.vanTotalCrate());
             crateStock.setIssued(res.getInt(res.getColumnIndex("issued")));
             crateStock.setReceived(res.getInt(res.getColumnIndex("received")));
-            crateStock.setBalance(crateStock.getOpening() - crateStock.getIssued() + crateStock.getReceived());
+            crateStock.setBalance(crateStock.getOpening() + crateStock.getIssued() - crateStock.getReceived());
         }
         res.close();
         db.close();

@@ -41,6 +41,15 @@ public class CustomerRouteMapModel implements Serializable {
     @SerializedName("CUSTCLASSIFICATIONID")
     @Expose
     private String cUSTCLASSIFICATIONID;
+    @SerializedName("Crate_Loading")
+    @Expose
+    private int crateLoading;
+    @SerializedName("Crate_Credit")
+    @Expose
+    private int crateCredit;
+    @SerializedName("Amount_Credit")
+    @Expose
+    private double amountCredit;
     @SerializedName("cust_status")
     @Expose
     private String custStatus;
@@ -133,4 +142,27 @@ public class CustomerRouteMapModel implements Serializable {
         this.cUSTCLASSIFICATIONID = cUSTCLASSIFICATIONID;
     }
 
+    public double getAmountCredit() {
+        return amountCredit;
+    }
+
+    public void setAmountCredit(double amountCredit) {
+        this.amountCredit = amountCredit;
+    }
+
+    public int getCrateCredit() {
+        return crateCredit;
+    }
+
+    public void setCrateCredit(int crateCredit) {
+        this.crateCredit = crateCredit;
+    }
+
+    public int getCrateLoading() {
+        return crateLoading;
+    }
+
+    public void setCrateLoading(int crateLoading) {
+        this.crateLoading = crateLoading;
+    }
 }

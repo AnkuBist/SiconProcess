@@ -18,9 +18,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
-import com.hgil.siconprocess.database.masterTables.CrateOpeningTable;
-import com.hgil.siconprocess.database.masterTables.CreditOpeningTable;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
@@ -28,7 +25,6 @@ import com.hgil.siconprocess.database.masterTables.DepotEmployeeView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.masterTables.FixedSampleTable;
 import com.hgil.siconprocess.database.masterTables.ProductView;
-import com.hgil.siconprocess.database.masterTables.RejectionTargetTable;
 import com.hgil.siconprocess.database.masterTables.RouteView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -69,13 +65,9 @@ public class LoginActivity extends AppCompatActivity {
     private CustomerRouteMappingView dbRouteMapView;
     private CustomerItemPriceTable dbCustomerItemPrice;
     private ProductView dbProductView;
-    private CreditOpeningTable dbCreditOpening;
-    private CrateOpeningTable dbCrateOpening;
-    private CrateCollectionView dbCrateCollection;
     private DepotInvoiceView dbInvoice;
     private DemandTargetTable dbDemandTarget;
     private FixedSampleTable dbFixedSample;
-    private RejectionTargetTable dbRejectionTarget;
     private DepotEmployeeView dbEmployee;
     // sync table objects
     private InvoiceOutTable invoiceOutTable;
@@ -112,14 +104,9 @@ public class LoginActivity extends AppCompatActivity {
         dbRouteMapView = new CustomerRouteMappingView(this);
         dbCustomerItemPrice = new CustomerItemPriceTable(this);
         dbProductView = new ProductView(this);
-        dbCreditOpening = new CreditOpeningTable(this);
-        dbCrateOpening = new CrateOpeningTable(this);
-        dbCrateCollection = new CrateCollectionView(this);
         dbInvoice = new DepotInvoiceView(this);
         dbDemandTarget = new DemandTargetTable(this);
         dbFixedSample = new FixedSampleTable(this);
-        dbRejectionTarget = new RejectionTargetTable(this);
-        dbEmployee = new DepotEmployeeView(this);
     }
 
     public void onSubmit(View view) {
@@ -181,13 +168,9 @@ public class LoginActivity extends AppCompatActivity {
         dbRouteMapView.eraseTable();
         dbCustomerItemPrice.eraseTable();
         dbProductView.eraseTable();
-        dbCreditOpening.eraseTable();
-        dbCrateOpening.eraseTable();
-        dbCrateCollection.eraseTable();
         dbInvoice.eraseTable();
         dbDemandTarget.eraseTable();
         dbFixedSample.eraseTable();
-        dbRejectionTarget.eraseTable();
         dbEmployee.eraseTable();
     }
 
@@ -291,8 +274,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 // erase table to sync
                 //do not erase these sync tables if the last login by the user in the same date in case it will erase all data
-               // if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
-                    eraseAllSyncTables();
+                // if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
+                eraseAllSyncTables();
 
                 ObjLoginResponse objResponse = loginResponse.getObjLoginResponse();
 
@@ -304,13 +287,9 @@ public class LoginActivity extends AppCompatActivity {
                 dbRouteMapView.insertCustomerRouteMap(routeData.getArrCustomerRouteMap());
                 dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
                 dbProductView.insertProducts(routeData.getArrItemsMaster());
-                dbCreditOpening.insertCreditOpening(routeData.getArrCreditOpening());
-                dbCrateOpening.insertCrateOpening(routeData.getArrCrateOpening());
-                dbCrateCollection.insertCrateCollection(routeData.getArrCrateCollection());
                 dbInvoice.insertDepotInvoice(routeData.getArrInvoiceDetails());
                 dbDemandTarget.insertDemandTarget(routeData.getArrDemandTarget());
                 dbFixedSample.insertFixedSample(routeData.getArrFixedSample());
-                dbRejectionTarget.insertRejectionTarget(routeData.getArrRejectionTarget());
                 dbEmployee.insertDepotEmployee(routeData.getArrEmployees());
 
                 Utility.saveLoginStatus(LoginActivity.this, Utility.LOGIN_STATUS, true);

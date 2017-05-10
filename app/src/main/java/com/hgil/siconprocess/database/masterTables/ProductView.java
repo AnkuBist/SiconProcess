@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 public class ProductView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Sicon_product";
     private static final String TABLE_NAME = "V_Item_Master";
@@ -30,6 +30,7 @@ public class ProductView extends SQLiteOpenHelper {
     private static final String ITEMSEQUENCE = "ITEMSEQUENCE";
     private static final String ITEM_ID = "Item_id";
     private static final String ITEM_NAME = "Item_Name";
+    private static final String TARGET_REJ = "Target_Rej";
     private static final String ITEMGROUPID = "ITEMGROUPID";
 
     private Context mContext;
@@ -42,7 +43,8 @@ public class ProductView extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ITEMSEQUENCE + " INTEGER NOT NULL, "
-                + ITEM_ID + " TEXT NULL, " + ITEM_NAME + " TEXT NULL, " + ITEMGROUPID + " TEXT NULL)");
+                + ITEM_ID + " TEXT NULL, " + ITEM_NAME + " TEXT NULL, " + TARGET_REJ + " REAL NULL, "
+                + ITEMGROUPID + " TEXT NULL)");
     }
 
     @Override
@@ -65,6 +67,7 @@ public class ProductView extends SQLiteOpenHelper {
             contentValues.put(ITEMSEQUENCE, productModel.getITEMSEQUENCE());
             contentValues.put(ITEM_ID, productModel.getItemId());
             contentValues.put(ITEM_NAME, productModel.getItemName());
+            contentValues.put(TARGET_REJ, productModel.getTargetRej());
             contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
             db.insert(TABLE_NAME, null, contentValues);
         }
@@ -79,6 +82,7 @@ public class ProductView extends SQLiteOpenHelper {
         contentValues.put(ITEMSEQUENCE, productModel.getITEMSEQUENCE());
         contentValues.put(ITEM_ID, productModel.getItemId());
         contentValues.put(ITEM_NAME, productModel.getItemName());
+        contentValues.put(TARGET_REJ, productModel.getTargetRej());
         contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
@@ -223,27 +227,29 @@ public class ProductView extends SQLiteOpenHelper {
                 vanStockModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
 
                 int loadingQty = depotInvoiceView.getLoadingCount(vanStockModel.getItem_id());
-                int saleQty = invoiceOutTable.getItemOrderQty(vanStockModel.getItem_id());
-                int sampleQty = fixedSampleTable.getSampleCount(vanStockModel.getItem_id());
+                if (loadingQty > 0) {
+                    int saleQty = invoiceOutTable.getItemOrderQty(vanStockModel.getItem_id());
+                    int sampleQty = fixedSampleTable.getSampleCount(vanStockModel.getItem_id());
 
-                // get product total stock in van
-                vanStockModel.setLoadQty(loadingQty);
-                // total product quantity sold
-                vanStockModel.setGross_sale(saleQty);
-                // van sample loads
-                vanStockModel.setSample(sampleQty);
+                    // get product total stock in van
+                    vanStockModel.setLoadQty(loadingQty);
+                    // total product quantity sold
+                    vanStockModel.setGross_sale(saleQty);
+                    // van sample loads
+                    vanStockModel.setSample(sampleQty);
 
-                // get product market and fresh rejection total
-                int marketRejection = customerRejTable.productMarketRejection(vanStockModel.getItem_id());
-                int freshRejection = customerRejTable.productFreshRejection(vanStockModel.getItem_id());
+                    // get product market and fresh rejection total
+                    int marketRejection = customerRejTable.productMarketRejection(vanStockModel.getItem_id());
+                    int freshRejection = customerRejTable.productFreshRejection(vanStockModel.getItem_id());
 
-                vanStockModel.setMarket_rejection(marketRejection);
-                vanStockModel.setFresh_rejection(freshRejection);
+                    vanStockModel.setMarket_rejection(marketRejection);
+                    vanStockModel.setFresh_rejection(freshRejection);
 
-                int leftOver = loadingQty - saleQty - sampleQty;
-                vanStockModel.setLeft_over(leftOver);
+                    int leftOver = loadingQty - saleQty - sampleQty;
+                    vanStockModel.setLeft_over(leftOver);
 
-                array_list.add(vanStockModel);
+                    array_list.add(vanStockModel);
+                }
                 res.moveToNext();
             }
         }

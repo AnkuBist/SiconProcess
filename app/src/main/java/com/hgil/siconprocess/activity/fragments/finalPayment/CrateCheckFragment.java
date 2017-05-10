@@ -10,7 +10,7 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.finalPayment.cashierSync.CashierSyncModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.CrateCollectionView;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.utils.Utility;
 
 import butterknife.BindView;
@@ -59,10 +59,10 @@ public class CrateCheckFragment extends BaseFragment {
 
         showSaveButton();
 
-        CrateCollectionView crateCollectionView = new CrateCollectionView(getContext());
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(getContext());
 
          /*get items loaded and received stock*/
-        crates_loaded_in_van = crateCollectionView.vanTotalCrate();
+        crates_loaded_in_van = routeCustomerView.vanTotalCrate();
         etCrateLoaded.setText(String.valueOf(crates_loaded_in_van));
         etCrateReceived.setText(String.valueOf(crates_delivered_by_cashier));
 

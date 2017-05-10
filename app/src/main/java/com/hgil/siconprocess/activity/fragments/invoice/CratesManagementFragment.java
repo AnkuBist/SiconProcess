@@ -13,7 +13,7 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.clientMarket.CustOtherMarketProductDetailsFragment;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
-import com.hgil.siconprocess.database.masterTables.CrateOpeningTable;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.utils.UtilNetworkLocation;
 import com.hgil.siconprocess.utils.Utility;
@@ -76,8 +76,8 @@ public class CratesManagementFragment extends BaseFragment {
 
         // do the rest stuff here only
         paymentTable = new PaymentTable(getContext());
-        CrateOpeningTable crateOpeningTable = new CrateOpeningTable(getContext());
-        crateOpening = crateOpeningTable.custCreditCrates(customer_id);
+        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(getContext());
+        crateOpening = routeCustomerView.custCreditCrates(customer_id);
 
         CrateDetailModel crateInfo = paymentTable.getCustomerCrateInfo(customer_id);
         issuedCrate = crateInfo.getIssuedCrates();
@@ -103,7 +103,7 @@ public class CratesManagementFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 issuedCrate = Utility.getInteger(etIssuedCrates.getText().toString());
-                etBalanceCrates.setText(String.valueOf(crateOpening - issuedCrate + receivedCrate));
+                etBalanceCrates.setText(String.valueOf(crateOpening + issuedCrate - receivedCrate));
             }
         });
 
@@ -121,7 +121,7 @@ public class CratesManagementFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 receivedCrate = Utility.getInteger(etReceivedCrates.getText().toString());
-                etBalanceCrates.setText(String.valueOf(crateOpening - issuedCrate + receivedCrate));
+                etBalanceCrates.setText(String.valueOf(crateOpening + issuedCrate - receivedCrate));
             }
         });
 

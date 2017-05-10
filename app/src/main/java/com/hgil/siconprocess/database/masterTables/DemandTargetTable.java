@@ -97,23 +97,6 @@ public class DemandTargetTable extends SQLiteOpenHelper {
         return numRows;
     }
 
-    /*public boolean updateUserRoleMap(UserRoleMapModel userRoleMapModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EMAIL, userRoleMapModel.getEmail());
-        contentValues.put(ROLE_ID, userRoleMapModel.getRole_id());
-        contentValues.put(IP, userRoleMapModel.getIp());
-        contentValues.put(U_TS, userRoleMapModel.getU_ts());
-        db.update(TABLE_NAME, contentValues, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(userRoleMapModel.getUser_role_id())});
-        db.close();
-        return true;
-    }*/
-
- /*   public Integer deleteUserRoleMapById(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(id)});
-    }*/
-
     public ArrayList<DemandTargetModel> getAllDemandTarget() {
         ArrayList<DemandTargetModel> array_list = new ArrayList<DemandTargetModel>();
 

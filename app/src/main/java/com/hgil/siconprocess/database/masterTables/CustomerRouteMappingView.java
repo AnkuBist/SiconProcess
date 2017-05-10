@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.hgil.siconprocess.adapter.routeMap.RouteCustomerModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerRouteMapModel;
+import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 public class CustomerRouteMappingView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Sicon_route_map";
     private static final String TABLE_NAME = "V_SD_Customer_Route_Mapping";
@@ -31,6 +32,9 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     private static final String PRICEGROUP = "PRICEGROUP";
     private static final String LINEDISC = "LINEDISC";
     private static final String C_TYPE = "C_Type";
+    private static final String CRATE_LOADING = "crate_loading";
+    private static final String CRATE_CREDIT = "crate_credit";
+    private static final String AMOUNT_CREDIT = "amount_credit";
     private static final String CUSTCLASSIFICATIONID = "CUSTCLASSIFICATIONID";
 
     // customer status
@@ -49,6 +53,7 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
                 + ROUTE_NAME + " TEXT NULL, "
                 + CUSTOMER_ID + " TEXT NULL, " + CUSTOMER_NAME + " TEXT NOT NULL, " + PRICEGROUP + " TEXT NOT NULL, "
                 + LINEDISC + " TEXT NOT NULL, " + C_TYPE + " TEXT NOT NULL, " + CUSTCLASSIFICATIONID + " TEXT NULL, "
+                + CRATE_LOADING + " INTEGER NULL, " + CRATE_CREDIT + " INTEGER NULL, " + AMOUNT_CREDIT + " REAL NULL, "
                 + CUST_STATUS + " TEXT NULL)");
     }
 
@@ -88,27 +93,12 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
             contentValues.put(LINEDISC, customerRouteMapModel.getLINEDISC());
             contentValues.put(C_TYPE, customerRouteMapModel.getCType());
             contentValues.put(CUSTCLASSIFICATIONID, customerRouteMapModel.getCUSTCLASSIFICATIONID());
+            contentValues.put(CRATE_LOADING, customerRouteMapModel.getCrateLoading());
+            contentValues.put(CRATE_CREDIT, customerRouteMapModel.getCrateCredit());
+            contentValues.put(AMOUNT_CREDIT, customerRouteMapModel.getAmountCredit());
             contentValues.put(CUST_STATUS, customerRouteMapModel.getCustStatus());
             db.insert(TABLE_NAME, null, contentValues);
         }
-        db.close();
-        return true;
-    }
-
-    //insert single
-    public boolean insertCustomerRouteMap(CustomerRouteMapModel customerRouteMapModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ROUTE_ID, customerRouteMapModel.getRouteId());
-        contentValues.put(ROUTE_NAME, customerRouteMapModel.getRouteName());
-        contentValues.put(CUSTOMER_ID, customerRouteMapModel.getCustomerId());
-        contentValues.put(CUSTOMER_NAME, customerRouteMapModel.getCustomerName());
-        contentValues.put(PRICEGROUP, customerRouteMapModel.getPRICEGROUP());
-        contentValues.put(LINEDISC, customerRouteMapModel.getLINEDISC());
-        contentValues.put(C_TYPE, customerRouteMapModel.getCType());
-        contentValues.put(CUSTCLASSIFICATIONID, customerRouteMapModel.getCUSTCLASSIFICATIONID());
-        contentValues.put(CUST_STATUS, customerRouteMapModel.getCustStatus());
-        db.insert(TABLE_NAME, null, contentValues);
         db.close();
         return true;
     }
@@ -127,6 +117,9 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
             customerRouteMapModel.setLINEDISC(res.getString(res.getColumnIndex(LINEDISC)));
             customerRouteMapModel.setCType(res.getString(res.getColumnIndex(C_TYPE)));
             customerRouteMapModel.setCUSTCLASSIFICATIONID(res.getString(res.getColumnIndex(CUSTCLASSIFICATIONID)));
+            customerRouteMapModel.setCrateLoading(res.getInt(res.getColumnIndex(CRATE_LOADING)));
+            customerRouteMapModel.setCrateCredit(res.getInt(res.getColumnIndex(CRATE_CREDIT)));
+            customerRouteMapModel.setAmountCredit(res.getDouble(res.getColumnIndex(AMOUNT_CREDIT)));
             customerRouteMapModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
         }
         res.close();
@@ -174,6 +167,9 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
                 customerRouteMapModel.setLINEDISC(res.getString(res.getColumnIndex(LINEDISC)));
                 customerRouteMapModel.setCType(res.getString(res.getColumnIndex(C_TYPE)));
                 customerRouteMapModel.setCUSTCLASSIFICATIONID(res.getString(res.getColumnIndex(CUSTCLASSIFICATIONID)));
+                customerRouteMapModel.setCrateLoading(res.getInt(res.getColumnIndex(CRATE_LOADING)));
+                customerRouteMapModel.setCrateCredit(res.getInt(res.getColumnIndex(CRATE_CREDIT)));
+                customerRouteMapModel.setAmountCredit(res.getDouble(res.getColumnIndex(AMOUNT_CREDIT)));
                 customerRouteMapModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
 
                 array_list.add(customerRouteMapModel);
@@ -276,4 +272,49 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         return classification_id;
     }
 
+    /*get van crate total*/
+    public int vanTotalCrate() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select sum(" + CRATE_LOADING + ") as total_crates " +
+                "from " + TABLE_NAME;
+        Cursor res = db.rawQuery(query, null);
+
+        int total_crates = 0;
+        if (res.moveToFirst()) {
+            total_crates = res.getInt(res.getColumnIndex("total_crates"));
+        }
+        res.close();
+        db.close();
+        return total_crates;
+    }
+
+    // get crate opening by user id
+    public int custCreditCrates(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + CRATE_CREDIT + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        int crate = 0;
+        if (res.moveToFirst()) {
+            crate = res.getInt(res.getColumnIndex(CRATE_CREDIT));
+        }
+        res.close();
+        db.close();
+        return crate;
+    }
+
+    // customer credit balance
+    public double custCreditAmount(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + AMOUNT_CREDIT + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        double amount = 0;
+        if (res.moveToFirst()) {
+            amount = res.getDouble(res.getColumnIndex(AMOUNT_CREDIT));
+        }
+        res.close();
+        db.close();
+        return Utility.roundTwoDecimals(amount);
+    }
 }
