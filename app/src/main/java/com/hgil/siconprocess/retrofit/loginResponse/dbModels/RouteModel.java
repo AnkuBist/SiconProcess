@@ -37,12 +37,6 @@ public class RouteModel implements Serializable {
     @SerializedName("arrInvoiceDetails")
     @Expose
     private List<InvoiceDetailModel> arrInvoiceDetails;
-    @SerializedName("arrDemandTarget")
-    @Expose
-    private List<DemandTargetModel> arrDemandTarget;
-    @SerializedName("arrFixedSample")
-    @Expose
-    private List<FixedSampleModel> arrFixedSample;
     @SerializedName("arrEmployees")
     @Expose
     private List<EmployeeModel> arrEmployees;
@@ -134,22 +128,6 @@ public class RouteModel implements Serializable {
 
     public void setArrInvoiceDetails(List<InvoiceDetailModel> arrInvoiceDetails) {
         this.arrInvoiceDetails = arrInvoiceDetails;
-    }
-
-    public List<DemandTargetModel> getArrDemandTarget() {
-        return arrDemandTarget;
-    }
-
-    public void setArrDemandTarget(List<DemandTargetModel> arrDemandTarget) {
-        this.arrDemandTarget = arrDemandTarget;
-    }
-
-    public List<FixedSampleModel> getArrFixedSample() {
-        return arrFixedSample;
-    }
-
-    public void setArrFixedSample(List<FixedSampleModel> arrFixedSample) {
-        this.arrFixedSample = arrFixedSample;
     }
 
     public List<EmployeeModel> getArrEmployees() {

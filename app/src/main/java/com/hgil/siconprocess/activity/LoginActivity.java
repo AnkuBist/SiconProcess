@@ -20,10 +20,8 @@ import android.widget.Toast;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
-import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
 import com.hgil.siconprocess.database.masterTables.DepotEmployeeView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
-import com.hgil.siconprocess.database.masterTables.FixedSampleTable;
 import com.hgil.siconprocess.database.masterTables.ProductView;
 import com.hgil.siconprocess.database.masterTables.RouteView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
@@ -66,9 +64,8 @@ public class LoginActivity extends AppCompatActivity {
     private CustomerItemPriceTable dbCustomerItemPrice;
     private ProductView dbProductView;
     private DepotInvoiceView dbInvoice;
-    private DemandTargetTable dbDemandTarget;
-    private FixedSampleTable dbFixedSample;
     private DepotEmployeeView dbEmployee;
+
     // sync table objects
     private InvoiceOutTable invoiceOutTable;
     private CustomerRejectionTable rejectionTable;
@@ -97,16 +94,6 @@ public class LoginActivity extends AppCompatActivity {
         updateBarHandler = new Handler();
         // ask all required permission at once only
         askAppPermission();
-    }
-
-    private void initialiseDBObj() {
-        dbRouteView = new RouteView(this);
-        dbRouteMapView = new CustomerRouteMappingView(this);
-        dbCustomerItemPrice = new CustomerItemPriceTable(this);
-        dbProductView = new ProductView(this);
-        dbInvoice = new DepotInvoiceView(this);
-        dbDemandTarget = new DemandTargetTable(this);
-        dbFixedSample = new FixedSampleTable(this);
     }
 
     public void onSubmit(View view) {
@@ -163,14 +150,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void initialiseDBObj() {
+        dbRouteView = new RouteView(this);
+        dbRouteMapView = new CustomerRouteMappingView(this);
+        dbCustomerItemPrice = new CustomerItemPriceTable(this);
+        dbProductView = new ProductView(this);
+        dbInvoice = new DepotInvoiceView(this);
+        dbEmployee = new DepotEmployeeView(this);
+    }
+
     private void eraseAllTableData() {
         dbRouteView.eraseTable();
         dbRouteMapView.eraseTable();
         dbCustomerItemPrice.eraseTable();
         dbProductView.eraseTable();
         dbInvoice.eraseTable();
-        dbDemandTarget.eraseTable();
-        dbFixedSample.eraseTable();
         dbEmployee.eraseTable();
     }
 
@@ -288,8 +282,6 @@ public class LoginActivity extends AppCompatActivity {
                 dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
                 dbProductView.insertProducts(routeData.getArrItemsMaster());
                 dbInvoice.insertDepotInvoice(routeData.getArrInvoiceDetails());
-                dbDemandTarget.insertDemandTarget(routeData.getArrDemandTarget());
-                dbFixedSample.insertFixedSample(routeData.getArrFixedSample());
                 dbEmployee.insertDepotEmployee(routeData.getArrEmployees());
 
                 Utility.saveLoginStatus(LoginActivity.this, Utility.LOGIN_STATUS, true);

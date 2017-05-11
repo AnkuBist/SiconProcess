@@ -215,7 +215,7 @@ public class ProductView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         DepotInvoiceView depotInvoiceView = new DepotInvoiceView(mContext);
-        FixedSampleTable fixedSampleTable = new FixedSampleTable(mContext);
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
         CustomerRejectionTable customerRejTable = new CustomerRejectionTable(mContext);
 
@@ -229,7 +229,7 @@ public class ProductView extends SQLiteOpenHelper {
                 int loadingQty = depotInvoiceView.getLoadingCount(vanStockModel.getItem_id());
                 if (loadingQty > 0) {
                     int saleQty = invoiceOutTable.getItemOrderQty(vanStockModel.getItem_id());
-                    int sampleQty = fixedSampleTable.getSampleCount(vanStockModel.getItem_id());
+                    int sampleQty = itemPriceTable.getSampleCount(vanStockModel.getItem_id());
 
                     // get product total stock in van
                     vanStockModel.setLoadQty(loadingQty);

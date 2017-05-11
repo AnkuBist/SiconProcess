@@ -15,7 +15,7 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.adapter.invoice.invoiceSale.CustomerInvoiceAdapter;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.DemandTargetTable;
+import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -122,10 +122,10 @@ public class CustomerInvoiceFragment extends BaseFragment {
         // generate bill no
         bill_no = getBill_no();
 
-        DemandTargetTable demandTargetTable = new DemandTargetTable(getContext());
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(getContext());
 
         //total of demand target sale
-        double demandTargetSale = demandTargetTable.customerTargetSale(customer_id);
+        double demandTargetSale = itemPriceTable.customerTargetSale(customer_id);
 
         /*target sale and average sale amount*/
         tvTargetSale.setText("Target Sale\n" + strRupee + Utility.roundTwoDecimals(demandTargetSale));

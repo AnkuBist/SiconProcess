@@ -32,6 +32,12 @@ public class CustomerItemPriceModel implements Serializable {
     @SerializedName("discounted_price")
     @Expose
     private Double discountedPrice;
+    @SerializedName("target_qty")
+    @Expose
+    private float target_qty;
+    @SerializedName("sample_qty")
+    @Expose
+    private int sample_qty;
 
     public String getCustomerId() {
         return customerId;
@@ -89,4 +95,19 @@ public class CustomerItemPriceModel implements Serializable {
         this.discountedPrice = discountedPrice;
     }
 
+    public float getTarget_qty() {
+        return target_qty;
+    }
+
+    public void setTarget_qty(float target_qty) {
+        this.target_qty = target_qty;
+    }
+
+    public int getSample_qty() {
+        return sample_qty;
+    }
+
+    public void setSample_qty(int sample_qty) {
+        this.sample_qty = sample_qty;
+    }
 }

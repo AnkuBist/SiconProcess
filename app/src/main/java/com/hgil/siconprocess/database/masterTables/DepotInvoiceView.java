@@ -192,8 +192,6 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ProductView dbItemDetails = new ProductView(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
-        DemandTargetTable dbDemandTarget = new DemandTargetTable(mContext);
-        FixedSampleTable dbSample = new FixedSampleTable(mContext);
         CustomerItemPriceTable dbPriceTable = new CustomerItemPriceTable(mContext);
 
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "='" + customer_id + "'", null);
@@ -230,14 +228,14 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                     orderQty = invoiceOutTable.getDemandQuantity(customer_id, item_id);
                 } else {
                     // get invoice item target
-                    orderQty = dbDemandTarget.getDemandTargetByItem(item_id, customer_id).getTargetQty();
+                    orderQty = dbPriceTable.getDemandTargetByItem(item_id, customer_id);
                 }
                 invoiceModel.setDemandTargetQty(orderQty);
                 invoiceModel.setOrderAmount(Utility.roundTwoDecimals(orderQty * invoiceModel.getItemRate()));
 
                 // get item sample
-                invoiceModel.setFixedSample(dbSample.getFixedSampleItem(item_id, customer_id).getSQty());
-                int total_sample_stock = dbSample.getSampleCount(item_id);
+                invoiceModel.setFixedSample(dbPriceTable.getFixedSampleItem(item_id, customer_id));
+                int total_sample_stock = dbPriceTable.getSampleCount(item_id);
 
                 // exactly have to calculate the actual orders placed for the same in out invoice
                 int totalDemand = invoiceOutTable.getItemOrderQty(item_id);
@@ -303,7 +301,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         ArrayList<InvoiceModel> array_list = new ArrayList<InvoiceModel>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        FixedSampleTable dbSample = new FixedSampleTable(mContext);
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
 
         /*select sum(InvQty_ps) as loading_qty, Item_id
@@ -319,7 +317,7 @@ from V_SD_DepotInvoice_Master where Route_management_Date='2017-01-30' and Route
                     if (invoiceModel != null) {
                         int totalDemand = invoiceOutTable.getItemOrderQty(item_id);
 
-                        int total_sample_stock = dbSample.getSampleCount(item_id);
+                        int total_sample_stock = itemPriceTable.getSampleCount(item_id);
 
                         stock += (-total_sample_stock - totalDemand);
 
@@ -373,8 +371,6 @@ from V_SD_DepotInvoice_Master where Route_management_Date='2017-01-30' and Route
         SQLiteDatabase db = this.getReadableDatabase();
         ProductView dbItemDetails = new ProductView(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
-        DemandTargetTable dbDemandTarget = new DemandTargetTable(mContext);
-        FixedSampleTable dbSample = new FixedSampleTable(mContext);
         CustomerItemPriceTable dbPriceTable = new CustomerItemPriceTable(mContext);
 
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "='" + item_id + "'", null);
@@ -413,13 +409,13 @@ from V_SD_DepotInvoice_Master where Route_management_Date='2017-01-30' and Route
                 orderQty = invoiceOutTable.getDemandQuantity(customer_id, item_id);
             } else {
                 // get invoice item target
-                orderQty = dbDemandTarget.getDemandTargetByItem(item_id, customer_id).getTargetQty();
+                orderQty = dbPriceTable.getDemandTargetByItem(item_id, customer_id);
             }
             invoiceModel.setDemandTargetQty(orderQty);
             invoiceModel.setOrderAmount(Utility.roundTwoDecimals(orderQty * invoiceModel.getItemRate()));
 
             // get item sample
-            invoiceModel.setFixedSample(dbSample.getFixedSampleItem(item_id, customer_id).getSQty());
+            invoiceModel.setFixedSample(dbPriceTable.getFixedSampleItem(item_id, customer_id));
 
             if (dbItemDetails.checkProduct(invoiceModel.getItemId())) {
                 invoiceModel.setItemName(dbItemDetails.getProductById(item_id).getItemName());
