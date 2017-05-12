@@ -28,7 +28,7 @@ public class InvoiceModel implements Serializable {
 
     // new added value
     private int fixedSample;
-    private float demandTargetQty;
+  //  private float demandTargetQty;
     private double orderAmount;
     private int stockAvail;
     private int tempStock;
@@ -109,13 +109,13 @@ public class InvoiceModel implements Serializable {
         this.orderAmount = orderAmount;
     }
 
-    public float getDemandTargetQty() {
+   /* public float getDemandTargetQty() {
         return demandTargetQty;
     }
 
     public void setDemandTargetQty(float demandTargetQty) {
         this.demandTargetQty = demandTargetQty;
-    }
+    }*/
 
     public String getRouteManagemnetDate() {
         return routeManagemnetDate;

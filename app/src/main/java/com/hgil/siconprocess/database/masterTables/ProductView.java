@@ -223,13 +223,14 @@ public class ProductView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 VanStockModel vanStockModel = new VanStockModel();
-                vanStockModel.setItem_id(res.getString(res.getColumnIndex(ITEM_ID)));
+                String item_id = res.getString(res.getColumnIndex(ITEM_ID));
+                vanStockModel.setItem_id(item_id);
                 vanStockModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
 
-                int loadingQty = depotInvoiceView.getLoadingCount(vanStockModel.getItem_id());
+                int loadingQty = depotInvoiceView.getLoadingCount(item_id);
                 if (loadingQty > 0) {
-                    int saleQty = invoiceOutTable.getItemOrderQty(vanStockModel.getItem_id());
-                    int sampleQty = itemPriceTable.getSampleCount(vanStockModel.getItem_id());
+                    int saleQty = invoiceOutTable.getItemOrderQty(item_id);
+                    int sampleQty = itemPriceTable.getSampleCount(item_id);
 
                     // get product total stock in van
                     vanStockModel.setLoadQty(loadingQty);
@@ -239,8 +240,8 @@ public class ProductView extends SQLiteOpenHelper {
                     vanStockModel.setSample(sampleQty);
 
                     // get product market and fresh rejection total
-                    int marketRejection = customerRejTable.productMarketRejection(vanStockModel.getItem_id());
-                    int freshRejection = customerRejTable.productFreshRejection(vanStockModel.getItem_id());
+                    int marketRejection = customerRejTable.productMarketRejection(item_id);
+                    int freshRejection = customerRejTable.productFreshRejection(item_id);
 
                     vanStockModel.setMarket_rejection(marketRejection);
                     vanStockModel.setFresh_rejection(freshRejection);

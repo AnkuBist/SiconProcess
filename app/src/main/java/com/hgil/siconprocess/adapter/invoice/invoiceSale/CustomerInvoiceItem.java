@@ -49,11 +49,11 @@ public class CustomerInvoiceItem {
     public void updateInvoiceItem(final CustomerInvoiceAdapter.ViewHolder holder, final InvoiceModel itemInvoice, final int position) {
         final String itemName = itemInvoice.getItemName();
         final float price = itemInvoice.getItemRate();
-        float demandQty = itemInvoice.getDemandTargetQty();
+        float orderQty = itemInvoice.getInvQtyPs();
         final double orderAmount = itemInvoice.getOrderAmount();
 
         // get product stock
-        stockAvail = itemInvoice.getStockAvail() + (int) demandQty;
+        stockAvail = itemInvoice.getStockAvail() + (int) orderQty;
         tempStock = itemInvoice.getTempStock();
 
         tvItemName.setText(itemName);
@@ -61,7 +61,7 @@ public class CustomerInvoiceItem {
         tvRate.setText("Rate : " + strRupee + price);
         tvTarget.setText("TGT : ");
         tvTarget.setVisibility(View.GONE);
-        etQty.setText(String.valueOf((int) demandQty));
+        etQty.setText(String.valueOf((int) orderQty));
         etSample.setText(String.valueOf(itemInvoice.getFixedSample()));
         etAmount.setText(strRupee + String.valueOf(orderAmount));
 
@@ -87,7 +87,7 @@ public class CustomerInvoiceItem {
                     if (stockAvail >= enteredQty) {
                         int updateStock = stockAvail - enteredQty;
                         double orderAmount = Utility.roundTwoDecimals(enteredQty * price);
-                        itemInvoice.setDemandTargetQty(enteredQty);
+                        itemInvoice.setInvQtyPs(enteredQty);
                         itemInvoice.setTempStock(updateStock);
                         itemInvoice.setOrderAmount(orderAmount);
                         tvStock.setText("Stock : " + itemInvoice.getTempStock());
@@ -96,7 +96,7 @@ public class CustomerInvoiceItem {
                     } else {
                         Toast.makeText(mContext, "Can't enter quantity more than available quantity", Toast.LENGTH_SHORT).show();
 
-                        itemInvoice.setDemandTargetQty(0);
+                        itemInvoice.setInvQtyPs(0);
                         itemInvoice.setTempStock(stockAvail);
                         itemInvoice.setOrderAmount(0);
                         tvStock.setText("Stock : " + stockAvail);
@@ -108,7 +108,7 @@ public class CustomerInvoiceItem {
                     etAmount.setText(strRupee + "0.0");
                     tvStock.setText("Stock : " + stockAvail);
 
-                    itemInvoice.setDemandTargetQty(0);
+                    itemInvoice.setInvQtyPs(0);
                     itemInvoice.setTempStock(stockAvail);
                     itemInvoice.setOrderAmount(0);
                 }

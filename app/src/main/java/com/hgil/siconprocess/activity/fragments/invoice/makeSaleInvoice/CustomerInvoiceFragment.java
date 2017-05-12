@@ -62,7 +62,6 @@ public class CustomerInvoiceFragment extends BaseFragment {
     }
 
     public static CustomerInvoiceFragment newInstance(String customer_id, String customer_name) {
-        Log.e("TAG", "newInstance");
         CustomerInvoiceFragment fragment = new CustomerInvoiceFragment();
         Bundle bundle = new Bundle();
         bundle.putString(CUSTOMER_ID, customer_id);
@@ -110,13 +109,11 @@ public class CustomerInvoiceFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.e(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
 
         // generate bill no
@@ -134,36 +131,6 @@ public class CustomerInvoiceFragment extends BaseFragment {
         // Do this code only first time, not after rotation or reuse fragment from backstack
         tvInvoiceTotal = (TextView) view.findViewById(R.id.tvInvoiceTotal);
         onFragmentStart();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.e(TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.e(TAG, "onStop");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e(TAG, "onStart");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e(TAG, "onDestroy");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.e(TAG, "onDestroyView");
     }
 
     private void onFragmentStart() {
@@ -184,7 +151,7 @@ public class CustomerInvoiceFragment extends BaseFragment {
                 ArrayList<InvoiceModel> reviewOrderData = new ArrayList<InvoiceModel>();
                 for (int i = 0; i < arrInvoiceItems.size(); i++) {
                     InvoiceModel invoiceModel = arrInvoiceItems.get(i);
-                    if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getDemandTargetQty() > 0) {
+                    if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getInvQtyPs() > 0) {
                         // update bill_no, device imei_no, location and login_id
                         // time_stamp will be updated automatically;
                         invoiceModel.setBill_no(bill_no);

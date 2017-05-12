@@ -158,10 +158,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
     // get sample count
     public int getSampleCount(String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        /*String query = "select distinct " + ITEM_ID + ", " + ITEM_RATE + ", sum(" + INVQTY_PS + ") over (partition by " + ITEM_ID + ") as loading_qty " +
-                "from " + TABLE_NAME + " where " + ITEM_ID + "=?";*/
-        String query = "select distinct " + ITEM_ID + ", sum(" + SAMPLE_QTY + ") as loading_sample_qty " +
-                "from " + TABLE_NAME + " where " + ITEM_ID + "=? group by " + ITEM_ID;
+        String query = "select sum(" + SAMPLE_QTY + ") as loading_sample_qty from " + TABLE_NAME + " where " + ITEM_ID + "=?";
         Cursor res = db.rawQuery(query, new String[]{item_id});
 
         int total_item_count = 0;
