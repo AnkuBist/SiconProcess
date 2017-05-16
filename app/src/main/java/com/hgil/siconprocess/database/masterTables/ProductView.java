@@ -75,23 +75,9 @@ public class ProductView extends SQLiteOpenHelper {
         return true;
     }
 
-    //insert single
-    public boolean insertProduct(ProductModel productModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ITEMSEQUENCE, productModel.getITEMSEQUENCE());
-        contentValues.put(ITEM_ID, productModel.getItemId());
-        contentValues.put(ITEM_NAME, productModel.getItemName());
-        contentValues.put(TARGET_REJ, productModel.getTargetRej());
-        contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
-        db.insert(TABLE_NAME, null, contentValues);
-        db.close();
-        return true;
-    }
-
     public ProductModel getProductById(String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "='" + item_id + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "=?", new String[]{item_id});
 
         ProductModel productModel = new ProductModel();
         if (res.moveToFirst()) {
@@ -112,32 +98,9 @@ public class ProductView extends SQLiteOpenHelper {
         return numRows;
     }
 
-    /*public boolean updateUserRoleMap(UserRoleMapModel userRoleMapModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EMAIL, userRoleMapModel.getEmail());
-        contentValues.put(ROLE_ID, userRoleMapModel.getRole_id());
-        contentValues.put(IP, userRoleMapModel.getIp());
-        contentValues.put(U_TS, userRoleMapModel.getU_ts());
-        db.update(TABLE_NAME, contentValues, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(userRoleMapModel.getUser_role_id())});
-        db.close();
-        return true;
-    }*/
-
- /*   public Integer deleteUserRoleMapById(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(id)});
-    }*/
-
     /*check product exists or not*/
     public boolean checkProduct(String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        /*Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "='" + item_id + "'", null);
-        //res.moveToFirst();
-        boolean exists = (res.getCount() > 0);
-        res.close();
-        db.close();*/
-
         String[] columns = {ITEM_NAME};
         String selection = ITEM_ID + " =?";
         String[] selectionArgs = {item_id};
@@ -179,21 +142,13 @@ public class ProductView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         CustomerItemPriceTable dbPriceTable = new CustomerItemPriceTable(mContext);
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + ITEMSEQUENCE + " ASC", null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 ProductSelectModel pSelectModel = new ProductSelectModel();
                 pSelectModel.setItem_id(res.getString(res.getColumnIndex(ITEM_ID)));
                 pSelectModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
                 pSelectModel.setItem_price(dbPriceTable.getItemPriceById(pSelectModel.getItem_id(), customer_id));
-
-               /* CustomerRejectionTable rejectionTable = new CustomerRejectionTable(mContext);
-                // get here if this product exists in the table of not
-                if (rejectionTable.custRejExists(customer_id, pSelectModel.getItem_id()) > 0) {
-                    // do nothing
-                } else {
-                    array_list.add(pSelectModel);
-                }*/
 
                 if (alreadyExists.contains(pSelectModel.getItem_id())) {
                     // do not add this product
@@ -219,7 +174,7 @@ public class ProductView extends SQLiteOpenHelper {
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
         CustomerRejectionTable customerRejTable = new CustomerRejectionTable(mContext);
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + ITEMSEQUENCE + " ASC", null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 VanStockModel vanStockModel = new VanStockModel();

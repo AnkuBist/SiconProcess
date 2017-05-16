@@ -10,8 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.hgil.siconprocess.adapter.routeTarget.RouteTargetModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -226,8 +229,9 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
                 routeTargetModel.setTarget(res.getInt(res.getColumnIndex("target_qty")));
 
                 // get product name from the product list table
-                productView.productName(item_id);
-                routeTargetModel.setItem_name(productView.productName(item_id));
+                ProductModel productModel = productView.getProductById(item_id);
+                routeTargetModel.setItem_name(productModel.getItemName());
+                routeTargetModel.setItemSequence(productModel.getITEMSEQUENCE());
 
                 // get the product invoice count from the local table
                 routeTargetModel.setAchieved(invoiceOutTable.soldItemTargetCount(item_id));
@@ -239,7 +243,14 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
         }
         res.close();
         db.close();
-        return array_list;
+
+        ArrayList<RouteTargetModel> sortedArrayList = new ArrayList<RouteTargetModel>(array_list);
+        Collections.sort(sortedArrayList, new Comparator<RouteTargetModel>() {
+            public int compare(RouteTargetModel p1, RouteTargetModel p2) {
+                return Integer.valueOf(p1.getItemSequence()).compareTo(p2.getItemSequence());
+            }
+        });
+        return sortedArrayList;
     }
 
 }

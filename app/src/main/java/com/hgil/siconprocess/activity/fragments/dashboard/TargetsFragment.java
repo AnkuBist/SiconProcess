@@ -65,8 +65,6 @@ public class TargetsFragment extends BaseFragment {
         setTitle("Targets");
         hideSaveButton();
 
-        // handling recycler data and adapter working pending
-        //TODO
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvTargets.setLayoutManager(linearLayoutManager);

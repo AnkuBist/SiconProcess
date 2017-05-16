@@ -197,19 +197,19 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         return status;
     }
 
-    // get item demand for customer
+    // get invoice item qty for customer
     public int customerInvOutItemQty(String customer_id, String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "select distinct " + INVQTY_PS + " from " + TABLE_NAME + " where " + ITEM_ID + "=? AND " + CUSTOMER_ID + "=?";
+        String query = "select " + INVQTY_PS + " from " + TABLE_NAME + " where " + ITEM_ID + "=? AND " + CUSTOMER_ID + "=?";
         Cursor res = db.rawQuery(query, new String[]{item_id, customer_id});
 
-        int demandQty = 0;
+        int invQty = 0;
         if (res.moveToFirst()) {
-            demandQty = res.getInt(res.getColumnIndex(INVQTY_PS));
+            invQty = res.getInt(res.getColumnIndex(INVQTY_PS));
         }
         res.close();
         db.close();
-        return demandQty;
+        return invQty;
     }
 
     // get van sold item count other than same customer

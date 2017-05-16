@@ -10,9 +10,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.InvoiceDetailModel;
+import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -162,12 +165,13 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
 
                 // subtract ordered quantity from stock and also the sample collected
                 int stock = getLoadingCount(item_id) - totalOrderQty - total_sample_stock;
-
                 invoiceModel.setStockAvail(stock);
                 invoiceModel.setTempStock(stock - (int) custOrderQty);
 
                 if (dbItemDetails.checkProduct(invoiceModel.getItemId()) && stock > 0) {
-                    invoiceModel.setItemName(dbItemDetails.getProductById(item_id).getItemName());
+                    ProductModel productInfo = dbItemDetails.getProductById(item_id);
+                    invoiceModel.setItemName(productInfo.getItemName());
+                    invoiceModel.setItemSequence(productInfo.getITEMSEQUENCE());
                     array_list.add(invoiceModel);
                 }
                 res.moveToNext();
@@ -175,7 +179,14 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         }
         res.close();
         db.close();
-        return array_list;
+
+        ArrayList<InvoiceModel> sortedArrayList = new ArrayList<InvoiceModel>(array_list);
+        Collections.sort(sortedArrayList, new Comparator<InvoiceModel>() {
+            public int compare(InvoiceModel p1, InvoiceModel p2) {
+                return Integer.valueOf(p1.getItemSequence()).compareTo(p2.getItemSequence());
+            }
+        });
+        return sortedArrayList;
     }
 
     // total van item loading count
@@ -270,7 +281,9 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                 invoiceModel.setTempStock(stock - (int) custOrderQty);
 
                 if (dbItemDetails.checkProduct(invoiceModel.getItemId()) && stock > 0) {
-                    invoiceModel.setItemName(dbItemDetails.getProductById(item_id).getItemName());
+                    ProductModel productInfo = dbItemDetails.getProductById(item_id);
+                    invoiceModel.setItemName(productInfo.getItemName());
+                    invoiceModel.setItemSequence(productInfo.getITEMSEQUENCE());
                     array_list.add(invoiceModel);
                 }
                 res.moveToNext();
@@ -278,9 +291,14 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         }
         res.close();
         db.close();
-        return array_list;
 
-
+        ArrayList<InvoiceModel> sortedArrayList = new ArrayList<InvoiceModel>(array_list);
+        Collections.sort(sortedArrayList, new Comparator<InvoiceModel>() {
+            public int compare(InvoiceModel p1, InvoiceModel p2) {
+                return Integer.valueOf(p1.getItemSequence()).compareTo(p2.getItemSequence());
+            }
+        });
+        return sortedArrayList;
 
 
        /* ArrayList<InvoiceModel> array_list = new ArrayList<InvoiceModel>();

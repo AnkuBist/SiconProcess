@@ -8,6 +8,7 @@ public class RouteTargetModel {
 
     private String itemId;
     private String item_name;
+    private int itemSequence;
     private int target;
     private int achieved;
     private int variance;
@@ -50,5 +51,13 @@ public class RouteTargetModel {
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
+    }
+
+    public int getItemSequence() {
+        return itemSequence;
+    }
+
+    public void setItemSequence(int itemSequence) {
+        this.itemSequence = itemSequence;
     }
 }

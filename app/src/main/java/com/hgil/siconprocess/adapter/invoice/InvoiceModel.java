@@ -19,6 +19,7 @@ public class InvoiceModel implements Serializable {
     private String driverCode;
     private String cashierCode;
     private String itemId;
+    private int itemSequence;
     private String crateId;
     private float invQtyPs;
     private float itemRate;
@@ -28,7 +29,7 @@ public class InvoiceModel implements Serializable {
 
     // new added value
     private int fixedSample;
-  //  private float demandTargetQty;
+    //  private float demandTargetQty;
     private double orderAmount;
     private int stockAvail;
     private int tempStock;
@@ -235,5 +236,13 @@ public class InvoiceModel implements Serializable {
 
     public void setInvQtyPs(float invQtyPs) {
         this.invQtyPs = invQtyPs;
+    }
+
+    public int getItemSequence() {
+        return itemSequence;
+    }
+
+    public void setItemSequence(int itemSequence) {
+        this.itemSequence = itemSequence;
     }
 }

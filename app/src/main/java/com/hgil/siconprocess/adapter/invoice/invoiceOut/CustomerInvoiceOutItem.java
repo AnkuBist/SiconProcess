@@ -54,7 +54,7 @@ public class CustomerInvoiceOutItem {
         final double orderAmount = itemInvoice.getOrderAmount();
 
         // get product stock
-        stockAvail = itemInvoice.getStockAvail() + (int) orderQty;
+        stockAvail = itemInvoice.getStockAvail();
         tempStock = itemInvoice.getTempStock();
 
         tvItemName.setText(itemName);
