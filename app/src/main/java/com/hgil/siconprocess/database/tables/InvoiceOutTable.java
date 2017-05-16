@@ -259,7 +259,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         return amount;
     }
 
-    // get customer invoice total
+    // get customer invoice total.....customer gross sale
     public double custInvoiceTotalAmount(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "select sum(" + ORDER_AMOUNT + ") as total " +
@@ -303,7 +303,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
                 syncModel.setLogin_id(res.getString(res.getColumnIndex(LOGIN_ID)));
 
                 //get van item total count
-                int item_total_count = depotInvoiceTable.getLoadingCount(item_id);
+                int item_total_count = depotInvoiceTable.itemVanStockLoadingCount(item_id);
                 syncModel.setLoading_count(item_total_count);
                 syncModel.setSale_count(res.getInt(res.getColumnIndex(INVQTY_PS)));
 

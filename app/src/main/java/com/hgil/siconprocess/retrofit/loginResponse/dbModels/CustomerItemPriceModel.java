@@ -19,19 +19,19 @@ public class CustomerItemPriceModel implements Serializable {
     private String itemId;
     @SerializedName("item_price")
     @Expose
-    private Double itemPrice;
+    private double itemPrice;
     @SerializedName("discount_price")
     @Expose
-    private Double discountPrice;
+    private double discountPrice;
     @SerializedName("discount_percentage")
     @Expose
-    private Double discountPercentage;
+    private double discountPercentage;
     @SerializedName("discount_type")
     @Expose
     private String discountType;
     @SerializedName("discounted_price")
     @Expose
-    private Double discountedPrice;
+    private double discountedPrice;
     @SerializedName("target_qty")
     @Expose
     private float target_qty;
@@ -55,27 +55,27 @@ public class CustomerItemPriceModel implements Serializable {
         this.itemId = itemId;
     }
 
-    public Double getItemPrice() {
+    public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(Double itemPrice) {
+    public void setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
     }
 
-    public Double getDiscountPrice() {
+    public double getDiscountPrice() {
         return discountPrice;
     }
 
-    public void setDiscountPrice(Double discountPrice) {
+    public void setDiscountPrice(double discountPrice) {
         this.discountPrice = discountPrice;
     }
 
-    public Double getDiscountPercentage() {
+    public double getDiscountPercentage() {
         return discountPercentage;
     }
 
-    public void setDiscountPercentage(Double discountPercentage) {
+    public void setDiscountPercentage(double discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 
@@ -87,11 +87,11 @@ public class CustomerItemPriceModel implements Serializable {
         this.discountType = discountType;
     }
 
-    public Double getDiscountedPrice() {
+    public double getDiscountedPrice() {
         return discountedPrice;
     }
 
-    public void setDiscountedPrice(Double discountedPrice) {
+    public void setDiscountedPrice(double discountedPrice) {
         this.discountedPrice = discountedPrice;
     }
 

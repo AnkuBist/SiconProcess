@@ -17,6 +17,7 @@ import com.hgil.siconprocess.utils.ui.SnackbarUtil;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,7 +53,7 @@ public class RouteMapRAdapter extends RecyclerView.Adapter<RouteMapRAdapter.View
         // - replace the contents of the view with that element
         final RouteCustomerModel routeCustomerModel = mDataset.get(position);
         holder.tvCustomerName.setText(routeCustomerModel.getCustomerName());
-        holder.tvTotalSaleAmt.setText("Total Sale Amt:" + routeCustomerModel.getSaleAmount());
+        holder.tvTotalSaleAmt.setText("G.Sale: " + holder.strRupee + routeCustomerModel.getSaleAmount());
 
         //text color change on status
         String status = routeCustomerModel.getCustStatus();
@@ -107,6 +108,8 @@ public class RouteMapRAdapter extends RecyclerView.Adapter<RouteMapRAdapter.View
         public TextView tvTotalSaleAmt;
         @BindView(R.id.customer_item)
         public LinearLayout customer_item;
+        @BindString(R.string.strRupee)
+        public String strRupee;
 
         public ViewHolder(View v) {
             super(v);

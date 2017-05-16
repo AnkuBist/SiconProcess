@@ -106,6 +106,22 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
         return true;
     }
 
+    //customer item discount price and sample count
+    public CustomerItemPriceModel custItemPriceNSample(String item_id, String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT " + DISCOUNTED_PRICE + ", " + SAMPLE_QTY + " FROM " + TABLE_NAME +
+                " WHERE " + ITEM_ID + "=? and " + CUSTOMER_ID + "=?", new String[]{item_id, customer_id});
+
+        CustomerItemPriceModel priceModel = new CustomerItemPriceModel();
+        if (res.moveToFirst()) {
+            priceModel.setDiscountedPrice(res.getDouble(res.getColumnIndex(DISCOUNTED_PRICE)));
+            priceModel.setSample_qty(res.getInt(res.getColumnIndex(SAMPLE_QTY)));
+        }
+        res.close();
+        db.close();
+        return priceModel;
+    }
+
     public double getItemPriceById(String item_id, String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT " + DISCOUNTED_PRICE + " FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "=? and " + CUSTOMER_ID + "=?", new String[]{item_id, customer_id});
@@ -159,7 +175,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
     }
 
     // get sample count
-    public int getSampleCount(String item_id) {
+    public int itemTotalSampleCount(String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "select sum(" + SAMPLE_QTY + ") as loading_sample_qty from " + TABLE_NAME + " where " + ITEM_ID + "=?";
         Cursor res = db.rawQuery(query, new String[]{item_id});

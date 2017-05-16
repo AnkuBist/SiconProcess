@@ -366,7 +366,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
                 rejectionModel.setLogin_id(res.getString(res.getColumnIndex(LOGIN_ID)));
 
                 //get van item total count
-                int item_total_count = depotInvoiceTable.getLoadingCount(rejectionModel.getItem_id());
+                int item_total_count = depotInvoiceTable.itemVanStockLoadingCount(rejectionModel.getItem_id());
                 rejectionModel.setLoading_count(item_total_count);
 
                 /*item price details*/

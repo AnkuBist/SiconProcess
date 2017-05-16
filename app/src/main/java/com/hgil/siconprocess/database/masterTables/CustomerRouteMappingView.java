@@ -190,12 +190,13 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 RouteCustomerModel routeCustomerModel = new RouteCustomerModel();
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
                 routeCustomerModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 routeCustomerModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
-                routeCustomerModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                routeCustomerModel.setCustomerId(customer_id);
                 routeCustomerModel.setCustomerName(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
                 routeCustomerModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
-                routeCustomerModel.setSaleAmount(invoiceOutTable.custInvoiceTotalAmount(routeCustomerModel.getCustomerId()));
+                routeCustomerModel.setSaleAmount(invoiceOutTable.custInvoiceTotalAmount(customer_id));
 
                 array_list.add(routeCustomerModel);
                 res.moveToNext();

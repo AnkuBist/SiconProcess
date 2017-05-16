@@ -182,10 +182,10 @@ public class ProductView extends SQLiteOpenHelper {
                 vanStockModel.setItem_id(item_id);
                 vanStockModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
 
-                int loadingQty = depotInvoiceView.getLoadingCount(item_id);
+                int loadingQty = depotInvoiceView.itemVanStockLoadingCount(item_id);
                 if (loadingQty > 0) {
                     int saleQty = invoiceOutTable.getItemOrderQty(item_id);
-                    int sampleQty = itemPriceTable.getSampleCount(item_id);
+                    int sampleQty = itemPriceTable.itemTotalSampleCount(item_id);
 
                     // get product total stock in van
                     vanStockModel.setLoadQty(loadingQty);
