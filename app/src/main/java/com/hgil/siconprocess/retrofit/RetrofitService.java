@@ -19,7 +19,8 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST(API.LOGIN_URL)
-    Call<loginResponse> postUserLogin(@Field("route_id") String username, @Field("password") String password);
+    Call<loginResponse> postUserLogin(@Field("route_id") String username, @Field("password") String password,
+                                      @Field("imei_number") String imei_number);
 
     /*@FormUrlEncoded
     @POST(API.LOGIN_URL)
@@ -27,7 +28,8 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST(API.SYNC_URL)
-    Call<syncResponse> syncRouteData(@Field("route_id") String username, @Field("route_data") String route_data);
+    Call<syncResponse> syncRouteData(@Field("route_id") String username, @Field("route_data") String route_data,
+                                     @Field("imei_number") String imei_number);
 
     @FormUrlEncoded
     @POST(API.SYNC_CASHIER_URL)

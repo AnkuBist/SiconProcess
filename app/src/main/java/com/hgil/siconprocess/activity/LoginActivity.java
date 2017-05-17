@@ -36,6 +36,7 @@ import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RouteModel;
 import com.hgil.siconprocess.retrofit.loginResponse.loginResponse;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
+import com.hgil.siconprocess.utils.utilPermission.UtilIMEI;
 
 import java.io.Serializable;
 
@@ -99,13 +100,18 @@ public class LoginActivity extends AppCompatActivity {
     public void onSubmit(View view) {
         String username = etUserId.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String imeiNumber = UtilIMEI.getIMEINumber(this);
+
         if (username.isEmpty()) {
             etUserId.requestFocus();
             Toast.makeText(this, "Enter valid user ID", Toast.LENGTH_SHORT).show();
         } else if (password.isEmpty()) {
             etPassword.requestFocus();
             Toast.makeText(this, "Enter a valid password", Toast.LENGTH_SHORT).show();
+        } else if (imeiNumber == null) {
+            UtilIMEI.checkAndroidVersionForPhoneState(this);
         } else {
+            Utility.savePreference(this, Utility.DEVICE_IMEI, imeiNumber);
             // first check user login with the same existing id or not
             if (checkUserId(username)) {
                 // if the user is logged in today but somehow logged out then check for the last logged in date
@@ -125,13 +131,13 @@ public class LoginActivity extends AppCompatActivity {
                 } else */
                 {
                     // check for login
-                    getUserLogin(username, password);
+                    getUserLogin(username, password, imeiNumber);
                 }
             } else {
 
                 //TODO--- this is a test code remove these lines and uncomment the below code after this
                 // check for login
-                getUserLogin(username, password);
+                getUserLogin(username, password, imeiNumber);
                 //Snackbar.make(coordinateLayout, "Please erase app data before login with different user!", Snackbar.LENGTH_LONG).show();
             }
         }
@@ -185,14 +191,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /*retrofit call test to fetch data from server*/
-    public void getUserLogin(final String user_id, final String password) {
+    public void getUserLogin(final String user_id, final String password, String imei_number) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.showDialog(LoginActivity.this, getString(R.string.str_login));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<loginResponse> apiCall = service.postUserLogin(user_id, password);
+        Call<loginResponse> apiCall = service.postUserLogin(user_id, password, imei_number);
         apiCall.enqueue(new Callback<loginResponse>() {
             @Override
             public void onResponse(Call<loginResponse> call, Response<loginResponse> response) {

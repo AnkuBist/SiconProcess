@@ -10,13 +10,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CashCheck;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCashModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCrateModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateStockCheck;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.RejectionDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncData;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.VanStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
@@ -29,12 +24,11 @@ import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
+import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import retrofit2.Call;
@@ -103,20 +97,6 @@ public class SyncFragment extends BaseFragment {
 
     /*preparing data to sync whole day process*/
     private void initiateDataSync() {
-        /*invoice data preparation*/
-
-        // invoice sync
-        //TODO
-        ArrayList<SyncInvoiceDetailModel> syncInvoice = invoiceOutTable.syncInvoice();
-
-        // get rejections details
-        ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection = rejectionTable.syncRejection(getRouteId());
-        ArrayList<RejectionDetailModel> syncRejectDetails = rejectionTable.syncRejectionDetails(getRouteId());
-
-        ArrayList<CollectionCashModel> cashCollection = paymentTable.syncCashDetail();
-        ArrayList<CollectionCrateModel> crateCollection = paymentTable.syncCrateDetail();
-        CrateStockCheck crateStock = paymentTable.syncCrateStock(getRouteId());
-
         // below commented values are not mendatory to validate here
         // these values are validated by the head cashier only.
         // cashier total verification
@@ -161,19 +141,22 @@ public class SyncFragment extends BaseFragment {
 
         // finally convert all object and array data into jsonObject and send as object data to server side api;
         SyncData syncData = new SyncData();
+        /*invoice data preparation*/
+        // invoice sync
+        syncData.setSyncInvoice(invoiceOutTable.syncInvoice());
+        syncData.setSyncInvoiceRejection(rejectionTable.syncRejection(getRouteId()));
+        syncData.setSyncRejectDetails(rejectionTable.syncRejectionDetails(getRouteId()));
+        syncData.setCashCollection(paymentTable.syncCashDetail());
+        syncData.setChequeCollection(paymentTable.syncChequeDetail(routeId));
+        syncData.setArrNextDayOrder(nextDayOrderTable.getRouteOrder());
+        syncData.setCrateCollection(paymentTable.syncCrateDetail());
 
-        syncData.setSyncInvoice(syncInvoice);
-        syncData.setSyncInvoiceRejection(syncInvoiceRejection);
-        syncData.setSyncRejectDetails(syncRejectDetails);
-        syncData.setCashCollection(cashCollection);
-        syncData.setCrateCollection(crateCollection);
-        syncData.setCrateStock(crateStock);
+        //TODO-data not to be updated by cashier
+        /*syncData.setCrateStock(crateStock);
         syncData.setCashCheck(cashCheck);
         syncData.setCrateCheck(crateCheck);
         syncData.setVanStockCheck(vanStockCheck);
-        syncData.setChequeCollection(paymentTable.syncChequeDetail(routeId));
-        syncData.setArrNextDayOrder(nextDayOrderTable.getRouteOrder());
-        syncData.setArrMaketProductsSummary(marketProductTable.getRouteOrder());
+        syncData.setArrMaketProductsSummary(marketProductTable.getRouteOrder());*/
 
         String json = new Gson().toJson(syncData);
         JSONObject jObj = null;
@@ -184,21 +167,22 @@ public class SyncFragment extends BaseFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
 
         // make retrofit request call
-        syncRouteInvoice(getRouteId(), jObj);
+        syncRouteInvoice(getRouteId(), jObj, imei_number);
     }
 
     // sync process retrofit call
     /*retrofit call test example*/
-    public void syncRouteInvoice(final String route_id, JSONObject route_data) {
+    public void syncRouteInvoice(final String route_id, JSONObject route_data, String imei_number) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteData(route_id, route_data.toString());
+        Call<syncResponse> apiCall = service.syncRouteData(route_id, route_data.toString(), imei_number);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {

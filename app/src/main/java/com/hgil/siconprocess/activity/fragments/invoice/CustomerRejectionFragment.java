@@ -278,7 +278,9 @@ public class CustomerRejectionFragment extends BaseFragment {
         if (last_max_bill_2 != null && !last_max_bill_2.isEmpty() && last_max_bill_2.length() == 14)
             max_bill_2 = Double.valueOf(last_max_bill_2);
 
-        if (max_bill_1 > max_bill_2)
+        if (max_bill_1 == max_bill_2)
+            expectedLastBillNo = last_max_bill_1;
+        else if (max_bill_1 > max_bill_2)
             expectedLastBillNo = last_max_bill_1;
         else if (max_bill_2 > max_bill_1)
             expectedLastBillNo = last_max_bill_2;
