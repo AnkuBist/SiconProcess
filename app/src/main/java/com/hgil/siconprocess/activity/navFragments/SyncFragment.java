@@ -143,13 +143,14 @@ public class SyncFragment extends BaseFragment {
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
         // invoice sync
-        syncData.setSyncInvoice(invoiceOutTable.syncInvoice());
-        syncData.setSyncInvoiceRejection(rejectionTable.syncRejection(getRouteId()));
-        syncData.setSyncRejectDetails(rejectionTable.syncRejectionDetails(getRouteId()));
-        syncData.setCashCollection(paymentTable.syncCashDetail());
-        syncData.setChequeCollection(paymentTable.syncChequeDetail(routeId));
-        syncData.setArrNextDayOrder(nextDayOrderTable.getRouteOrder());
-        syncData.setCrateCollection(paymentTable.syncCrateDetail());
+        syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
+        syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
+        syncData.setSyncRejectDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
+        syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
+        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
+        // syncData.setArrNextDayOrder(nextDayOrderTable.getRouteOrder());
+        syncData.setArrMaketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
+        syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         //TODO-data not to be updated by cashier
         /*syncData.setCrateStock(crateStock);

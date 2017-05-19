@@ -48,13 +48,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginRight="12dp"
-                        android:hint="User ID"
                         android:paddingLeft="10dp">
 
                         <EditText
                             android:id="@+id/etUserId"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:hint="User ID"
                             android:inputType="text"
                             android:textSize="@dimen/text_size_medium" />
 
@@ -65,13 +65,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginRight="12dp"
-                        android:hint="Password"
-                        android:paddingLeft="10dp">
+                        android:paddingLeft="10dp"
+                        app:passwordToggleEnabled="true">
 
                         <EditText
                             android:id="@+id/etPassword"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:hint="Password"
                             android:inputType="textPassword"
                             android:textSize="@dimen/text_size_medium" />
 

@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.database.tables;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -14,6 +15,7 @@ import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     private static final String LOGIN_ID = "login_id";
     private static final String DATE = "date";
 
+    private static final String INV_STATUS = "inv_status";
+
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + INVOICE_NO + " TEXT NULL, "
             + BILL_NO + " TEXT NULL, "
             + CASHIER_CODE + " TEXT NULL, " + ITEM_ID + " TEXT NOT NULL, " + ITEM_NAME + " TEXT NOT NULL, "
@@ -67,7 +71,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
             + FRESH_WET_BREAD + " INTEGER NULL, " + FRESH_OTHERS + " INTEGER NULL, " + MARKET_DAMAGED + " INTEGER NULL, "
             + MARKET_EXPIRED + " INTEGER NULL, " + MARKET_RAT_EATEN + " INTEGER NULL, " + GRAND_TOTAL + " REAL NULL, "
             + IMEI_NO + " TEXT NULL, " + LAT_LNG + " TEXT NULL, " + CURTIME + " TEXT NULL, " + LOGIN_ID + " TEXT NULL, "
-            + DATE + " TEXT NULL)";
+            + DATE + " TEXT NULL, " + INV_STATUS + " TEXT NULL)";
 
     private Context mContext;
 
@@ -91,6 +95,15 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     public void eraseTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.close();
+    }
+
+    /*update customer invoice status*/
+    public void updateCustInvRejStatus(String customer_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(INV_STATUS, status);
+        db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
         db.close();
     }
 
@@ -340,14 +353,15 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     }
 
     // get product rejections over route
-    public ArrayList<SyncInvoiceDetailModel> syncRejection(String route_id) {
+    public ArrayList<SyncInvoiceDetailModel> syncCompletedRejection(String route_id) {
         CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
         DepotInvoiceView depotInvoiceTable = new DepotInvoiceView(mContext);
 
         ArrayList<SyncInvoiceDetailModel> arrayList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
 
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
@@ -403,11 +417,12 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     }
 
     /*sync rejection details*/
-    public ArrayList<RejectionDetailModel> syncRejectionDetails(String route_id) {
+    public ArrayList<RejectionDetailModel> syncCompletedRejectionDetails(String route_id) {
         ArrayList<RejectionDetailModel> arrayList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
 
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {

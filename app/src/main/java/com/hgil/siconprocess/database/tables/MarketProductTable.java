@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.database.tables;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -7,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.database.dbModels.MarketProductModel;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class MarketProductTable extends SQLiteOpenHelper {
     private static final String CURTIME = "cur_time";
     private static final String LOGIN_ID = "login_id";
 
+    private static final String INV_STATUS = "inv_status";
+
     private Context mContext;
 
     public MarketProductTable(Context context) {
@@ -46,7 +50,7 @@ public class MarketProductTable extends SQLiteOpenHelper {
                 + CUSTOMER_NAME + " TEXT NOT NULL, " + ITEM_ID + " TEXT NOT NULL, " + ITEM_NAME + " TEXT NOT NULL, "
                 + ITEM_QTY + " INTEGER NOT NULL, "
                 + IMEI_NO + " TEXT NULL, " + LAT_LNG + " TEXT NULL, " + CURTIME + " TEXT NULL, " + LOGIN_ID + " TEXT NULL, "
-                + DATE + " TEXT NULL)");
+                + DATE + " TEXT NULL, " + INV_STATUS + " TEXT NULL)");
     }
 
     @Override
@@ -58,6 +62,15 @@ public class MarketProductTable extends SQLiteOpenHelper {
     public void eraseTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME); //delete all rows in a table
+        db.close();
+    }
+
+    /*update customer invoice status*/
+    public void updateCustMarketStatus(String customer_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(INV_STATUS, status);
+        db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
         db.close();
     }
 
@@ -177,11 +190,12 @@ public class MarketProductTable extends SQLiteOpenHelper {
     }
 
     // get route orders
-    public ArrayList<MarketProductModel> getRouteOrder() {
+    public ArrayList<MarketProductModel> routeCompletedMarketProductDetails() {
         ArrayList<MarketProductModel> array_list = new ArrayList<MarketProductModel>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 MarketProductModel marketProductModel = new MarketProductModel();

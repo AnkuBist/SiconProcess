@@ -79,7 +79,6 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     }
 
     // multiple insert
-    //insert single
     public boolean insertCustomerRouteMap(List<CustomerRouteMapModel> arrList) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (int i = 0; i < arrList.size(); i++) {
@@ -132,53 +131,6 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
         db.close();
         return numRows;
-    }
-
-    /*public boolean updateUserRoleMap(UserRoleMapModel userRoleMapModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EMAIL, userRoleMapModel.getEmail());
-        contentValues.put(ROLE_ID, userRoleMapModel.getRole_id());
-        contentValues.put(IP, userRoleMapModel.getIp());
-        contentValues.put(U_TS, userRoleMapModel.getU_ts());
-        db.update(TABLE_NAME, contentValues, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(userRoleMapModel.getUser_role_id())});
-        db.close();
-        return true;
-    }*/
-
- /*   public Integer deleteUserRoleMapById(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(id)});
-    }*/
-
-    public ArrayList<CustomerRouteMapModel> getAllCustomerRouteMap() {
-        ArrayList<CustomerRouteMapModel> array_list = new ArrayList<CustomerRouteMapModel>();
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        if (res.moveToFirst()) {
-            while (res.isAfterLast() == false) {
-                CustomerRouteMapModel customerRouteMapModel = new CustomerRouteMapModel();
-                customerRouteMapModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
-                customerRouteMapModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
-                customerRouteMapModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
-                customerRouteMapModel.setCustomerName(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
-                customerRouteMapModel.setPRICEGROUP(res.getString(res.getColumnIndex(PRICEGROUP)));
-                customerRouteMapModel.setLINEDISC(res.getString(res.getColumnIndex(LINEDISC)));
-                customerRouteMapModel.setCType(res.getString(res.getColumnIndex(C_TYPE)));
-                customerRouteMapModel.setCUSTCLASSIFICATIONID(res.getString(res.getColumnIndex(CUSTCLASSIFICATIONID)));
-                customerRouteMapModel.setCrateLoading(res.getInt(res.getColumnIndex(CRATE_LOADING)));
-                customerRouteMapModel.setCrateCredit(res.getInt(res.getColumnIndex(CRATE_CREDIT)));
-                customerRouteMapModel.setAmountCredit(res.getDouble(res.getColumnIndex(AMOUNT_CREDIT)));
-                customerRouteMapModel.setCustStatus(res.getString(res.getColumnIndex(CUST_STATUS)));
-
-                array_list.add(customerRouteMapModel);
-                res.moveToNext();
-            }
-        }
-        res.close();
-        db.close();
-        return array_list;
     }
 
     public ArrayList<RouteCustomerModel> getRouteCustomers() {

@@ -84,9 +84,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // read shared preference if any
         saved_id = Utility.readPreference(this, Utility.USER_ID);
+        String savedPassword = Utility.readPreference(this, Utility.LAST_LOGIN_PASSWORD);
         existing_id = Utility.readPreference(this, Utility.LAST_LOGIN_ID);
 
         etUserId.setText(saved_id);
+        etPassword.setText(savedPassword);
 
         /// initialise database objects
         initialiseDBObj();

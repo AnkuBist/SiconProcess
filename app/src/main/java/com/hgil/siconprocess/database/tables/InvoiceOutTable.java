@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.database.tables;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -11,6 +12,7 @@ import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     private static final String LOGIN_ID = "login_id";
     private static final String DATE = "date";
 
+    private static final String INV_STATUS = "inv_status";
+
     private Context mContext;
 
     public InvoiceOutTable(Context context) {
@@ -77,7 +81,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
                 + ORDER_AMOUNT + " REAL NULL, "
                 + STOCK_AVAIL + " INTEGER NULL, " + TEMP_STOCK + " INTEGER NULL, " + ITEM_NAME + " TEXT NULL, "
                 + IMEI_NO + " TEXT NULL, " + LAT_LNG + " TEXT NULL, " + CURTIME + " TEXT NULL, " + LOGIN_ID + " TEXT NULL, "
-                + DATE + " TEXT NULL)");
+                + DATE + " TEXT NULL, " + INV_STATUS + " TEXT NULL)");
                /* + REJECTION_QTY + " INTEGER NULL, " + REJECTION_TOTAL_AMOUNT + " REAL NULL)");*/
     }
 
@@ -90,6 +94,15 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     public void eraseTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME); //delete all rows in a table
+        db.close();
+    }
+
+    /*update customer invoice status*/
+    public void updateCustInvStatus(String customer_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(INV_STATUS, status);
+        db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
         db.close();
     }
 
@@ -242,23 +255,6 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         return demandQty;
     }
 
-    //TODO
-    // get customer grand total for invoice prepared.
-    public double custOrderTotalAmount(String customer_id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "select sum(" + INVQTY_PS + "*" + TOTAL_AMOUNT + ") as total " +
-                "from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
-        Cursor res = db.rawQuery(query, new String[]{customer_id});
-
-        double amount = 0;
-        if (res.moveToFirst()) {
-            amount = res.getInt(res.getColumnIndex("total"));
-        }
-        res.close();
-        db.close();
-        return amount;
-    }
-
     // get customer invoice total.....customer gross sale
     public double custInvoiceTotalAmount(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -276,14 +272,15 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     }
 
     /*generate array list to sync data*/
-    public ArrayList<SyncInvoiceDetailModel> syncInvoice() {
+    public ArrayList<SyncInvoiceDetailModel> syncCompletedInvoice() {
         SQLiteDatabase db = this.getReadableDatabase();
         CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
         DepotInvoiceView depotInvoiceTable = new DepotInvoiceView(mContext);
 
         ArrayList<SyncInvoiceDetailModel> arrayList = new ArrayList<>();
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where "+ INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 SyncInvoiceDetailModel syncModel = new SyncInvoiceDetailModel();

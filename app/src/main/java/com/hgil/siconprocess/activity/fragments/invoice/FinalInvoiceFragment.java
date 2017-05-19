@@ -19,6 +19,7 @@ import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.database.tables.MarketProductTable;
 import com.hgil.siconprocess.database.tables.PaymentTable;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 import com.hgil.siconprocess.utils.utilPermission.UtilsSms;
@@ -53,6 +54,11 @@ public class FinalInvoiceFragment extends BaseFragment {
     // for now values are static
     private String mobile = "9023503384";
     private String message = "Hello, \nthis is a test message.";
+
+    private CustomerRejectionTable customerRejectionTable;
+    private InvoiceOutTable invoiceOutTable;
+    private PaymentTable paymentTable;
+    private MarketProductTable marketProductTable;
 
     public FinalInvoiceFragment() {
         // Required empty public constructor
@@ -89,6 +95,11 @@ public class FinalInvoiceFragment extends BaseFragment {
             tvCustomerName.setText(customer_name);
         }
 
+        customerRejectionTable = new CustomerRejectionTable(getContext());
+        invoiceOutTable = new InvoiceOutTable(getContext());
+        paymentTable = new PaymentTable(getContext());
+        marketProductTable = new MarketProductTable(getContext());
+
         //TODO
         // get customer contact details
         //mobile = new CustomerInfoView(getContext()).getCustomerContact(customer_id);
@@ -119,19 +130,16 @@ public class FinalInvoiceFragment extends BaseFragment {
     @OnClick(R.id.btnInvoiceCancel)
     public void onInvoiceCancel(View view) {
         // on press cancel button please erase all recent invoice update for the user stored at local and move to the main page
-        CustomerRejectionTable customerRejectionTable = new CustomerRejectionTable(getContext());
-        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(getContext());
-        //NextDayOrderTable nextDayOrderTable = new NextDayOrderTable(getContext());
-        PaymentTable paymentTable = new PaymentTable(getContext());
-        MarketProductTable marketProductTable = new MarketProductTable(getContext());
-
-
         // will erase the customer prepared all data
-        customerRejectionTable.cancelInvoice(customer_id);
+        /*customerRejectionTable.cancelInvoice(customer_id);
         invoiceOutTable.cancelInvoice(customer_id);
-        //nextDayOrderTable.cancelInvoice(customer_id);
         paymentTable.cancelInvoice(customer_id);
-        marketProductTable.cancelInvoice(customer_id);
+        marketProductTable.cancelInvoice(customer_id);*/
+
+        customerRejectionTable.updateCustInvRejStatus(customer_id, Constant.STATUS_CANCELLED);
+        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_CANCELLED);
+        paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_CANCELLED);
+        marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_CANCELLED);
 
         // restart app or move back to the route map list
         getContext().startActivity(new Intent(getContext(), NavBaseActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -144,7 +152,16 @@ public class FinalInvoiceFragment extends BaseFragment {
          /*after message send button press set the customer route to set to completed*/
         //activity is finished at
         CustomerRouteMappingView custRouteMap = new CustomerRouteMappingView(getContext());
-        custRouteMap.updateCustomerStatus(customer_id, "COMPLETED");
+        custRouteMap.updateCustomerStatus(customer_id, Constant.STATUS_COMPLETE);
+
+        customerRejectionTable.updateCustInvRejStatus(customer_id, Constant.STATUS_COMPLETE);
+        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
+        paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_COMPLETE);
+        marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_COMPLETE);
+
+        // update all inv prepared table status for the customer to completed
+        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
+
 
         if (mobile != null && mobile.matches(""))
             UtilsSms.checkAndroidVersionForSms(getContext(), mobile, message);

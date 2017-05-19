@@ -18,6 +18,7 @@ import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;
 import com.hgil.siconprocess.database.dbModels.UpiPaymentModel;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -60,6 +61,8 @@ public class PaymentTable extends SQLiteOpenHelper {
     private static final String LOGIN_ID = "login_id";
     private static final String DATE = "date";
 
+    private static final String INV_STATUS = "inv_status";
+
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + CUSTOMER_ID + " TEXT NOT NULL, "
             + CUSTOMER_NAME + " TEXT NOT NULL, " + SALE_AMOUNT + " REAL NULL, "
             + CASH_PAID + " REAL NULL, " + TOTAL_PAID_AMOUNT + " REAL NULL, "
@@ -68,7 +71,7 @@ public class PaymentTable extends SQLiteOpenHelper {
             + BANK_NAME + " TEXT NULL, " + BANK_BRANCH + " TEXT NULL, " + INVOICE_ID + " TEXT NULL, "
             + ISSUED_CRATES + " INTEGER NULL, " + RECEIVED_CRATES + " INTEGER NULL, "
             + IMEI_NO + " TEXT NULL, " + LAT_LNG + " TEXT NULL, " + CURTIME + " TEXT NULL, " + LOGIN_ID + " TEXT NULL, "
-            + DATE + " DATE NULL)";
+            + DATE + " DATE NULL, " + INV_STATUS + " TEXT NULL)";
     private Context mContext;
 
     public PaymentTable(Context context) {
@@ -91,6 +94,15 @@ public class PaymentTable extends SQLiteOpenHelper {
     public void eraseTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.close();
+    }
+
+    /*update customer payment status*/
+    public void updateCustPaymentStatus(String customer_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(INV_STATUS, status);
+        db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
         db.close();
     }
 
@@ -317,11 +329,12 @@ public class PaymentTable extends SQLiteOpenHelper {
     }
 
     // customer cash collection details
-    public ArrayList<CollectionCashModel> syncCashDetail() {
+    public ArrayList<CollectionCashModel> syncCompletedCashDetail() {
         ArrayList<CollectionCashModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 // TODO --cheque details not sent
@@ -356,10 +369,11 @@ public class PaymentTable extends SQLiteOpenHelper {
     }
 
     /*route cheque collection details*/
-    public ArrayList<CollectionChequeModel> syncChequeDetail(String route_id) {
+    public ArrayList<CollectionChequeModel> syncCompletedChequeDetail(String route_id) {
         ArrayList<CollectionChequeModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + CHEQUE_AMOUNT + ">0 ", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + CHEQUE_AMOUNT + ">0 and " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CollectionChequeModel chequeModel = new CollectionChequeModel();
@@ -387,11 +401,12 @@ public class PaymentTable extends SQLiteOpenHelper {
     }
 
     // customer crate collection details
-    public ArrayList<CollectionCrateModel> syncCrateDetail() {
+    public ArrayList<CollectionCrateModel> syncCompletedCrateDetail() {
         ArrayList<CollectionCrateModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CollectionCrateModel crateModel = new CollectionCrateModel();
