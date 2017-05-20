@@ -7,7 +7,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.routeTarget.RouteTargetModel;
+import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
@@ -147,6 +149,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
             itemPriceModel.setDiscountPercentage(res.getDouble(res.getColumnIndex(DISCOUNT_PERCENTAGE)));
             itemPriceModel.setDiscountType(res.getString(res.getColumnIndex(DISCOUNT_TYPE)));
             itemPriceModel.setDiscountedPrice(res.getDouble(res.getColumnIndex(DISCOUNTED_PRICE)));
+            itemPriceModel.setSample_qty(res.getInt(res.getColumnIndex(SAMPLE_QTY)));
         }
         res.close();
         db.close();
@@ -269,4 +272,83 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
         return sortedArrayList;
     }
 
+    /*customer final invoice sale and rejection management*/
+    /*get total of target amount*/
+    public ArrayList<SyncInvoiceDetailModel> syncInvoiceSaleRej(String route_id) {
+        ArrayList<SyncInvoiceDetailModel> arrSyncModel = new ArrayList<>();
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        CustomerRejectionTable customerRejectionTable = new CustomerRejectionTable(mContext);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " order by " + CUSTOMER_ID, null);
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                SyncInvoiceDetailModel syncModel = new SyncInvoiceDetailModel();
+                String item_id = res.getString(res.getColumnIndex(ITEM_ID));
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
+                double item_price = res.getDouble(res.getColumnIndex(ITEM_PRICE));
+                double discount_price = (res.getDouble(res.getColumnIndex(DISCOUNT_PRICE)));
+                double discount_percentage = (res.getDouble(res.getColumnIndex(DISCOUNT_PERCENTAGE)));
+                String discount_type = (res.getString(res.getColumnIndex(DISCOUNT_TYPE)));
+                double discounted_price = (res.getDouble(res.getColumnIndex(DISCOUNTED_PRICE)));
+                int sample = res.getInt(res.getColumnIndex(SAMPLE_QTY));
+
+                syncModel.setItem_price(item_price);
+                syncModel.setDisc_price(discount_price);
+                syncModel.setDisc_percentage(discount_percentage);
+                syncModel.setDisc_type(discount_type);
+                syncModel.setDiscounted_price(discounted_price);
+                syncModel.setSample(sample);
+
+                syncModel.setItem_id(item_id);
+                syncModel.setCustomer_id(customer_id);
+
+                //get customer item sale
+                SyncInvoiceDetailModel custItemSale = invoiceOutTable.syncCompletedInvoiceItem(customer_id, item_id);
+                int saleCount = custItemSale.getSale_count();
+                if (saleCount > 0) {
+                    syncModel.setBill_no(custItemSale.getBill_no());
+                    syncModel.setInvoice_no(custItemSale.getInvoice_no());
+                    syncModel.setInvoice_date(custItemSale.getInvoice_date());
+                    syncModel.setRoute_id(custItemSale.getRoute_id());
+                    syncModel.setCashier_code(custItemSale.getCashier_code());          // CASHIER_CODE
+
+                    syncModel.setSale_count(saleCount);
+                }
+
+                //get customer rejection details
+                SyncInvoiceDetailModel custItemRej = customerRejectionTable.syncCompletedRejection(route_id, customer_id, item_id);
+                int fresh_rej = custItemRej.getFresh_rej();
+                int market_rej = custItemRej.getMarket_rej();
+                if (fresh_rej > 0 || market_rej > 0) {
+                    syncModel.setBill_no(custItemRej.getBill_no());
+                    syncModel.setInvoice_no(custItemRej.getInvoice_no());
+                    syncModel.setInvoice_date(custItemRej.getInvoice_date());
+                    syncModel.setRoute_id(custItemRej.getRoute_id());
+                    syncModel.setCashier_code(custItemRej.getCashier_code());
+
+                    syncModel.setFresh_rej(fresh_rej);
+                    syncModel.setMarket_rej(market_rej);
+                }
+
+                // final details
+                int actual_sale_count = saleCount - fresh_rej - market_rej;
+                syncModel.setActual_sale_count(actual_sale_count);
+
+                //can be calculated here only
+                syncModel.setTotal_sale_amount(actual_sale_count * discounted_price);
+                syncModel.setTotal_disc_amount((item_price - discounted_price) * actual_sale_count);
+                syncModel.setF_rej_amount(discounted_price * fresh_rej);
+                syncModel.setM_rej_amount(discounted_price * market_rej);
+
+                if (saleCount > 0 || fresh_rej > 0 || market_rej > 0)
+                    arrSyncModel.add(syncModel);
+
+                res.moveToNext();
+            }
+        }
+        res.close();
+        db.close();
+        return arrSyncModel;
+    }
 }

@@ -279,7 +279,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
 
         ArrayList<SyncInvoiceDetailModel> arrayList = new ArrayList<>();
 
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where "+ INV_STATUS + "=?",
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
                 new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
@@ -408,5 +408,32 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         res.close();
         db.close();
         return bill_no;
+    }
+
+    /*last update data to sync item sale and rejection merged*/
+    /*generate array list to sync data*/
+    public SyncInvoiceDetailModel syncCompletedInvoiceItem(String customer_id, String item_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=? and " + CUSTOMER_ID + "=? and " + ITEM_ID + "=?",
+                new String[]{Constant.STATUS_COMPLETE, customer_id, item_id});
+
+        SyncInvoiceDetailModel syncModel = new SyncInvoiceDetailModel();
+        if (res.moveToFirst()) {
+            syncModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
+            syncModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
+            syncModel.setInvoice_date(res.getString(res.getColumnIndex(INVOICE_DATE)));
+            syncModel.setRoute_id(res.getString(res.getColumnIndex(ROUTE_ID)));
+            syncModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));          // CASHIER_CODE
+
+            syncModel.setSale_count(res.getInt(res.getColumnIndex(INVQTY_PS)));
+          /*  syncModel.setTotal_sale_amount(syncModel.getSale_count() * syncModel.getDiscounted_price());
+            syncModel.setTotal_disc_amount(
+                    (syncModel.getItem_price() - syncModel.getDiscounted_price()) *
+                            syncModel.getSale_count());*/
+        }
+        res.close();
+        db.close();
+        return syncModel;
     }
 }

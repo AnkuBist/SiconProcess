@@ -33,6 +33,34 @@ public class SyncInvoiceDetailModel {
     private String time_stamp;
     private String login_id;
 
+    private int actual_sale_count;
+    private double f_rej_amount;
+    private double m_rej_amount;
+
+    public int getActual_sale_count() {
+        return actual_sale_count;
+    }
+
+    public void setActual_sale_count(int actual_sale_count) {
+        this.actual_sale_count = actual_sale_count;
+    }
+
+    public double getF_rej_amount() {
+        return f_rej_amount;
+    }
+
+    public void setF_rej_amount(double f_rej_amount) {
+        this.f_rej_amount = f_rej_amount;
+    }
+
+    public double getM_rej_amount() {
+        return m_rej_amount;
+    }
+
+    public void setM_rej_amount(double m_rej_amount) {
+        this.m_rej_amount = m_rej_amount;
+    }
+
     public String getBill_no() {
         return bill_no;
     }

@@ -24,6 +24,16 @@ public class SyncData {
     private ArrayList<NextDayOrderModel> arrNextDayOrder;
     private ArrayList<MarketProductModel> arrMaketProductsSummary;
 
+    private ArrayList<SyncInvoiceDetailModel> syncInvoiceSaleRej;
+
+    public ArrayList<SyncInvoiceDetailModel> getSyncInvoiceSaleRej() {
+        return syncInvoiceSaleRej;
+    }
+
+    public void setSyncInvoiceSaleRej(ArrayList<SyncInvoiceDetailModel> syncInvoiceSaleRej) {
+        this.syncInvoiceSaleRej = syncInvoiceSaleRej;
+    }
+
     public ArrayList<MarketProductModel> getArrMaketProductsSummary() {
         return arrMaketProductsSummary;
     }

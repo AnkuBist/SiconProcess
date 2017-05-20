@@ -494,5 +494,42 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         return bill_no;
     }
 
+
+    // single customer rejection details
+    // get product rejections over route
+    public SyncInvoiceDetailModel syncCompletedRejection(String route_id, String customer_id, String item_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=? and " + CUSTOMER_ID + "=? and " + ITEM_ID + "=?",
+                new String[]{Constant.STATUS_COMPLETE, customer_id, item_id});
+        SyncInvoiceDetailModel rejectionModel = new SyncInvoiceDetailModel();
+        if (res.moveToFirst()) {
+                rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
+                rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
+                rejectionModel.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
+                rejectionModel.setRoute_id(route_id);
+                rejectionModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));
+
+                int m_shaped = (res.getInt(res.getColumnIndex(FRESH_M_SHAPED)));
+                int torn_polly = (res.getInt(res.getColumnIndex(FRESH_TORN_POLLY)));
+                int fungus = (res.getInt(res.getColumnIndex(FRESH_FUNGUS)));
+                int wet_bread = (res.getInt(res.getColumnIndex(FRESH_WET_BREAD)));
+                int others = (res.getInt(res.getColumnIndex(FRESH_OTHERS)));
+                int total_fresh = m_shaped + torn_polly + fungus + wet_bread + others;
+
+                int damaged = (res.getInt(res.getColumnIndex(MARKET_DAMAGED)));
+                int expired = (res.getInt(res.getColumnIndex(MARKET_EXPIRED)));
+                int rat_eaten = (res.getInt(res.getColumnIndex(MARKET_RAT_EATEN)));
+                int total_market = damaged + expired + rat_eaten;
+
+                rejectionModel.setFresh_rej(total_fresh);
+                rejectionModel.setMarket_rej(total_market);
+        }
+
+        res.close();
+        db.close();
+        return rejectionModel;
+    }
+
 }
 
