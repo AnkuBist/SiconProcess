@@ -9,17 +9,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CashCheck;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncData;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.VanStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
-import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.database.tables.MarketProductTable;
-import com.hgil.siconprocess.database.tables.NextDayOrderTable;
 import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
@@ -42,12 +36,9 @@ public class SyncFragment extends BaseFragment {
     @BindView(R.id.btnSyncData)
     Button btnSyncData;
     private String TAG = this.getClass().getName();
-    private CustomerRouteMappingView routeCustomerView;
-    private DepotInvoiceView depot_invoice;
     private InvoiceOutTable invoiceOutTable;
     private CustomerRejectionTable rejectionTable;
     private PaymentTable paymentTable;
-    private NextDayOrderTable nextDayOrderTable;
     private MarketProductTable marketProductTable;
     private Handler updateBarHandler;
 
@@ -76,7 +67,6 @@ public class SyncFragment extends BaseFragment {
             tvRouteName.setText(getRouteName());
 
         initializeTableObjects();
-
         btnSyncData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,59 +76,14 @@ public class SyncFragment extends BaseFragment {
     }
 
     public void initializeTableObjects() {
-        routeCustomerView = new CustomerRouteMappingView(getContext());
-        depot_invoice = new DepotInvoiceView(getContext());
         invoiceOutTable = new InvoiceOutTable(getContext());
         rejectionTable = new CustomerRejectionTable(getContext());
         paymentTable = new PaymentTable(getContext());
-        nextDayOrderTable = new NextDayOrderTable(getContext());
         marketProductTable = new MarketProductTable(getContext());
     }
 
     /*preparing data to sync whole day process*/
     private void initiateDataSync() {
-        // below commented values are not mendatory to validate here
-        // these values are validated by the head cashier only.
-        // cashier total verification
-        CashCheck cashCheck = paymentTable.routeTotalAmountCollection();
-        
-        /*get items loaded and received stock*/
-        int crates_loaded_in_van = routeCustomerView.vanTotalCrate();
-        // int crates_delivered_by_cashier = 0; // ui task
-
-        CrateCheck crateCheck = new CrateCheck();
-        crateCheck.setCrates_loaded(crates_loaded_in_van);
-        //crateCheck.setCrate_delivered(crates_delivered_by_cashier);
-
-        // cross check items left and rejections
-        int items_loaded = depot_invoice.totalItemCount();
-        int items_sold = invoiceOutTable.soldItemCount();
-        int items_leftover = items_loaded - items_sold;
-        //int items_delivered = 0; //ui
-        int items_fresh_rejection = rejectionTable.routeFreshRejection();
-        // int items_fresh_rej_received = 0;   //ui
-        int items_market_rejection = rejectionTable.routeMarketRejection();
-        // int items_market_rej_received = 0;  //ui
-
-        VanStockCheck vanStockCheck = new VanStockCheck();
-        vanStockCheck.setItems_loaded(items_loaded);
-        vanStockCheck.setItems_sold(items_sold);
-        vanStockCheck.setItems_leftover(items_leftover);
-        // vanStockCheck.setItem_delivered(items_delivered);
-        vanStockCheck.setFresh_rejections(items_fresh_rejection);
-        //  vanStockCheck.setFresh_rejections_delivered(items_fresh_rej_received);
-        vanStockCheck.setMarket_rejection(items_market_rejection);
-        // vanStockCheck.setMarket_rejection_delivered(items_market_rej_received);
-
-        // get van actual stock
-        /*
-        * 1. items loaded
-        * 2. items sold
-        * 3. rejection
-        * 4. item_left over
-        * 5. total item in van(loaded-sold+rejection)
-        * */
-
         // finally convert all object and array data into jsonObject and send as object data to server side api;
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
@@ -148,16 +93,8 @@ public class SyncFragment extends BaseFragment {
         syncData.setSyncRejectDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
         syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
-        // syncData.setArrNextDayOrder(nextDayOrderTable.getRouteOrder());
         syncData.setArrMaketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
-
-        //TODO-data not to be updated by cashier
-        /*syncData.setCrateStock(crateStock);
-        syncData.setCashCheck(cashCheck);
-        syncData.setCrateCheck(crateCheck);
-        syncData.setVanStockCheck(vanStockCheck);
-        syncData.setArrMaketProductsSummary(marketProductTable.getRouteOrder());*/
 
         String json = new Gson().toJson(syncData);
         JSONObject jObj = null;
@@ -234,7 +171,6 @@ public class SyncFragment extends BaseFragment {
         rejectionTable.eraseTable();
         invoiceOutTable.eraseTable();
         paymentTable.eraseTable();
-        // nextDayOrderTable.eraseTable();
         marketProductTable.eraseTable();
     }
 

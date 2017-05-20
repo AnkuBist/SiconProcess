@@ -428,6 +428,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
             while (res.isAfterLast() == false) {
                 RejectionDetailModel rejectionDetails = new RejectionDetailModel();
                 rejectionDetails.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
+                rejectionDetails.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 rejectionDetails.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
                 rejectionDetails.setRoute_id(route_id);
                 rejectionDetails.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));

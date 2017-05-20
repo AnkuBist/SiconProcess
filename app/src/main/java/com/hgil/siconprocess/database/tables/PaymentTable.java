@@ -332,23 +332,22 @@ public class PaymentTable extends SQLiteOpenHelper {
     public ArrayList<CollectionCashModel> syncCompletedCashDetail() {
         ArrayList<CollectionCashModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
                 new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
-                // TODO --cheque details not sent
                 CollectionCashModel cashModel = new CollectionCashModel();
-                cashModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_ID)));
-                cashModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
+
+                cashModel.setInvoice_no(invoiceOutTable.returnCustomerInvoiceNo(customer_id));
+                cashModel.setBill_no(invoiceOutTable.returnCustomerBillNo(customer_id));
+                cashModel.setCustomer_id(customer_id);
                 cashModel.setOpening(routeCustomerView.custCreditAmount(cashModel.getCustomer_id()));
                 cashModel.setSale(res.getDouble(res.getColumnIndex(SALE_AMOUNT)));
                 cashModel.setReceive(res.getDouble(res.getColumnIndex(CASH_PAID)));
 
-                // if (cashModel.getSale() > 0)
-              /*  if (cashModel.getSale() < 0)
-                    cashModel.setBalance(cashModel.getOpening() + cashModel.getSale() + cashModel.getReceive());
-*/
                 cashModel.setUpi_reference_id(res.getString(res.getColumnIndex(UPI_REFERENCE_ID)));
                 cashModel.setUpi_amount(res.getDouble(res.getColumnIndex(UPI_AMOUNT)));
 
@@ -372,14 +371,19 @@ public class PaymentTable extends SQLiteOpenHelper {
     public ArrayList<CollectionChequeModel> syncCompletedChequeDetail(String route_id) {
         ArrayList<CollectionChequeModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + CHEQUE_AMOUNT + ">0 and " + INV_STATUS + "=?",
                 new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CollectionChequeModel chequeModel = new CollectionChequeModel();
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
 
                 chequeModel.setRoute_id(route_id);
-                chequeModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                chequeModel.setInvoice_no(invoiceOutTable.returnCustomerInvoiceNo(customer_id));
+                chequeModel.setBill_no(invoiceOutTable.returnCustomerBillNo(customer_id));
+                chequeModel.setCustomer_id(customer_id);
                 chequeModel.setCheque_no(res.getString(res.getColumnIndex(CHEQUE_NUMBER)));
                 chequeModel.setCheque_date(res.getString(res.getColumnIndex(CHEQUE_DATE)));
                 chequeModel.setCheque_amount(res.getDouble(res.getColumnIndex(CHEQUE_AMOUNT)));
@@ -404,14 +408,19 @@ public class PaymentTable extends SQLiteOpenHelper {
     public ArrayList<CollectionCrateModel> syncCompletedCrateDetail() {
         ArrayList<CollectionCrateModel> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
                 new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CollectionCrateModel crateModel = new CollectionCrateModel();
-                crateModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
-                crateModel.setOpening(routeCustomerView.custCreditCrates(crateModel.getCustomer_id()));
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
+
+                crateModel.setInvoice_no(invoiceOutTable.returnCustomerInvoiceNo(customer_id));
+                crateModel.setBill_no(invoiceOutTable.returnCustomerBillNo(customer_id));
+                crateModel.setCustomer_id(customer_id);
+                crateModel.setOpening(routeCustomerView.custCreditCrates(customer_id));
                 crateModel.setIssued(res.getInt(res.getColumnIndex(ISSUED_CRATES)));
                 crateModel.setReceive(res.getInt(res.getColumnIndex(RECEIVED_CRATES)));
                 crateModel.setBalance(crateModel.getOpening() + crateModel.getIssued() - crateModel.getReceive());

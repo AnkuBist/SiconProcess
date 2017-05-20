@@ -6,6 +6,7 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 
 public class CollectionCashModel {
     private String invoice_no;
+    private String bill_no;
     private String customer_id;
     private double opening;
     private double sale;
@@ -121,5 +122,13 @@ public class CollectionCashModel {
 
     public void setLogin_id(String login_id) {
         this.login_id = login_id;
+    }
+
+    public String getBill_no() {
+        return bill_no;
+    }
+
+    public void setBill_no(String bill_no) {
+        this.bill_no = bill_no;
     }
 }

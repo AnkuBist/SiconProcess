@@ -370,12 +370,24 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     public String returnCustomerBillNo(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "select " + BILL_NO + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
-
         Cursor res = db.rawQuery(query, new String[]{customer_id});
-
         String bill_no = "";
         if (res.moveToFirst()) {
             bill_no = res.getString(res.getColumnIndex(BILL_NO));
+        }
+        res.close();
+        db.close();
+        return bill_no;
+    }
+
+    /*get only customer invoice_no*/
+    public String returnCustomerInvoiceNo(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + INVOICE_NO + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+        String bill_no = "";
+        if (res.moveToFirst()) {
+            bill_no = res.getString(res.getColumnIndex(INVOICE_NO));
         }
         res.close();
         db.close();

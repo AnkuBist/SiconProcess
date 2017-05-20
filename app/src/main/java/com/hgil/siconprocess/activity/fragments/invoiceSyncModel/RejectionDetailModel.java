@@ -7,6 +7,7 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 public class RejectionDetailModel {
 
     private String bill_no;
+    private String invoice_no;
     private String route_id;
     private String customer_id;
     private String invoice_date;
@@ -26,6 +27,14 @@ public class RejectionDetailModel {
 
     public void setBill_no(String bill_no) {
         this.bill_no = bill_no;
+    }
+
+    public String getInvoice_no() {
+        return invoice_no;
+    }
+
+    public void setInvoice_no(String invoice_no) {
+        this.invoice_no = invoice_no;
     }
 
     public String getRoute_id() {

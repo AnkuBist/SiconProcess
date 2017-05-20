@@ -84,6 +84,9 @@ public class CratesManagementFragment extends BaseFragment {
         receivedCrate = crateInfo.getReceivedCrates();
         balanceCrate = crateOpening - issuedCrate + receivedCrate;
 
+        if(issuedCrate==0)
+            issuedCrate=routeCustomerView.custLoadingCrates(customer_id);
+
         etOpeningCrates.setText(String.valueOf(crateOpening));
         etIssuedCrates.setText(String.valueOf(issuedCrate));
         etReceivedCrates.setText(String.valueOf(receivedCrate));

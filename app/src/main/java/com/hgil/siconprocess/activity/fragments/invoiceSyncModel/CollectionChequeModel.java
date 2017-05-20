@@ -5,6 +5,7 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
  */
 
 public class CollectionChequeModel {
+    private String invoice_no;
     private String bill_no;
     private String route_id;
     private String customer_id;
@@ -18,6 +19,14 @@ public class CollectionChequeModel {
     private String time_stamp;
     private String login_id;
     private String date;
+
+    public String getInvoice_no() {
+        return invoice_no;
+    }
+
+    public void setInvoice_no(String invoice_no) {
+        this.invoice_no = invoice_no;
+    }
 
     public String getDate() {
         return date;

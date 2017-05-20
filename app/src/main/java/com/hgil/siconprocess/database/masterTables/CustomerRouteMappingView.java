@@ -256,6 +256,21 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         return crate;
     }
 
+    // get crate loading by user id
+    public int custLoadingCrates(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + CRATE_LOADING + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        int crate = 0;
+        if (res.moveToFirst()) {
+            crate = res.getInt(res.getColumnIndex(CRATE_LOADING));
+        }
+        res.close();
+        db.close();
+        return crate;
+    }
+
     // customer credit balance
     public double custCreditAmount(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();

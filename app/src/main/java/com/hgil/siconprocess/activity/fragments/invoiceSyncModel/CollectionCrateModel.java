@@ -6,6 +6,8 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 
 public class CollectionCrateModel {
 
+    private String invoice_no;
+    private String bill_no;
     private String customer_id;
     private int opening;
     private int issued;
@@ -16,6 +18,22 @@ public class CollectionCrateModel {
     private String time_stamp;
     private String login_id;
     private String ddate;
+
+    public String getInvoice_no() {
+        return invoice_no;
+    }
+
+    public void setInvoice_no(String invoice_no) {
+        this.invoice_no = invoice_no;
+    }
+
+    public String getBill_no() {
+        return bill_no;
+    }
+
+    public void setBill_no(String bill_no) {
+        this.bill_no = bill_no;
+    }
 
     public String getCustomer_id() {
         return customer_id;
