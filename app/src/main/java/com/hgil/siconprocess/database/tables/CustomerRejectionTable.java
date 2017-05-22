@@ -31,6 +31,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "rej_db";
     private static final String TABLE_NAME = "rej_table";
 
+    private static final String ROUTE_MANAGEMENT_ID = "route_management_id";
     private static final String INVOICE_NO = "invoice_no";
     private static final String BILL_NO = "bill_no";
     private static final String CASHIER_CODE = "cashier_code";
@@ -62,8 +63,8 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
 
     private static final String INV_STATUS = "inv_status";
 
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + INVOICE_NO + " TEXT NULL, "
-            + BILL_NO + " TEXT NULL, "
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
+            + INVOICE_NO + " TEXT NULL, " + BILL_NO + " TEXT NULL, "
             + CASHIER_CODE + " TEXT NULL, " + ITEM_ID + " TEXT NOT NULL, " + ITEM_NAME + " TEXT NOT NULL, "
             + CUSTOMER_ID + " TEXT NOT NULL, " + CUSTOMER_NAME + " TEXT NOT NULL, " + VAN_STOCK + " INTEGER NULL, " //+ VAN_QTY + " INTEGER NOT NULL, "
             + REJ_QTY + " INTEGER NULL, " + PRICE + " REAL NULL, " + FRESH_M_SHAPED + " INTEGER NULL, "
@@ -117,6 +118,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
         // Get the numeric indexes for each of the columns that we're updating
+        final int routeManagementIdColumn = ih.getColumnIndex(ROUTE_MANAGEMENT_ID);
         final int billNoColumn = ih.getColumnIndex(BILL_NO);
         final int invoiceNumberColumn = ih.getColumnIndex(INVOICE_NO);
         final int cashierCodeColumn = ih.getColumnIndex(CASHIER_CODE);
@@ -147,6 +149,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
             for (CRejectionModel rejectionModel : arrList) {
                 ih.prepareForInsert();
 
+                ih.bind(routeManagementIdColumn, rejectionModel.getRoute_management_id());
                 ih.bind(billNoColumn, rejectionModel.getBill_no());
                 ih.bind(invoiceNumberColumn, rejectionModel.getInvoice_no());
                 ih.bind(cashierCodeColumn, rejectionModel.getCashier_code());
@@ -218,6 +221,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CRejectionModel rejectionModel = new CRejectionModel();
+                rejectionModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
                 rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 rejectionModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));
@@ -366,6 +370,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 SyncInvoiceDetailModel rejectionModel = new SyncInvoiceDetailModel();
+                rejectionModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
                 rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 rejectionModel.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
@@ -427,6 +432,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 RejectionDetailModel rejectionDetails = new RejectionDetailModel();
+                rejectionDetails.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 rejectionDetails.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
                 rejectionDetails.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 rejectionDetails.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
@@ -504,26 +510,27 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
                 new String[]{Constant.STATUS_COMPLETE, customer_id, item_id});
         SyncInvoiceDetailModel rejectionModel = new SyncInvoiceDetailModel();
         if (res.moveToFirst()) {
-                rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
-                rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
-                rejectionModel.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
-                rejectionModel.setRoute_id(route_id);
-                rejectionModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));
+            rejectionModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
+            rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
+            rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
+            rejectionModel.setInvoice_date(res.getString(res.getColumnIndex(DATE)));
+            rejectionModel.setRoute_id(route_id);
+            rejectionModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));
 
-                int m_shaped = (res.getInt(res.getColumnIndex(FRESH_M_SHAPED)));
-                int torn_polly = (res.getInt(res.getColumnIndex(FRESH_TORN_POLLY)));
-                int fungus = (res.getInt(res.getColumnIndex(FRESH_FUNGUS)));
-                int wet_bread = (res.getInt(res.getColumnIndex(FRESH_WET_BREAD)));
-                int others = (res.getInt(res.getColumnIndex(FRESH_OTHERS)));
-                int total_fresh = m_shaped + torn_polly + fungus + wet_bread + others;
+            int m_shaped = (res.getInt(res.getColumnIndex(FRESH_M_SHAPED)));
+            int torn_polly = (res.getInt(res.getColumnIndex(FRESH_TORN_POLLY)));
+            int fungus = (res.getInt(res.getColumnIndex(FRESH_FUNGUS)));
+            int wet_bread = (res.getInt(res.getColumnIndex(FRESH_WET_BREAD)));
+            int others = (res.getInt(res.getColumnIndex(FRESH_OTHERS)));
+            int total_fresh = m_shaped + torn_polly + fungus + wet_bread + others;
 
-                int damaged = (res.getInt(res.getColumnIndex(MARKET_DAMAGED)));
-                int expired = (res.getInt(res.getColumnIndex(MARKET_EXPIRED)));
-                int rat_eaten = (res.getInt(res.getColumnIndex(MARKET_RAT_EATEN)));
-                int total_market = damaged + expired + rat_eaten;
+            int damaged = (res.getInt(res.getColumnIndex(MARKET_DAMAGED)));
+            int expired = (res.getInt(res.getColumnIndex(MARKET_EXPIRED)));
+            int rat_eaten = (res.getInt(res.getColumnIndex(MARKET_RAT_EATEN)));
+            int total_market = damaged + expired + rat_eaten;
 
-                rejectionModel.setFresh_rej(total_fresh);
-                rejectionModel.setMarket_rej(total_market);
+            rejectionModel.setFresh_rej(total_fresh);
+            rejectionModel.setMarket_rej(total_market);
         }
 
         res.close();

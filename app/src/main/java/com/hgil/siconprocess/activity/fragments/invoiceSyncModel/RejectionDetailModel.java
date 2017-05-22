@@ -6,6 +6,7 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 
 public class RejectionDetailModel {
 
+    private String routeManagementId;
     private String bill_no;
     private String invoice_no;
     private String route_id;
@@ -20,6 +21,14 @@ public class RejectionDetailModel {
     private int market_damaged;
     private int market_expired;
     private int market_rat_eaten;
+
+    public String getRouteManagementId() {
+        return routeManagementId;
+    }
+
+    public void setRouteManagementId(String routeManagementId) {
+        this.routeManagementId = routeManagementId;
+    }
 
     public String getBill_no() {
         return bill_no;

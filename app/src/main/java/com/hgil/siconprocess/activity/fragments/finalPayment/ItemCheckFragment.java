@@ -14,6 +14,7 @@ import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
+import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
@@ -126,6 +127,7 @@ public class ItemCheckFragment extends BaseFragment {
                 vanStockCheck.setMarket_rejection_delivered(items_market_rej_received);
 
                 cashierSyncModel.setVanStockCheck(vanStockCheck);
+                cashierSyncModel.setCrateStockCheck(new PaymentTable(getContext()).syncCrateStock(getRouteId()));
 
                 //sync the above cashierSyncModel to server.
                 String json = new Gson().toJson(cashierSyncModel);
@@ -135,21 +137,27 @@ public class ItemCheckFragment extends BaseFragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                syncRouteByCashier(getRouteId(), jObj);
+                String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
+                String supervisor_paycode = "android";
+                String routeManagementId = "android";
+                syncRouteByCashier(getRouteModel().getDepotId(), getRouteId(),routeManagementId, getRouteModel().getCashierCode(),
+                        supervisor_paycode, jObj, imei_number);
             }
         });
     }
 
     // sync process retrofit call
     /*retrofit call test example*/
-    public void syncRouteByCashier(final String route_id, JSONObject cashier_data) {
+    public void syncRouteByCashier(String depotId, final String route_id, String routeManagementId, String cashierPaycode, String supervisor_paycode,
+                                   JSONObject cashier_data, String imei_no) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteCashierCheck(route_id, cashier_data.toString());
+        Call<syncResponse> apiCall = service.syncRouteCashierCheck(depotId, route_id, routeManagementId, cashierPaycode, supervisor_paycode,
+                cashier_data.toString(), imei_no);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {

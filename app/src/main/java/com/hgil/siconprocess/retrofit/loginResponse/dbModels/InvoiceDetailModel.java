@@ -14,6 +14,9 @@ public class InvoiceDetailModel implements Serializable {
     @SerializedName("Route_managemnet_Date")
     @Expose
     private String routeManagemnetDate;
+    @SerializedName("Route_Management_Id")
+    @Expose
+    private String routeManagementId;
     @SerializedName("Invoice_No")
     @Expose
     private String invoiceNo;
@@ -63,6 +66,14 @@ public class InvoiceDetailModel implements Serializable {
 
     public void setRouteManagemnetDate(String routeManagemnetDate) {
         this.routeManagemnetDate = routeManagemnetDate;
+    }
+
+    public String getRouteManagementId() {
+        return routeManagementId;
+    }
+
+    public void setRouteManagementId(String routeManagementId) {
+        this.routeManagementId = routeManagementId;
     }
 
     public String getInvoiceNo() {

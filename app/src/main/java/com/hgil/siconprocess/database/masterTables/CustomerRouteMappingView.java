@@ -241,6 +241,22 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         return total_crates;
     }
 
+    /*van credit/opening crates*/
+    public int vanOpeningCrates() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select sum(" + CRATE_CREDIT + ") as total_crates " +
+                "from " + TABLE_NAME;
+        Cursor res = db.rawQuery(query, null);
+
+        int total_crates = 0;
+        if (res.moveToFirst()) {
+            total_crates = res.getInt(res.getColumnIndex("total_crates"));
+        }
+        res.close();
+        db.close();
+        return total_crates;
+    }
+
     // get crate opening by user id
     public int custCreditCrates(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();

@@ -92,13 +92,14 @@ public class SyncFragment extends BaseFragment {
         syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
         syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
 
-        syncData.setSyncInvoiceSaleRej(new CustomerItemPriceTable(getContext()).syncInvoiceSaleRej(getRouteId()));
-
         syncData.setSyncRejectDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
-        syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
         syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
         syncData.setArrMaketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
+
+        /*actual database synchronisation*/
+        syncData.setSyncInvoiceSaleRej(new CustomerItemPriceTable(getContext()).syncInvoiceSaleRej(getRouteId()));
+        syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
 
         String json = new Gson().toJson(syncData);
         JSONObject jObj = null;
@@ -112,19 +113,20 @@ public class SyncFragment extends BaseFragment {
         String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
 
         // make retrofit request call
-        syncRouteInvoice(getRouteId(), jObj, imei_number);
+        syncRouteInvoice(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getCashierCode(), jObj, imei_number);
     }
 
     // sync process retrofit call
     /*retrofit call test example*/
-    public void syncRouteInvoice(final String route_id, JSONObject route_data, String imei_number) {
+    public void syncRouteInvoice(String depot_id, final String route_id, String cashier_paycode, JSONObject route_data, String imei_number) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteData(route_id, route_data.toString(), imei_number);
+        Call<syncResponse> apiCall = service.syncRouteData(depot_id, route_id, cashier_paycode,
+                route_data.toString(), imei_number);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {

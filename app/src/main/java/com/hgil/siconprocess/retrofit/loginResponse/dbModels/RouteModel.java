@@ -19,12 +19,21 @@ public class RouteModel implements Serializable {
     @SerializedName("Depot_id")
     @Expose
     private String depotId;
+    @SerializedName("subCompanyId")
+    @Expose
+    private String subCompanyId;
     @SerializedName("Route_Id")
     @Expose
     private String routeId;
     @SerializedName("Route_Name")
     @Expose
     private String routeName;
+    @SerializedName("routeManagementId")
+    @Expose
+    private String routeManagementId;
+    @SerializedName("CashierCode")
+    @Expose
+    private String cashierCode;
     @SerializedName("Flag")
     @Expose
     private int flag;
@@ -48,6 +57,30 @@ public class RouteModel implements Serializable {
     @SerializedName("expectedLastBillNo")
     @Expose
     private String expectedLastBillNo;
+
+    public String getSubCompanyId() {
+        return subCompanyId;
+    }
+
+    public void setSubCompanyId(String subCompanyId) {
+        this.subCompanyId = subCompanyId;
+    }
+
+    public String getRouteManagementId() {
+        return routeManagementId;
+    }
+
+    public void setRouteManagementId(String routeManagementId) {
+        this.routeManagementId = routeManagementId;
+    }
+
+    public String getCashierCode() {
+        return cashierCode;
+    }
+
+    public void setCashierCode(String cashierCode) {
+        this.cashierCode = cashierCode;
+    }
 
     public int getRecId() {
         return recId;

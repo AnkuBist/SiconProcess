@@ -6,6 +6,7 @@ package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 
 public class SyncInvoiceDetailModel {
 
+    private String route_management_id;
     private String bill_no;
     private String invoice_no;
     private String invoice_date;
@@ -36,6 +37,14 @@ public class SyncInvoiceDetailModel {
     private int actual_sale_count;
     private double f_rej_amount;
     private double m_rej_amount;
+
+    public String getRoute_management_id() {
+        return route_management_id;
+    }
+
+    public void setRoute_management_id(String route_management_id) {
+        this.route_management_id = route_management_id;
+    }
 
     public int getActual_sale_count() {
         return actual_sale_count;

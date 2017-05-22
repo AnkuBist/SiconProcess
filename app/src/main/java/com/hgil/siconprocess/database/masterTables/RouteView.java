@@ -22,8 +22,11 @@ public class RouteView extends SQLiteOpenHelper {
 
     private static final String REC_ID = "Rec_Id";
     private static final String DEPOT_ID = "Depot_id";
+    private static final String SUB_COMPANY_ID = "subCompanyId";
     private static final String ROUTE_ID = "Route_Id";
     private static final String ROUTE_NAME = "Route_Name";
+    private static final String ROUTE_MANAGEMENT_ID = "route_management_id";
+    private static final String ROUTE_CASHIER_NAME = "cashier_name";
     private static final String FLAG = "Flag";
     private static final String LAST_BILL_NO = "last_bill_no";
 
@@ -34,8 +37,9 @@ public class RouteView extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + REC_ID + " INTEGER NULL, "
-                + DEPOT_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, " + ROUTE_NAME + " TEXT NULL, "
-               + FLAG + " INTEGER NULL, "+ LAST_BILL_NO + " TEXT NULL)");
+                + DEPOT_ID + " TEXT NULL, " + SUB_COMPANY_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
+                + ROUTE_NAME + " TEXT NULL, " + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
+                + ROUTE_CASHIER_NAME + " TEXT NULL, " + FLAG + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
     }
 
     @Override
@@ -58,8 +62,11 @@ public class RouteView extends SQLiteOpenHelper {
         // Get the numeric indexes for each of the columns that we're updating
         final int recIdColumn = ih.getColumnIndex(REC_ID);
         final int depotIdColumn = ih.getColumnIndex(DEPOT_ID);
+        final int subCompanyIdColumn = ih.getColumnIndex(SUB_COMPANY_ID);
         final int routeIdColumn = ih.getColumnIndex(ROUTE_ID);
         final int routeNameColumn = ih.getColumnIndex(ROUTE_NAME);
+        final int routeManagementIdColumn = ih.getColumnIndex(ROUTE_MANAGEMENT_ID);
+        final int routeCashierNameColumn = ih.getColumnIndex(ROUTE_CASHIER_NAME);
         final int flagColumn = ih.getColumnIndex(FLAG);
         final int lastBillNoColumn = ih.getColumnIndex(LAST_BILL_NO);
 
@@ -68,8 +75,11 @@ public class RouteView extends SQLiteOpenHelper {
             ih.prepareForInsert();
             ih.bind(recIdColumn, routeModel.getRecId());
             ih.bind(depotIdColumn, routeModel.getDepotId());
+            ih.bind(subCompanyIdColumn, routeModel.getSubCompanyId());
             ih.bind(routeIdColumn, routeModel.getRouteId());
             ih.bind(routeNameColumn, routeModel.getRouteName());
+            ih.bind(routeManagementIdColumn, routeModel.getRouteManagementId());
+            ih.bind(routeCashierNameColumn, routeModel.getCashierCode());
             ih.bind(flagColumn, routeModel.getFlag());
             ih.bind(lastBillNoColumn, routeModel.getExpectedLastBillNo());
             ih.execute();
@@ -90,8 +100,11 @@ public class RouteView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             routeModel.setRecId(res.getInt(res.getColumnIndex(REC_ID)));
             routeModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
+            routeModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
             routeModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
+            routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
+            routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
         }
@@ -107,19 +120,6 @@ public class RouteView extends SQLiteOpenHelper {
         return numRows;
     }
 
-    /*
-        contentValues.put(IP, userRoleMapModel.getIp());
-        contentValues.put(U_TS, userRoleMapModel.getU_ts());
-        db.update(TABLE_NAME, contentValues, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(userRoleMapModel.getUser_role_id())});
-        db.close();
-        return true;
-    }*/
-
- /*   public Integer deleteUserRoleMapById(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, USER_ROLE_ID + "= ? ", new String[]{Integer.toString(id)});
-    }*/
-
     public RouteModel getRoute() {
         RouteModel routeModel = new RouteModel();
 
@@ -128,8 +128,11 @@ public class RouteView extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             routeModel.setRecId(res.getInt(res.getColumnIndex(REC_ID)));
             routeModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
+            routeModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
             routeModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
+            routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
+            routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
             //}
@@ -149,8 +152,11 @@ public class RouteView extends SQLiteOpenHelper {
                 RouteModel routeModel = new RouteModel();
                 routeModel.setRecId(res.getInt(res.getColumnIndex(REC_ID)));
                 routeModel.setDepotId(res.getString(res.getColumnIndex(DEPOT_ID)));
+                routeModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
                 routeModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
+                routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
+                routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
                 routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
                 routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
 

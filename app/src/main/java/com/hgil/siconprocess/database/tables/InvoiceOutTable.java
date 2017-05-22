@@ -28,6 +28,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "invoice_out_db";
     private static final String TABLE_NAME = "depot_invoice_out";
 
+    private static final String ROUTE_MANAGEMENT_ID = "route_management_id";
     private static final String INVOICE_NO = "Invoice_No";
     private static final String BILL_NO = "bill_no";
     private static final String INVOICE_DATE = "Invoice_Date";
@@ -71,8 +72,8 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + INVOICE_NO + " TEXT NULL, "
-                + BILL_NO + " TEXT NULL, "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
+                + INVOICE_NO + " TEXT NULL, " + BILL_NO + " TEXT NULL, "
                 + INVOICE_DATE + " TEXT NULL, " + CUSTOMER_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
                 + VEHICLE_NO + " TEXT NULL, " + ITEM_ID + " TEXT NULL, " + CASHIER_CODE + " TEXT NULL, "
                 + CRATE_ID + " TEXT NULL, " + INVQTY_CR + " REAL NULL, " + INVQTY_PS + " REAL NULL, "
@@ -116,6 +117,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
         // Get the numeric indexes for each of the columns that we're updating
+        final int routeManagementIdColumn = ih.getColumnIndex(ROUTE_MANAGEMENT_ID);
         final int billNoColumn = ih.getColumnIndex(BILL_NO);
         final int invoiceNumberColumn = ih.getColumnIndex(INVOICE_NO);
         final int invoiceDateColumn = ih.getColumnIndex(INVOICE_DATE);
@@ -146,6 +148,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
                 if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getInvQtyPs() > 0) {
                     ih.prepareForInsert();
 
+                    ih.bind(routeManagementIdColumn, invoiceModel.getRouteManagementId());
                     ih.bind(billNoColumn, invoiceModel.getBill_no());
                     ih.bind(invoiceNumberColumn, invoiceModel.getInvoiceNo());
                     ih.bind(invoiceDateColumn, invoiceModel.getInvoiceDate());
@@ -287,6 +290,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
                 String item_id = res.getString(res.getColumnIndex(ITEM_ID));
                 String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
 
+                syncModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 syncModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
                 syncModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 syncModel.setInvoice_date(res.getString(res.getColumnIndex(INVOICE_DATE)));
@@ -420,6 +424,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
 
         SyncInvoiceDetailModel syncModel = new SyncInvoiceDetailModel();
         if (res.moveToFirst()) {
+            syncModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
             syncModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
             syncModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
             syncModel.setInvoice_date(res.getString(res.getColumnIndex(INVOICE_DATE)));

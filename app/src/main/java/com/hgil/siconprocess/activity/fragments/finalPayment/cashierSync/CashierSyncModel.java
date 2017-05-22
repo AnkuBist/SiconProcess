@@ -2,6 +2,7 @@ package com.hgil.siconprocess.activity.fragments.finalPayment.cashierSync;
 
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CashCheck;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.VanStockCheck;
 
 import java.io.Serializable;
@@ -15,6 +16,15 @@ public class CashierSyncModel implements Serializable {
     private CashCheck cashCheck;
     private CrateCheck crateCheck;
     private VanStockCheck vanStockCheck;
+    private CrateStockCheck crateStockCheck;
+
+    public CrateStockCheck getCrateStockCheck() {
+        return crateStockCheck;
+    }
+
+    public void setCrateStockCheck(CrateStockCheck crateStockCheck) {
+        this.crateStockCheck = crateStockCheck;
+    }
 
     public CashCheck getCashCheck() {
         return cashCheck;

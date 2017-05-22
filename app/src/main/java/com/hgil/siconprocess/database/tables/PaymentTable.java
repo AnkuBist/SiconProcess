@@ -446,13 +446,14 @@ public class PaymentTable extends SQLiteOpenHelper {
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
         CrateStockCheck crateStock = new CrateStockCheck();
 
-        Cursor res = db.rawQuery("SELECT sum(" + ISSUED_CRATES + ") as issued, sum(" + RECEIVED_CRATES + ") as received  FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT sum(" + ISSUED_CRATES + ") as issued, sum(" + RECEIVED_CRATES + ") as received FROM "
+                + TABLE_NAME + " where " + INV_STATUS + "=?", new String[]{Constant.STATUS_COMPLETE});
         if (res.moveToFirst()) {
             crateStock.setRouteId(route_id);
-            crateStock.setOpening(routeCustomerView.vanTotalCrate());
+            crateStock.setOpening(routeCustomerView.vanOpeningCrates());
             crateStock.setIssued(res.getInt(res.getColumnIndex("issued")));
             crateStock.setReceived(res.getInt(res.getColumnIndex("received")));
-            crateStock.setBalance(crateStock.getOpening() + crateStock.getIssued() - crateStock.getReceived());
+            crateStock.setBalance(crateStock.getOpening() - crateStock.getIssued() + crateStock.getReceived());
         }
         res.close();
         db.close();

@@ -28,12 +28,21 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST(API.SYNC_URL)
-    Call<syncResponse> syncRouteData(@Field("route_id") String username, @Field("route_data") String route_data,
+    Call<syncResponse> syncRouteData(@Field("depot_id") String depot_id,
+                                     @Field("route_id") String username,
+                                     @Field("cashier_paycode") String cashier_paycode,
+                                     @Field("route_data") String route_data,
                                      @Field("imei_number") String imei_number);
 
     @FormUrlEncoded
     @POST(API.SYNC_CASHIER_URL)
-    Call<syncResponse> syncRouteCashierCheck(@Field("route_id") String username, @Field("cashier_data") String cashier_data);
+    Call<syncResponse> syncRouteCashierCheck(@Field("depot_id") String depot_id,
+                                             @Field("route_id") String username,
+                                             @Field("routeManagementId") String routeManagementId,
+                                             @Field("cashier_paycode") String cashier_paycode,
+                                             @Field("supervisor_paycode") String supervisor_paycode,
+                                             @Field("cashier_data") String cashier_data,
+                                             @Field("imei_number") String imei_number);
 
 
 }

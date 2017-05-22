@@ -12,6 +12,7 @@ public class CollectionCashModel {
     private double sale;
     private double receive;
     private double balance;
+    private double discountAmount;
     private String upi_reference_id;
     private double upi_amount;
     private String imei_no;
@@ -19,6 +20,14 @@ public class CollectionCashModel {
     private String time_stamp;
     private String login_id;
     private String date;
+
+    public double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
 
     public String getUpi_reference_id() {
         return upi_reference_id;

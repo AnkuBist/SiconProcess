@@ -225,6 +225,12 @@ public class CustomerRejectionFragment extends BaseFragment {
                     else
                         rejectionModel.setInvoice_no(depotInvoiceView.commonInvoiceNumber());
 
+                    // get route management id
+                    if (!depotInvoiceView.customerRouteManagementId(customer_id).isEmpty())
+                        rejectionModel.setRoute_management_id(depotInvoiceView.customerRouteManagementId(customer_id));
+                    else
+                        rejectionModel.setRoute_management_id(depotInvoiceView.commonRouteManagementId());
+
                     rejectionModel.setCashier_code(depotInvoiceView.getRouteCashierCode());
 
                     rejectionModel.setItem_id(pModel.getItem_id());

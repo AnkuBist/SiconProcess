@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class InvoiceModel implements Serializable {
 
     private String routeManagemnetDate;
+    private String routeManagementId;
     private String bill_no;
 
     private String invoiceNo;
@@ -37,6 +38,14 @@ public class InvoiceModel implements Serializable {
     private String imei_no;
     private String lat_lng;
     private String login_id;
+
+    public String getRouteManagementId() {
+        return routeManagementId;
+    }
+
+    public void setRouteManagementId(String routeManagementId) {
+        this.routeManagementId = routeManagementId;
+    }
 
     public String getBill_no() {
         return bill_no;

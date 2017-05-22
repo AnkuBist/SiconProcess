@@ -6,6 +6,7 @@ package com.hgil.siconprocess.adapter.invoiceRejection;
 
 public class CRejectionModel {
 
+    private String route_management_id;
     private String bill_no;
     private String invoice_no;
     private String cashier_code;
@@ -24,6 +25,14 @@ public class CRejectionModel {
     private String imei_no;
     private String lat_lng;
     private String login_id;
+
+    public String getRoute_management_id() {
+        return route_management_id;
+    }
+
+    public void setRoute_management_id(String route_management_id) {
+        this.route_management_id = route_management_id;
+    }
 
     public String getBill_no() {
         return bill_no;

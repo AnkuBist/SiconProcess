@@ -7,7 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
@@ -25,12 +24,13 @@ import java.util.List;
  */
 
 public class DepotInvoiceView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Sicon_depot_invoice";
     private static final String TABLE_NAME = "V_SD_DepotInvoice_Master";
 
     private static final String ROUTE_MANAGEMENT_DATE = "Route_management_Date";
+    private static final String ROUTE_MANAGEMENT_ID = "Route_management_Id";
     private static final String INVOICE_NO = "Invoice_No";
     private static final String INVOICE_DATE = "Invoice_Date";
     private static final String CUSTOMER_ID = "Customer_id";
@@ -56,7 +56,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ROUTE_MANAGEMENT_DATE + " TEXT NULL, "
-                + INVOICE_NO + " TEXT NULL, "
+                + ROUTE_MANAGEMENT_ID + " TEXT NULL, " + INVOICE_NO + " TEXT NULL, "
                 + INVOICE_DATE + " TEXT NULL, " + CUSTOMER_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
                 + VEHICLE_NO + " TEXT NULL, " + DRIVER_CODE + " TEXT NULL, "
                 + CASHIER_CODE + " TEXT NULL, " + ITEM_ID + " TEXT NULL, "
@@ -84,6 +84,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
             InvoiceDetailModel invoiceDetailModel = arrList.get(i);
             ContentValues contentValues = new ContentValues();
             contentValues.put(ROUTE_MANAGEMENT_DATE, invoiceDetailModel.getRouteManagemnetDate());
+            contentValues.put(ROUTE_MANAGEMENT_ID, invoiceDetailModel.getRouteManagementId());
             contentValues.put(INVOICE_NO, invoiceDetailModel.getInvoiceNo());
             contentValues.put(INVOICE_DATE, invoiceDetailModel.getInvoiceDate());
             contentValues.put(CUSTOMER_ID, invoiceDetailModel.getCustomerId());
@@ -157,6 +158,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                 String item_id = (res.getString(res.getColumnIndex(ITEM_ID)));
 
                 invoiceModel.setRouteManagemnetDate(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_DATE)));
+                invoiceModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 invoiceModel.setInvoiceNo(res.getString(res.getColumnIndex(INVOICE_NO)));
                 invoiceModel.setInvoiceDate(res.getString(res.getColumnIndex(INVOICE_DATE)));
                 invoiceModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
@@ -239,6 +241,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                 String item_id = (res.getString(res.getColumnIndex(ITEM_ID)));
 
                 invoiceModel.setRouteManagemnetDate(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_DATE)));
+                invoiceModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 invoiceModel.setInvoiceNo(res.getString(res.getColumnIndex(INVOICE_NO)));
                 invoiceModel.setInvoiceDate(res.getString(res.getColumnIndex(INVOICE_DATE)));
                 invoiceModel.setCustomerId(customer_id);
@@ -332,6 +335,37 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         res.close();
         db.close();
         return invoice_number;
+    }
+
+    /*get cusotmer route management id*/
+     /*if customer invoice exists*/
+    public String customerRouteManagementId(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select distinct " + ROUTE_MANAGEMENT_ID + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        String route_management_id = "";
+        if (res.moveToFirst()) {
+            route_management_id = res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID));
+        }
+        res.close();
+        db.close();
+        return route_management_id;
+    }
+
+    //fetch route management idany invoice if there is any without customer_id
+    public String commonRouteManagementId() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select distinct " + ROUTE_MANAGEMENT_ID + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=''";
+        Cursor res = db.rawQuery(query, null);
+
+        String route_management_id = "";
+        if (res.moveToFirst()) {
+            route_management_id = res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID));
+        }
+        res.close();
+        db.close();
+        return route_management_id;
     }
 
     // route cashier code

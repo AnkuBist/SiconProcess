@@ -307,6 +307,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
                 SyncInvoiceDetailModel custItemSale = invoiceOutTable.syncCompletedInvoiceItem(customer_id, item_id);
                 int saleCount = custItemSale.getSale_count();
                 if (saleCount > 0) {
+                    syncModel.setRoute_management_id(custItemSale.getRoute_management_id());
                     syncModel.setBill_no(custItemSale.getBill_no());
                     syncModel.setInvoice_no(custItemSale.getInvoice_no());
                     syncModel.setInvoice_date(custItemSale.getInvoice_date());
@@ -321,6 +322,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
                 int fresh_rej = custItemRej.getFresh_rej();
                 int market_rej = custItemRej.getMarket_rej();
                 if (fresh_rej > 0 || market_rej > 0) {
+                    syncModel.setRoute_management_id(custItemRej.getRoute_management_id());
                     syncModel.setBill_no(custItemRej.getBill_no());
                     syncModel.setInvoice_no(custItemRej.getInvoice_no());
                     syncModel.setInvoice_date(custItemRej.getInvoice_date());
