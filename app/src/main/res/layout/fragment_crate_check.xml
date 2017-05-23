@@ -24,11 +24,26 @@
 
             <TextView
                 style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etCrateLoaded"
-                android:text="Crates Loaded" />
+                android:layout_toLeftOf="@+id/etCrateOpening"
+                android:text="Crates Opening" />
 
             <EditText
-                android:id="@+id/etCrateLoaded"
+                android:id="@+id/etCrateOpening"
+                style="@style/RejectionEtStyle"
+                android:background="@drawable/et_uneditable_round_shape"
+                android:editable="false"
+                android:enabled="false" />
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/finalPaymentItemHolder">
+
+            <TextView
+                style="@style/FinalTvLabel"
+                android:layout_toLeftOf="@+id/etCrateIssued"
+                android:text="Crates Issued" />
+
+            <EditText
+                android:id="@+id/etCrateIssued"
                 style="@style/RejectionEtStyle"
                 android:background="@drawable/et_uneditable_round_shape"
                 android:editable="false"
@@ -40,11 +55,26 @@
             <TextView
                 style="@style/FinalTvLabel"
                 android:layout_toLeftOf="@+id/etCrateReceived"
-                android:text="Crates received by Supervisor" />
+                android:text="Crates Received" />
 
             <EditText
                 android:id="@+id/etCrateReceived"
                 style="@style/RejectionEtStyle" />
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/finalPaymentItemHolder">
+
+            <TextView
+                style="@style/FinalTvLabel"
+                android:layout_toLeftOf="@+id/etCrateBalance"
+                android:text="Crates Balance" />
+
+            <EditText
+                android:id="@+id/etCrateBalance"
+                style="@style/RejectionEtStyle"
+                android:background="@drawable/et_uneditable_round_shape"
+                android:editable="false"
+                android:enabled="false" />
         </RelativeLayout>
 
         <View

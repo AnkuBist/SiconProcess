@@ -12,7 +12,7 @@ import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CashCheck;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCashModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionChequeModel;
 import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCrateModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateStockCheck;
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.CrateStockCheck;
 import com.hgil.siconprocess.database.dbModels.ChequeDetailsModel;
 import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;

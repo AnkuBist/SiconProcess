@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.finalPayment.CashCheckFragment;
+import com.hgil.siconprocess.activity.fragments.finalPayment.CrateCheckFragment;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.utils.Constant;
 
@@ -51,7 +51,7 @@ public class FinalPaymentFragment extends BaseFragment {
                 if (head_cashier_code.isEmpty()) {
                     showSnackbar(getView(), "Please enter head cashier code");
                 } else if (head_cashier_code.matches(Constant.HEAD_CASHIER_CODE)) {
-                    CashCheckFragment fragment = CashCheckFragment.newInstance();
+                    CrateCheckFragment fragment = CrateCheckFragment.newInstance();
                     launchNavFragment(fragment);
                 } else {
                     showSnackbar(getView(), "Please enter a valid head cashier code");

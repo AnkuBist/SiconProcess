@@ -3,15 +3,16 @@ package com.hgil.siconprocess.activity.fragments.finalPayment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.finalPayment.cashierSync.CashierSyncModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CrateCheck;
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.CrateStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
-import com.hgil.siconprocess.utils.Utility;
+import com.hgil.siconprocess.database.tables.PaymentTable;
 
 import butterknife.BindView;
 
@@ -20,23 +21,24 @@ import butterknife.BindView;
  */
 public class CrateCheckFragment extends BaseFragment {
 
-    private static final String SYNC_OBJECT = "sync_object";
-    @BindView(R.id.etCrateLoaded)
-    EditText etCrateLoaded;
+    @BindView(R.id.etCrateOpening)
+    EditText etCrateOpening;
+    @BindView(R.id.etCrateIssued)
+    EditText etCrateIssued;
     @BindView(R.id.etCrateReceived)
     EditText etCrateReceived;
-    private int crates_loaded_in_van, crates_delivered_by_cashier;
+    @BindView(R.id.etCrateBalance)
+    EditText etCrateBalance;
+
     private CashierSyncModel cashierSyncModel;
+    private CrateStockCheck crateStockCheck;
 
     public CrateCheckFragment() {
         // Required empty public constructor
     }
 
-    public static CrateCheckFragment newInstance(CashierSyncModel cashierSyncModel) {
+    public static CrateCheckFragment newInstance() {
         CrateCheckFragment fragment = new CrateCheckFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SYNC_OBJECT, cashierSyncModel);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -48,35 +50,52 @@ public class CrateCheckFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            cashierSyncModel = (CashierSyncModel) getArguments().getSerializable(SYNC_OBJECT);
-        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        cashierSyncModel = new CashierSyncModel();
         showSaveButton();
 
-        CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(getContext());
+        // crate stock verifying
+        crateStockCheck = new PaymentTable(getContext()).syncCrateStock(getRouteId());
 
-         /*get items loaded and received stock*/
-        crates_loaded_in_van = routeCustomerView.vanTotalCrate();
-        etCrateLoaded.setText(String.valueOf(crates_loaded_in_van));
-        etCrateReceived.setText(String.valueOf(crates_delivered_by_cashier));
+        etCrateOpening.setText(String.valueOf(crateStockCheck.getOpening()));
+        etCrateIssued.setText(String.valueOf(crateStockCheck.getIssued()));
+        etCrateReceived.setText(String.valueOf(crateStockCheck.getReceived()));
+        etCrateBalance.setText(String.valueOf(crateStockCheck.getBalance()));
 
+        etCrateReceived.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    crateStockCheck.setReceived(Integer.parseInt(etCrateReceived.getText().toString()));
+                    etCrateBalance.setText(String.valueOf(crateStockCheck.getOpening() - crateStockCheck.getIssued() + crateStockCheck.getReceived()));
+                } else {
+                    etCrateBalance.setText(String.valueOf(crateStockCheck.getOpening() - crateStockCheck.getIssued()));
+                }
+            }
+        });
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                crateStockCheck.setReceived(Integer.parseInt(etCrateReceived.getText().toString()));
+                crateStockCheck.setBalance(Integer.parseInt(etCrateBalance.getText().toString()));
 
-                crates_delivered_by_cashier = Utility.getInteger(etCrateReceived.getText().toString());
-
-                CrateCheck crateCheck = new CrateCheck();
-                crateCheck.setCrates_loaded(crates_loaded_in_van);
-                crateCheck.setCrate_delivered(crates_delivered_by_cashier);
-
-                cashierSyncModel.setCrateCheck(crateCheck);
+                // crate stock verifying
+                cashierSyncModel.setCrateStockCheck(crateStockCheck);
 
                 ItemCheckFragment fragment = ItemCheckFragment.newInstance(cashierSyncModel);
                 launchNavFragment(fragment);

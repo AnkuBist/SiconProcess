@@ -1,4 +1,4 @@
-package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
+package com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync;
 
 /**
  * Created by mohan.giri on 20-02-2017.
@@ -9,7 +9,7 @@ public class CrateStockCheck {
     private String routeId;
     private int opening;
     private int issued;
-    private int received;
+    private int received;       // supervisor enter figures
     private int balance;
 
     public String getRouteId() {

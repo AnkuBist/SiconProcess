@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.activity.fragments.invoiceSyncModel;
 
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.CrateStockCheck;
 import com.hgil.siconprocess.database.dbModels.MarketProductModel;
 import com.hgil.siconprocess.database.dbModels.NextDayOrderModel;
 
