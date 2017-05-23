@@ -7,7 +7,7 @@
     <!--van item stock check-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -20,116 +20,142 @@
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_large" />
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTextLightGrey"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvItemStockCheck"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none" />
 
             <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsLoaded"
-                android:text="Items Loaded" />
+                android:id="@+id/tvEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:text="No Customer found"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_large"
+                android:visibility="gone" />
+        </LinearLayout>
 
-            <EditText
-                android:id="@+id/etItemsLoaded"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+        <!--     <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsSold"
-                android:text="Items Sold" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsLoaded"
+                     android:text="Items Loaded" />
 
-            <EditText
-                android:id="@+id/etItemsSold"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsLoaded"
+                     style="@style/RejectionEtStyle"
+                     android:background="@drawable/et_uneditable_round_shape"
+                     android:editable="false"
+                     android:enabled="false" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsLeftover"
-                android:text="Items Leftover" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsSold"
+                     android:text="Items Sold" />
 
-            <EditText
-                android:id="@+id/etItemsLeftover"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsSold"
+                     style="@style/RejectionEtStyle"
+                     android:background="@drawable/et_uneditable_round_shape"
+                     android:editable="false"
+                     android:enabled="false" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsReceived"
-                android:text="Items Recieved by Supervisor" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsLeftover"
+                     android:text="Items Leftover" />
 
-            <EditText
-                android:id="@+id/etItemsReceived"
-                style="@style/RejectionEtStyle" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsLeftover"
+                     style="@style/RejectionEtStyle"
+                     android:background="@drawable/et_uneditable_round_shape"
+                     android:editable="false"
+                     android:enabled="false" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsFreshRej"
-                android:text="Items Fresh Rejections" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsReceived"
+                     android:text="Items Recieved by Supervisor" />
 
-            <EditText
-                android:id="@+id/etItemsFreshRej"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsReceived"
+                     style="@style/RejectionEtStyle" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsReceivedFreshRej"
-                android:text="Fresh Rejected Items Received by Supervisor" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsFreshRej"
+                     android:text="Items Fresh Rejections" />
 
-            <EditText
-                android:id="@+id/etItemsReceivedFreshRej"
-                style="@style/RejectionEtStyle" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsFreshRej"
+                     style="@style/RejectionEtStyle"
+                     android:background="@drawable/et_uneditable_round_shape"
+                     android:editable="false"
+                     android:enabled="false" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsMarketRej"
-                android:text="Items Market Rejections" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsReceivedFreshRej"
+                     android:text="Fresh Rejected Items Received by Supervisor" />
 
-            <EditText
-                android:id="@+id/etItemsMarketRej"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsReceivedFreshRej"
+                     style="@style/RejectionEtStyle" />
+             </RelativeLayout>
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
+             <RelativeLayout style="@style/finalPaymentItemHolder">
 
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etItemsReceivedMarketRej"
-                android:text="Market Rejected Items Received by Supervisor" />
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsMarketRej"
+                     android:text="Items Market Rejections" />
 
-            <EditText
-                android:id="@+id/etItemsReceivedMarketRej"
-                style="@style/RejectionEtStyle" />
-        </RelativeLayout>
+                 <EditText
+                     android:id="@+id/etItemsMarketRej"
+                     style="@style/RejectionEtStyle"
+                     android:background="@drawable/et_uneditable_round_shape"
+                     android:editable="false"
+                     android:enabled="false" />
+             </RelativeLayout>
+
+             <RelativeLayout style="@style/finalPaymentItemHolder">
+
+                 <TextView
+                     style="@style/FinalTvLabel"
+                     android:layout_toLeftOf="@+id/etItemsReceivedMarketRej"
+                     android:text="Market Rejected Items Received by Supervisor" />
+
+                 <EditText
+                     android:id="@+id/etItemsReceivedMarketRej"
+                     style="@style/RejectionEtStyle" />
+             </RelativeLayout>-->
 
         <View
             android:layout_width="match_parent"

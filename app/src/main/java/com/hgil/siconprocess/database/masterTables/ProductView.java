@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.ItemStockCheck;
 import com.hgil.siconprocess.adapter.productSelection.ProductSelectModel;
 import com.hgil.siconprocess.adapter.vanStock.VanStockModel;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
@@ -183,29 +184,29 @@ public class ProductView extends SQLiteOpenHelper {
                 vanStockModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
 
                 int loadingQty = depotInvoiceView.itemVanStockLoadingCount(item_id);
-                if (loadingQty > 0) {
-                    int saleQty = invoiceOutTable.getItemOrderQty(item_id);
-                    int sampleQty = itemPriceTable.itemTotalSampleCount(item_id);
+                //  if (loadingQty > 0) {
+                int saleQty = invoiceOutTable.getItemOrderQty(item_id);
+                int sampleQty = itemPriceTable.itemTotalSampleCount(item_id);
 
-                    // get product total stock in van
-                    vanStockModel.setLoadQty(loadingQty);
-                    // total product quantity sold
-                    vanStockModel.setGross_sale(saleQty);
-                    // van sample loads
-                    vanStockModel.setSample(sampleQty);
+                // get product total stock in van
+                vanStockModel.setLoadQty(loadingQty);
+                // total product quantity sold
+                vanStockModel.setGross_sale(saleQty);
+                // van sample loads
+                vanStockModel.setSample(sampleQty);
 
-                    // get product market and fresh rejection total
-                    int marketRejection = customerRejTable.productMarketRejection(item_id);
-                    int freshRejection = customerRejTable.productFreshRejection(item_id);
+                // get product market and fresh rejection total
+                int marketRejection = customerRejTable.productMarketRejection(item_id);
+                int freshRejection = customerRejTable.productFreshRejection(item_id);
 
-                    vanStockModel.setMarket_rejection(marketRejection);
-                    vanStockModel.setFresh_rejection(freshRejection);
+                vanStockModel.setMarket_rejection(marketRejection);
+                vanStockModel.setFresh_rejection(freshRejection);
 
-                    int leftOver = loadingQty - saleQty - sampleQty;
-                    vanStockModel.setLeft_over(leftOver);
+                int leftOver = loadingQty - saleQty - sampleQty;
+                vanStockModel.setLeft_over(leftOver);
 
-                    array_list.add(vanStockModel);
-                }
+                array_list.add(vanStockModel);
+                //    }
                 res.moveToNext();
             }
         }
@@ -229,6 +230,61 @@ public class ProductView extends SQLiteOpenHelper {
         res.close();
         db.close();
         return Utility.getString(item_name);
+    }
+
+    /*final statement to fetch items supervisor checkout/ van close*/
+    /*get product data for van stock*/
+    public ArrayList<ItemStockCheck> checkItemStock() {
+        ArrayList<ItemStockCheck> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        DepotInvoiceView depotInvoiceView = new DepotInvoiceView(mContext);
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        CustomerRejectionTable customerRejTable = new CustomerRejectionTable(mContext);
+        CustomerItemPriceTable customerItemPriceTable = new CustomerItemPriceTable(mContext);
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + ITEMSEQUENCE + " ASC", null);
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                ItemStockCheck itemStockCheck = new ItemStockCheck();
+                String item_id = res.getString(res.getColumnIndex(ITEM_ID));
+                itemStockCheck.setItem_id(item_id);
+                itemStockCheck.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
+
+                // item price
+                itemStockCheck.setItem_price(customerItemPriceTable.itemPrice(item_id));
+
+                int loadingQty = depotInvoiceView.itemVanStockLoadingCount(item_id);
+                int saleQty = invoiceOutTable.getItemOrderQty(item_id);
+                int sampleQty = itemPriceTable.itemTotalSampleCount(item_id);
+
+                // get product total stock in van
+                itemStockCheck.setLoadQty(loadingQty);
+                // total product quantity sold
+                itemStockCheck.setGross_sale(saleQty);
+                // van sample loads
+                itemStockCheck.setSample(sampleQty);
+
+                // get product market and fresh rejection total
+                int marketRejection = customerRejTable.productMarketRejection(item_id);
+                int freshRejection = customerRejTable.productFreshRejection(item_id);
+
+                itemStockCheck.setMarket_rejection(marketRejection);
+                itemStockCheck.setFresh_rejection(freshRejection);
+
+                int leftOver = loadingQty - saleQty - sampleQty;
+                itemStockCheck.setActual_leftover(leftOver);
+
+                array_list.add(itemStockCheck);
+                res.moveToNext();
+            }
+        }
+
+        res.close();
+        db.close();
+        return array_list;
     }
 
 

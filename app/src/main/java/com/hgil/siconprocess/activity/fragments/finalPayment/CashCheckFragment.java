@@ -50,11 +50,11 @@ public class CashCheckFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    public static CashCheckFragment newInstance(CashierSyncModel cashierSyncModel){
+    public static CashCheckFragment newInstance(CashierSyncModel cashierSyncModel) {
         CashCheckFragment fragment = new CashCheckFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(SYNC_OBJECT, cashierSyncModel);
-         fragment.setArguments(bundle);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -68,7 +68,7 @@ public class CashCheckFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             cashierSyncModel = (CashierSyncModel) getArguments().getSerializable(SYNC_OBJECT);
-         }
+        }
     }
 
     @Override

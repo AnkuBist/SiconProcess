@@ -137,6 +137,21 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
         return price;
     }
 
+    /*item price*/
+
+    public double itemPrice(String item_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT distinct " + ITEM_PRICE + " FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "=?", new String[]{item_id});
+
+        double price = 0;
+        if (res.moveToFirst()) {
+            price = res.getDouble(res.getColumnIndex(ITEM_PRICE));
+        }
+        res.close();
+        db.close();
+        return price;
+    }
+
     // get required details for the product for a customer on route
     public CustomerItemPriceModel getItemPriceDiscById(String customer_id, String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
