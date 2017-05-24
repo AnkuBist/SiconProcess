@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorTextGrey"
-    tools:context=".activity.fragments.invoice.CustomerPaymentFragment">
+    tools:context=".activity.fragments.customerInvoice.CustomerPaymentFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

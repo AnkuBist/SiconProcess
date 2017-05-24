@@ -4,7 +4,7 @@
     android:id="@+id/activity_market_product_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hgil.siconprocess.activity.fragments.clientMarket.MarketProductListActivity">
+    tools:context=".activity.fragments.customerInvoice.customerMarketProducts.MarketProductListActivity">
 
     <TextView
         android:id="@+id/tvCustomerName"

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_tomorrow_order_product_list"
+    android:id="@+id/activity_order_product_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hgil.siconprocess.activity.fragments.invoice.makeOrderInvoice.TomorrowOrderProductListActivity">
+    tools:context="com.hgil.siconprocess.activity.fragments.customerTomorrowOrder.TomorrowOrderProductListActivity">
 
     <TextView
         android:id="@+id/tvCustomerName"
@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tvCustomerName"
         android:scrollbars="none" />
-    
+
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
@@ -37,4 +37,3 @@
         android:visibility="gone" />
 
 </RelativeLayout>
-

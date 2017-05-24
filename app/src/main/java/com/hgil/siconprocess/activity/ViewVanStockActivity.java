@@ -64,11 +64,12 @@ public class ViewVanStockActivity extends BaseToolbarActivity {
         hideSaveBtn();
 
         // get crate info
+        //RouteView routeView = new RouteView(this);
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(this);
         PaymentTable paymentTable = new PaymentTable(this);
 
-        int crateLoaded = routeCustomerView.vanTotalCrate();
-        int crateOs = 0;
+        int crateLoaded = getRouteModel().getCrateLoading();
+        int crateOs = routeCustomerView.vanOpeningCrates();
         int crateIssued = paymentTable.routeIssuedCrate();
         int crateReturned = paymentTable.routeReceivedCrate();
         int crateLeftover = crateLoaded - crateIssued + crateReturned;

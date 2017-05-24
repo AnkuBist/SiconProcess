@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 
 public class RouteView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Sicon_route";
     private static final String TABLE_NAME = "V_SD_Route_Master";
@@ -27,6 +27,7 @@ public class RouteView extends SQLiteOpenHelper {
     private static final String ROUTE_NAME = "Route_Name";
     private static final String ROUTE_MANAGEMENT_ID = "route_management_id";
     private static final String ROUTE_CASHIER_NAME = "cashier_name";
+    private static final String ROUTE_CRATE_LOADING = "crateLoading";
     private static final String FLAG = "Flag";
     private static final String LAST_BILL_NO = "last_bill_no";
 
@@ -39,7 +40,8 @@ public class RouteView extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + REC_ID + " INTEGER NULL, "
                 + DEPOT_ID + " TEXT NULL, " + SUB_COMPANY_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
                 + ROUTE_NAME + " TEXT NULL, " + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
-                + ROUTE_CASHIER_NAME + " TEXT NULL, " + FLAG + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
+                + ROUTE_CASHIER_NAME + " TEXT NULL, " + ROUTE_CRATE_LOADING + " INTEGER NULL, "
+                + FLAG + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
     }
 
     @Override
@@ -67,6 +69,7 @@ public class RouteView extends SQLiteOpenHelper {
         final int routeNameColumn = ih.getColumnIndex(ROUTE_NAME);
         final int routeManagementIdColumn = ih.getColumnIndex(ROUTE_MANAGEMENT_ID);
         final int routeCashierNameColumn = ih.getColumnIndex(ROUTE_CASHIER_NAME);
+        final int routeCrateLoadingColumn = ih.getColumnIndex(ROUTE_CRATE_LOADING);
         final int flagColumn = ih.getColumnIndex(FLAG);
         final int lastBillNoColumn = ih.getColumnIndex(LAST_BILL_NO);
 
@@ -80,6 +83,7 @@ public class RouteView extends SQLiteOpenHelper {
             ih.bind(routeNameColumn, routeModel.getRouteName());
             ih.bind(routeManagementIdColumn, routeModel.getRouteManagementId());
             ih.bind(routeCashierNameColumn, routeModel.getCashierCode());
+            ih.bind(routeCrateLoadingColumn, routeModel.getCrateLoading());
             ih.bind(flagColumn, routeModel.getFlag());
             ih.bind(lastBillNoColumn, routeModel.getExpectedLastBillNo());
             ih.execute();
@@ -105,6 +109,7 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
             routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
             routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
+            routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
         }
@@ -133,6 +138,7 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
             routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
             routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
+            routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
             //}
@@ -157,6 +163,7 @@ public class RouteView extends SQLiteOpenHelper {
                 routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
                 routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
+                routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
                 routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
                 routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
 
@@ -168,4 +175,19 @@ public class RouteView extends SQLiteOpenHelper {
         db.close();
         return array_list;
     }
+
+    /*public int vanTotalCrate() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + ROUTE_CRATE_LOADING +
+                " from " + TABLE_NAME;
+        Cursor res = db.rawQuery(query, null);
+
+        int total_crates = 0;
+        if (res.moveToFirst()) {
+            total_crates = res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING));
+        }
+        res.close();
+        db.close();
+        return total_crates;
+    }*/
 }

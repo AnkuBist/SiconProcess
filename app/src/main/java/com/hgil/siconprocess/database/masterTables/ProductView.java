@@ -7,12 +7,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.ItemStockCheck;
 import com.hgil.siconprocess.adapter.productSelection.ProductSelectModel;
 import com.hgil.siconprocess.adapter.vanStock.VanStockModel;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.ItemStockCheck;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -204,8 +204,10 @@ public class ProductView extends SQLiteOpenHelper {
 
                 int leftOver = loadingQty - saleQty - sampleQty;
                 vanStockModel.setLeft_over(leftOver);
+                
+                if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0)
+                    array_list.add(vanStockModel);
 
-                array_list.add(vanStockModel);
                 //    }
                 res.moveToNext();
             }
@@ -277,7 +279,9 @@ public class ProductView extends SQLiteOpenHelper {
                 int leftOver = loadingQty - saleQty - sampleQty;
                 itemStockCheck.setActual_leftover(leftOver);
 
-                array_list.add(itemStockCheck);
+                if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0 || leftOver > 0)
+                    array_list.add(itemStockCheck);
+
                 res.moveToNext();
             }
         }

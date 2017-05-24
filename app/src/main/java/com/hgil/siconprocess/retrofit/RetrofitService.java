@@ -30,6 +30,7 @@ public interface RetrofitService {
     @POST(API.SYNC_URL)
     Call<syncResponse> syncRouteData(@Field("depot_id") String depot_id,
                                      @Field("route_id") String username,
+                                     @Field("route_management_id") String routeManagementId,
                                      @Field("cashier_paycode") String cashier_paycode,
                                      @Field("route_data") String route_data,
                                      @Field("imei_number") String imei_number);

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.hgil.siconprocess.activity.fragments.invoice.rejActivities.FreshRejectionActivity">
+    tools:context="com.hgil.siconprocess.activity.fragments.customerInvoice.rejActivities.FreshRejectionActivity">
 
     <TextView
         android:id="@+id/tvCustomerName"

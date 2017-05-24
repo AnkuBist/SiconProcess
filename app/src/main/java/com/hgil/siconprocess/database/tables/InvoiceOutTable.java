@@ -7,7 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;

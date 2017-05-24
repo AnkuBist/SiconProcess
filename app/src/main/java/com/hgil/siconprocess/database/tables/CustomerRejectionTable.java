@@ -7,8 +7,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.RejectionDetailModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.RejectionDetailModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.CRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.FreshRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;

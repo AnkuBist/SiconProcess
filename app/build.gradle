@@ -14,14 +14,14 @@ android {
     }
 
     /*keystore signature*/
-    /*signingConfigs {
+    signingConfigs {
         release {
             keyAlias 'Sicon'
             keyPassword 'Harvest'
-            storeFile file('C:/Users/mohan.giri/AndroidStudioProjects/SiconProcess_version2/keystore/sicon_view_keystore.jks')
+            storeFile file('C:/Users/mohan.giri/AndroidStudioProjects/SiconProcess/keystore/sicon_invoice_keystore.jks')
             storePassword 'Harvest'
         }
-    }*/
+    }
 
     buildTypes {
         debug {
@@ -39,25 +39,25 @@ android {
     }
     productFlavors {
         realseFlavour {
-            def appName = "SiconProcess"
+            def appName = "Leon"
             //def versionName = defaultConfig.versionName
             versionCode 1
             versionName "1.0"
-            resValue "string", "app_name", (appName + "_" + versionName)
+            resValue "string", "app_name", (appName + "_v" + versionName)
         }
 
         debugFlavour {
-            def appName = "SiconProcess"
+            def appName = "Leon"
             versionCode 1
             versionName "1.0"
-            resValue "string", "app_name", (appName + "_" + versionName)
+            resValue "string", "app_name", (appName + "_v" + versionName)
         }
     }
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             def appId = variant.applicationId   // com.hgil.siconprocess_view
-            def appName = "SiconProcess"
+            def appName = "Leon"
             def versionName = variant.versionName      //
             def versionCode = variant.versionCode
             def flavorName = variant.flavorName // e. g. free
@@ -104,8 +104,8 @@ dependencies {
     compile 'com.android.support:design:25.1.0'
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.android.support:cardview-v7:25.1.0'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.jakewharton:butterknife:8.0.1'
     testCompile 'junit:junit:4.12'

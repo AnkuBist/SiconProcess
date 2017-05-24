@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.customerOrder.RouteCustomerList;
+import com.hgil.siconprocess.activity.fragments.customerTomorrowOrder.RouteCustomerList;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.utils.Constant;
 
@@ -44,7 +44,7 @@ public class CustomerOrderFragment extends BaseFragment {
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_customer_order;
+        return R.layout.fragment_customer_tomorrow_order;
     }
 
     @Override

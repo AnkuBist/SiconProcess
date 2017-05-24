@@ -39,19 +39,17 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.unused.HomeActivity" />
-        <activity android:name=".activity.fragments.invoice.rejActivities.ProductListSelectActivity" />
-        <activity android:name=".activity.fragments.invoice.rejActivities.FreshRejectionActivity" />
-        <activity android:name=".activity.fragments.invoice.rejActivities.MarketRejectionActivity" />
-        <activity android:name=".activity.fragments.invoice.ChequeDetailsActivity" />
+        <activity android:name=".activity.fragments.customerInvoice.rejActivities.ProductListSelectActivity" />
+        <activity android:name=".activity.fragments.customerInvoice.rejActivities.FreshRejectionActivity" />
+        <activity android:name=".activity.fragments.customerInvoice.rejActivities.MarketRejectionActivity" />
+        <activity android:name=".activity.fragments.customerInvoice.ChequeDetailsActivity" />
         <activity android:name=".activity.ViewVanStockActivity" />
-        <activity android:name=".activity.fragments.invoice.makeOrderInvoice.TomorrowOrderProductListActivity" />
         <activity android:name=".activity.SelectedOutletInfoActivity" />
         <activity
             android:name=".activity.HomeInvoiceActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.fragments.customerOrder.OrderProductListActivity" />
-        <activity android:name=".activity.fragments.clientMarket.MarketProductListActivity"></activity>
+        <activity android:name=".activity.fragments.customerTomorrowOrder.TomorrowOrderProductListActivity" />
+        <activity android:name=".activity.fragments.customerInvoice.customerMarketProducts.MarketProductListActivity"></activity>
     </application>
 
 </manifest>

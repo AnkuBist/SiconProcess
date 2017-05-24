@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.NavBaseActivity;
-import com.hgil.siconprocess.activity.fragments.customerOrder.PrepareCustomerOrderFragment;
+import com.hgil.siconprocess.activity.fragments.customerTomorrowOrder.PrepareCustomerTomorrowOrderFragment;
 import com.hgil.siconprocess.adapter.routeMap.RouteCustomerModel;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PrepareCustomerOrderFragment fragment = PrepareCustomerOrderFragment.newInstance(routeCustomerModel.getCustomerId(), routeCustomerModel.getCustomerName());
+                PrepareCustomerTomorrowOrderFragment fragment = PrepareCustomerTomorrowOrderFragment.newInstance(routeCustomerModel.getCustomerId(), routeCustomerModel.getCustomerName());
                 String fragClassName = fragment.getClass().getName();
                 FragmentManager fragmentManager = ((NavBaseActivity) mContext).getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();

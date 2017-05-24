@@ -8,11 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.activity.fragments.dashboard.DaySummaryAmountCollectionModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CashCheck;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCashModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionChequeModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.CollectionCrateModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.CrateStockCheck;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCashModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionChequeModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCrateModel;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.database.dbModels.ChequeDetailsModel;
 import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;
@@ -311,7 +310,7 @@ public class PaymentTable extends SQLiteOpenHelper {
     }
 
     // get total of cash and cheque amount collected by the cashier on certain root
-    public CashCheck routeTotalAmountCollection() {
+   /* public CashCheck routeTotalAmountCollection() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "select sum(" + CASH_PAID + ") as cash_total, sum(" + CHEQUE_AMOUNT + ") as cheque_total" +
                 " from " + TABLE_NAME;
@@ -326,7 +325,7 @@ public class PaymentTable extends SQLiteOpenHelper {
         res.close();
         db.close();
         return cashCheck;
-    }
+    }*/
 
     // customer cash collection details
     public ArrayList<CollectionCashModel> syncCompletedCashDetail() {
@@ -511,4 +510,21 @@ public class PaymentTable extends SQLiteOpenHelper {
         db.close();
         return cModel;
     }
+
+    /*total cash paid amount*/
+    public double routeCashPaidAmount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("SELECT sum(" + CASH_PAID + ") as cash_paid FROM " + TABLE_NAME, null);
+
+       double cash_paid = 0;
+        if (res.moveToFirst()) {
+            cash_paid= (res.getDouble(res.getColumnIndex("cash_paid")));
+        }
+        res.close();
+        db.close();
+        return cash_paid;
+    }
+
+
 }

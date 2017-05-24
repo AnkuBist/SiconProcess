@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hgil.siconprocess.activity.fragments.invoice.CratesManagementFragment">
+    tools:context="com.hgil.siconprocess.activity.fragments.customerInvoice.CratesManagementFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +61,9 @@
 
                     <EditText
                         android:id="@+id/etIssuedCrates"
-                        style="@style/RejectionEtStyle" />
+                        style="@style/RejectionEtStyle"
+                        android:editable="false"
+                        android:enabled="false" />
                 </RelativeLayout>
 
                 <View

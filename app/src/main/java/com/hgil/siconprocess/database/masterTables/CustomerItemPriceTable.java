@@ -7,12 +7,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.routeTarget.RouteTargetModel;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +138,6 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
     }
 
     /*item price*/
-
     public double itemPrice(String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT distinct " + ITEM_PRICE + " FROM " + TABLE_NAME + " WHERE " + ITEM_ID + "=?", new String[]{item_id});

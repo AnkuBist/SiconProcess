@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.HomeInvoiceActivity;
-import com.hgil.siconprocess.activity.fragments.invoice.CustomerRejectionFragment;
-import com.hgil.siconprocess.activity.fragments.invoice.rejActivities.FreshRejectionActivity;
-import com.hgil.siconprocess.activity.fragments.invoice.rejActivities.MarketRejectionActivity;
+import com.hgil.siconprocess.activity.fragments.customerInvoice.CustomerRejectionFragment;
+import com.hgil.siconprocess.activity.fragments.customerInvoice.rejActivities.FreshRejectionActivity;
+import com.hgil.siconprocess.activity.fragments.customerInvoice.rejActivities.MarketRejectionActivity;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;

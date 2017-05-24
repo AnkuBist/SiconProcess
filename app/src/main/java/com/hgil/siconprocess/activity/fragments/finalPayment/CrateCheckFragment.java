@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.finalPayment.cashierSync.CashierSyncModel;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.CrateStockCheck;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashierSyncModel;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.tables.PaymentTable;
 

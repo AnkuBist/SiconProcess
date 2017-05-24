@@ -34,6 +34,9 @@ public class RouteModel implements Serializable {
     @SerializedName("CashierCode")
     @Expose
     private String cashierCode;
+    @SerializedName("crateLoading")
+    @Expose
+    private int crateLoading;
     @SerializedName("Flag")
     @Expose
     private int flag;
@@ -169,5 +172,13 @@ public class RouteModel implements Serializable {
 
     public void setArrEmployees(List<EmployeeModel> arrEmployees) {
         this.arrEmployees = arrEmployees;
+    }
+
+    public int getCrateLoading() {
+        return crateLoading;
+    }
+
+    public void setCrateLoading(int crateLoading) {
+        this.crateLoading = crateLoading;
     }
 }

@@ -24,54 +24,42 @@
 
             <TextView
                 style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etCashCollected"
-                android:text="Amount Collected by Cashier" />
+                android:layout_toLeftOf="@+id/etNetSale"
+                android:text="Net Sale Amount" />
 
             <EditText
-                android:id="@+id/etCashCollected"
+                android:id="@+id/etNetSale"
                 style="@style/RejectionEtStyle"
                 android:background="@drawable/et_uneditable_round_shape"
                 android:editable="false"
                 android:enabled="false" />
         </RelativeLayout>
+
+        <RelativeLayout style="@style/finalPaymentItemHolder">
+
+            <TextView
+                style="@style/FinalTvLabel"
+                android:layout_toLeftOf="@+id/etCashCollection"
+                android:text="Route Cash Collection" />
+
+            <EditText
+                android:id="@+id/etCashCollection"
+                style="@style/RejectionEtStyle"
+                android:background="@drawable/et_uneditable_round_shape"
+                android:editable="false"
+                android:enabled="false" />
+        </RelativeLayout>
+
 
         <RelativeLayout style="@style/finalPaymentItemHolder">
 
             <TextView
                 style="@style/FinalTvLabel"
                 android:layout_toLeftOf="@+id/etCashReceived"
-                android:text="Amount received by Supervisor" />
+                android:text="Cash Amount collected by Supervisor" />
 
             <EditText
                 android:id="@+id/etCashReceived"
-                style="@style/RejectionEtStyle"
-                android:inputType="numberDecimal" />
-        </RelativeLayout>
-
-        <RelativeLayout style="@style/finalPaymentItemHolder">
-
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etChequeCollected"
-                android:text="Cheque Amount Collected by Cashier" />
-
-            <EditText
-                android:id="@+id/etChequeCollected"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
-
-        <RelativeLayout style="@style/finalPaymentItemHolder">
-
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etChequeReceived"
-                android:text="Cheque Amount received by Supervisor" />
-
-            <EditText
-                android:id="@+id/etChequeReceived"
                 style="@style/RejectionEtStyle"
                 android:inputType="numberDecimal" />
         </RelativeLayout>

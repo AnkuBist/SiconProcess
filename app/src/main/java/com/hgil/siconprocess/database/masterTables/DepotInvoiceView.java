@@ -276,7 +276,8 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                     // get item order if invoice made lastly
                     custOrderQty = invoiceOutTable.customerInvOutItemQty(customer_id, item_id);
                 } else {
-                    custOrderQty = res.getFloat(res.getColumnIndex(INVQTY_PS));
+                    //custOrderQty = res.getFloat(res.getColumnIndex(INVQTY_PS));
+                    custOrderQty = 0;
                     if (stock < custOrderQty)
                         custOrderQty = 0;
                 }

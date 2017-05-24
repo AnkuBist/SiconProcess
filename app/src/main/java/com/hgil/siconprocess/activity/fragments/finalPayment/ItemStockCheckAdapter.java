@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.invoiceSyncModel.cashierSync.ItemStockCheck;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.ItemStockCheck;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;

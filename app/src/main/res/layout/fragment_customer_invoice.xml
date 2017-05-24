@@ -3,7 +3,7 @@
     android:id="@+id/invoiceFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.fragments.invoice.makeSaleInvoice.CustomerInvoiceFragment">
+    tools:context=".activity.fragments.customerInvoice.makeSaleInvoice.CustomerInvoiceFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

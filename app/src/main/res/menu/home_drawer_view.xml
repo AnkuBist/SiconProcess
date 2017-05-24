@@ -21,10 +21,10 @@
             android:id="@+id/nav_crate_management"
             android:icon="@mipmap/ic_launcher"
             android:title="@string/str_nav_crate_management" />
-        <item
+     <!--   <item
             android:id="@+id/nav_market_product"
             android:icon="@mipmap/ic_launcher"
-            android:title="@string/str_nav_market_product" />
+            android:title="@string/str_nav_market_product" />-->
         <item
             android:id="@+id/nav_final_invoice"
             android:icon="@mipmap/ic_launcher"
