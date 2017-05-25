@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
-                android:text="No Customer found"
+                android:text="No Items found"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="@dimen/text_size_large"
                 android:visibility="gone" />

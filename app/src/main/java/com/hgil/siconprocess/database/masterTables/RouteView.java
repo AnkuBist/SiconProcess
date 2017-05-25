@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 
 public class RouteView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_route";
     private static final String TABLE_NAME = "V_SD_Route_Master";

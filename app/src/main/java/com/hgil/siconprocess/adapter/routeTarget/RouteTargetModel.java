@@ -9,6 +9,7 @@ public class RouteTargetModel {
     private String itemId;
     private String item_name;
     private int itemSequence;
+    private int demand;
     private int target;
     private int achieved;
     private int variance;
@@ -19,6 +20,14 @@ public class RouteTargetModel {
 
     public void setItem_name(String item_name) {
         this.item_name = item_name;
+    }
+
+    public int getDemand() {
+        return demand;
+    }
+
+    public void setDemand(int demand) {
+        this.demand = demand;
     }
 
     public int getTarget() {

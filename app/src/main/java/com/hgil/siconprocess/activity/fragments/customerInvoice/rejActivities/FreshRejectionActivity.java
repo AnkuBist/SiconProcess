@@ -60,11 +60,16 @@ public class FreshRejectionActivity extends BaseToolbarActivity {
                 int wetBread = freshRejectionModel.getWetBread();
                 int others = freshRejectionModel.getOthers();
 
-                etMShaped.setText(String.valueOf(mShaped));
-                etTornPolly.setText(String.valueOf(tornPolly));
-                etFungus.setText(String.valueOf(fungus));
-                etWetBread.setText(String.valueOf(wetBread));
-                etOthers.setText(String.valueOf(others));
+                if (mShaped > 0)
+                    etMShaped.setText(String.valueOf(mShaped));
+                if (tornPolly > 0)
+                    etTornPolly.setText(String.valueOf(tornPolly));
+                if (fungus > 0)
+                    etFungus.setText(String.valueOf(fungus));
+                if (wetBread > 0)
+                    etWetBread.setText(String.valueOf(wetBread));
+                if (others > 0)
+                    etOthers.setText(String.valueOf(others));
             }
         }
 

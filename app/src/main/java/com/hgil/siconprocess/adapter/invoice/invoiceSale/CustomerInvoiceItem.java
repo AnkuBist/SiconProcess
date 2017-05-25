@@ -61,7 +61,11 @@ public class CustomerInvoiceItem {
         tvRate.setText("Rate : " + strRupee + price);
         tvTarget.setText("TGT : ");
         tvTarget.setVisibility(View.GONE);
-        etQty.setText(String.valueOf((int) orderQty));
+        if (orderQty > 0) {
+            etQty.setText(String.valueOf((int) orderQty));
+        } else {
+            // let it be empty
+        }
         etSample.setText(String.valueOf(itemInvoice.getFixedSample()));
         etAmount.setText(strRupee + String.valueOf(orderAmount));
 
@@ -100,7 +104,7 @@ public class CustomerInvoiceItem {
                         itemInvoice.setTempStock(stockAvail);
                         itemInvoice.setOrderAmount(0);
                         tvStock.setText("Stock : " + stockAvail);
-                        etQty.setText("0");
+                        etQty.setText("");
                         etAmount.setText(strRupee + "0.0");
 
                     }

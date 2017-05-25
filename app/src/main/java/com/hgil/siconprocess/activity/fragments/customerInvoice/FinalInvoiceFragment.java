@@ -131,15 +131,15 @@ public class FinalInvoiceFragment extends BaseFragment {
     public void onInvoiceCancel(View view) {
         // on press cancel button please erase all recent invoice update for the user stored at local and move to the main page
         // will erase the customer prepared all data
-        /*customerRejectionTable.cancelInvoice(customer_id);
+        customerRejectionTable.cancelInvoice(customer_id);
         invoiceOutTable.cancelInvoice(customer_id);
         paymentTable.cancelInvoice(customer_id);
-        marketProductTable.cancelInvoice(customer_id);*/
+        //marketProductTable.cancelInvoice(customer_id);
 
-        customerRejectionTable.updateCustInvRejStatus(customer_id, Constant.STATUS_CANCELLED);
+        /*customerRejectionTable.updateCustInvRejStatus(customer_id, Constant.STATUS_CANCELLED);
         invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_CANCELLED);
         paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_CANCELLED);
-        marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_CANCELLED);
+        marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_CANCELLED);*/
 
         // restart app or move back to the route map list
         getContext().startActivity(new Intent(getContext(), NavBaseActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -154,14 +154,11 @@ public class FinalInvoiceFragment extends BaseFragment {
         CustomerRouteMappingView custRouteMap = new CustomerRouteMappingView(getContext());
         custRouteMap.updateCustomerStatus(customer_id, Constant.STATUS_COMPLETE);
 
+        // update all inv prepared table status for the customer to completed
         customerRejectionTable.updateCustInvRejStatus(customer_id, Constant.STATUS_COMPLETE);
         invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
         paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_COMPLETE);
-        marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_COMPLETE);
-
-        // update all inv prepared table status for the customer to completed
-        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
-
+        //marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_COMPLETE);
 
         if (mobile != null && mobile.matches(""))
             UtilsSms.checkAndroidVersionForSms(getContext(), mobile, message);

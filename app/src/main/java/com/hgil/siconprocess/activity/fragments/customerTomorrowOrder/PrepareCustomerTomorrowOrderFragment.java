@@ -2,11 +2,11 @@ package com.hgil.siconprocess.activity.fragments.customerTomorrowOrder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
@@ -35,8 +35,11 @@ public class PrepareCustomerTomorrowOrderFragment extends BaseFragment {
     RecyclerView rvCustomerOrder;
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
-    @BindView(R.id.btnAddItems)
-    Button btnAddItems;
+/*    @BindView(R.id.btnAddItems)
+    Button btnAddItems;*/
+
+    @BindView(R.id.fabAddItems)
+    FloatingActionButton fabAddItems;
     private NextDayOrderAdapter orderAdapter;
     private NextDayOrderTable orderTable;
     private ArrayList<NextDayOrderModel> arrOrder = new ArrayList<>();
@@ -121,7 +124,7 @@ public class PrepareCustomerTomorrowOrderFragment extends BaseFragment {
             }
         });
 
-        btnAddItems.setOnClickListener(new View.OnClickListener() {
+        fabAddItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TomorrowOrderProductListActivity.class);

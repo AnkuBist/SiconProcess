@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,14 +170,7 @@ public class NavBaseActivity extends BaseActivity {
                 fragment = SyncFragment.newInstance();
                 break;
             case R.id.nav_logout:
-                // put the code to logout user from application
-                Utility.saveLoginStatus(NavBaseActivity.this, Utility.LOGIN_STATUS, false);
-
-                // now restart login activity after finish application top
-                startActivity(new Intent(NavBaseActivity.this, LoginActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-                finish();
-                overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+                logoutConfirmationDialog();
                 break;
             default:
                 fragment = HomeFragment.newInstance();
@@ -283,5 +278,31 @@ public class NavBaseActivity extends BaseActivity {
         // get current fragment in container
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.flContent);
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*logout confirmation dialog*/
+    private void logoutConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Logout may cause to data loss/erase all your saved invoice status.\nAre you sure you want to Logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // put the code to logout user from application
+                        Utility.saveLoginStatus(NavBaseActivity.this, Utility.LOGIN_STATUS, false);
+
+                        // now restart login activity after finish application top
+                        startActivity(new Intent(NavBaseActivity.this, LoginActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        finish();
+                        overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

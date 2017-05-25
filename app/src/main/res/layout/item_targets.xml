@@ -23,10 +23,19 @@
             android:textSize="@dimen/text_size_medium" />
 
         <TextView
+            android:id="@+id/tvDemand"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75"
+            android:gravity="center_horizontal|center_vertical"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="@dimen/text_size_medium" />
+
+        <TextView
             android:id="@+id/tvTarget"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.75"
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/colorTextBlack"
             android:textSize="@dimen/text_size_medium" />
@@ -35,7 +44,7 @@
             android:id="@+id/tvAchieved"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.75"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="@color/colorTextBlack"
             android:textSize="@dimen/text_size_medium" />
@@ -44,7 +53,7 @@
             android:id="@+id/tvVariance"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.75"
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/colorTextBlack"
             android:textSize="@dimen/text_size_medium" />

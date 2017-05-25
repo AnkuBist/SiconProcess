@@ -45,7 +45,8 @@ public class NextDayOrderAdapter extends RecyclerView.Adapter<NextDayOrderAdapte
     public void onBindViewHolder(final NextDayOrderAdapter.ViewHolder holder, int position) {
         final NextDayOrderModel nextDayOrderModel = mDataset.get(position);
         holder.tvItemName.setText(nextDayOrderModel.getItemName());
-        holder.etQuantity.setText(String.valueOf(nextDayOrderModel.getQuantity()));
+        if (nextDayOrderModel.getQuantity() > 0)
+            holder.etQuantity.setText(String.valueOf(nextDayOrderModel.getQuantity()));
 
         holder.etQuantity.addTextChangedListener(new TextWatcher() {
             @Override

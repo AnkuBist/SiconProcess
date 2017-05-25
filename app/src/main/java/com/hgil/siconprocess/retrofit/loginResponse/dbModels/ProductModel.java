@@ -23,6 +23,9 @@ public class ProductModel implements Serializable {
     @SerializedName("Target_Rej")
     @Expose
     private float targetRej;
+    @SerializedName("demand")
+    @Expose
+    private int demandQty;
     @SerializedName("ITEMGROUPID")
     @Expose
     private String iTEMGROUPID;
@@ -57,6 +60,14 @@ public class ProductModel implements Serializable {
 
     public void setTargetRej(float targetRej) {
         this.targetRej = targetRej;
+    }
+
+    public int getDemandQty() {
+        return demandQty;
+    }
+
+    public void setDemandQty(int demandQty) {
+        this.demandQty = demandQty;
     }
 
     public String getITEMGROUPID() {

@@ -17,8 +17,8 @@ public class SyncData {
     private ArrayList<CollectionCashModel> cashCollection;
     private ArrayList<CollectionCrateModel> crateCollection;
     private ArrayList<CollectionChequeModel> chequeCollection;
-    private ArrayList<NextDayOrderModel> arrNextDayOrder;
-    private ArrayList<MarketProductModel> arrMarketProductsSummary;
+    //private ArrayList<NextDayOrderModel> arrNextDayOrder;
+    //private ArrayList<MarketProductModel> arrMarketProductsSummary;
 
     private ArrayList<SyncInvoiceDetailModel> syncInvoiceSaleRej;
 
@@ -30,13 +30,13 @@ public class SyncData {
         this.syncInvoiceSaleRej = syncInvoiceSaleRej;
     }
 
-    public ArrayList<MarketProductModel> getArrMarketProductsSummary() {
+    /*public ArrayList<MarketProductModel> getArrMarketProductsSummary() {
         return arrMarketProductsSummary;
     }
 
     public void setArrMarketProductsSummary(ArrayList<MarketProductModel> arrMarketProductsSummary) {
         this.arrMarketProductsSummary = arrMarketProductsSummary;
-    }
+    }*/
 
     public ArrayList<CollectionChequeModel> getChequeCollection() {
         return chequeCollection;
@@ -46,13 +46,13 @@ public class SyncData {
         this.chequeCollection = chequeCollection;
     }
 
-    public ArrayList<NextDayOrderModel> getArrNextDayOrder() {
+   /* public ArrayList<NextDayOrderModel> getArrNextDayOrder() {
         return arrNextDayOrder;
     }
 
     public void setArrNextDayOrder(ArrayList<NextDayOrderModel> arrNextDayOrder) {
         this.arrNextDayOrder = arrNextDayOrder;
-    }
+    }*/
 
     public ArrayList<SyncInvoiceDetailModel> getSyncInvoice() {
         return syncInvoice;

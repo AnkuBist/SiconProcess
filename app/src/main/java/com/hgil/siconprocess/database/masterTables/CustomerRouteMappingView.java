@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 public class CustomerRouteMappingView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_route_map";
     private static final String TABLE_NAME = "V_SD_Customer_Route_Mapping";

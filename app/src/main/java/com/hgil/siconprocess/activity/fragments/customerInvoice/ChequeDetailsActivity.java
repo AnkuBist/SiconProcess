@@ -69,7 +69,8 @@ public class ChequeDetailsActivity extends BaseToolbarActivity {
         if (chequeDetailsModel != null) {
             etChequeNumber.setText(Utility.getString(chequeDetailsModel.getChequeNumber()));
             etChequeDate.setText(Utility.getString(chequeDetailsModel.getChequeDate()));
-            etChequeAmount.setText(String.valueOf(chequeDetailsModel.getChequeAmount()));
+            if (chequeDetailsModel.getChequeAmount() > 0)
+                etChequeAmount.setText(String.valueOf(chequeDetailsModel.getChequeAmount()));
             etBankName.setText(Utility.getString(chequeDetailsModel.getBankName()));
             etBankBranch.setText(Utility.getString(chequeDetailsModel.getBankBranch()));
             etInvoiceId.setText(Utility.getString(chequeDetailsModel.getInvoiceId()));

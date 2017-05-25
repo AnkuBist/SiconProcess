@@ -50,9 +50,12 @@ public class MarketRejectionActivity extends BaseToolbarActivity {
                 int expired = marketRejectionModel.getExpired();
                 int ratEaten = marketRejectionModel.getRatEaten();
 
-                etDamaged.setText(String.valueOf(damaged));
-                etExpired.setText(String.valueOf(expired));
-                etRatEaten.setText(String.valueOf(ratEaten));
+                if (damaged > 0)
+                    etDamaged.setText(String.valueOf(damaged));
+                if (expired > 0)
+                    etExpired.setText(String.valueOf(expired));
+                if (ratEaten > 0)
+                    etRatEaten.setText(String.valueOf(ratEaten));
             }
         }
 

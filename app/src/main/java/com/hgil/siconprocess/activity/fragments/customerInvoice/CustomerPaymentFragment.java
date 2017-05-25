@@ -143,12 +143,14 @@ public class CustomerPaymentFragment extends BaseFragment {
         if (chequeDetailsModel == null)
             chequeDetailsModel = new ChequeDetailsModel();
 
-
         // payment details exists then display the existing values to et and respective data
         if (paymentModel != null) {
-            etCash.setText(String.valueOf(paymentModel.getCashPaid()));
-            etUpi.setText(String.valueOf(upiDetails.getPaidAmount()));
-            etCheque.setText(String.valueOf(chequeDetailsModel.getChequeAmount()));
+            if (paymentModel.getCashPaid() > 0)
+                etCash.setText(String.valueOf(paymentModel.getCashPaid()));
+            if (upiDetails.getPaidAmount() > 0)
+                etUpi.setText(String.valueOf(upiDetails.getPaidAmount()));
+            if (chequeDetailsModel.getChequeAmount() > 0)
+                etCheque.setText(String.valueOf(chequeDetailsModel.getChequeAmount()));
             tvCustomerTotal.setText(strRupee + paymentModel.getTotalPaidAmount());
         }
 
@@ -204,9 +206,6 @@ public class CustomerPaymentFragment extends BaseFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEvent.ACTION_UP == event.getAction()) {
-
-                    etCash.requestFocus();
-
                     // start dialog here
                     UpiPaymentDialog cdd = new UpiPaymentDialog(getActivity(), upiDetails);
                     cdd.setCancelable(false);
@@ -265,14 +264,7 @@ public class CustomerPaymentFragment extends BaseFragment {
         }
     }
 
-
-    /*customize dialog for UPI payment*/
-    /*private void upiPaymentDialog() {
-
-    }*/
-
     private void updateTotalAmount() {
-        //(double cash_amount, double cheque_amount, double upi_amount) {
         tvCustomerTotal.setText(strRupee + Utility.roundTwoDecimals(Utility.getDouble(etCash.getText().toString()) + upiDetails.getPaidAmount())); //+ chequeDetailsModel.getChequeAmount()));
     }
 
@@ -280,7 +272,6 @@ public class CustomerPaymentFragment extends BaseFragment {
             android.view.View.OnClickListener {
 
         public Activity c;
-        public Dialog d;
         public UpiPaymentModel upiDetails;
         public Button yes, no;
         public EditText etUpiReferenceId, etUpiAmount;
@@ -303,7 +294,8 @@ public class CustomerPaymentFragment extends BaseFragment {
 
             if (upiDetails != null) {
                 etUpiReferenceId.setText(upiDetails.getPaymentReferenceId());
-                etUpiAmount.setText(String.valueOf(upiDetails.getPaidAmount()));
+                if (upiDetails.getPaidAmount() > 0)
+                    etUpiAmount.setText(String.valueOf(upiDetails.getPaidAmount()));
             }
 
             yes.setOnClickListener(this);
@@ -315,6 +307,7 @@ public class CustomerPaymentFragment extends BaseFragment {
             switch (v.getId()) {
                 case R.id.btnCancel:
                     dismiss();
+                    etUpi.clearFocus();
                     break;
                 case R.id.btnSubmit:
                     String reference_id = etUpiReferenceId.getText().toString();
@@ -334,6 +327,7 @@ public class CustomerPaymentFragment extends BaseFragment {
                         updateTotalAmount();
                         dismiss();
                     }
+                    etUpi.clearFocus();
                     break;
                 default:
                     break;

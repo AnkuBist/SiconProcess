@@ -72,7 +72,7 @@ public class ViewVanStockActivity extends BaseToolbarActivity {
         int crateOs = routeCustomerView.vanOpeningCrates();
         int crateIssued = paymentTable.routeIssuedCrate();
         int crateReturned = paymentTable.routeReceivedCrate();
-        int crateLeftover = crateLoaded - crateIssued + crateReturned;
+        int crateLeftover = crateOs- crateIssued + crateReturned;
 
         // display these in UI
         tvCrateLoaded.setText(String.valueOf(crateLoaded));

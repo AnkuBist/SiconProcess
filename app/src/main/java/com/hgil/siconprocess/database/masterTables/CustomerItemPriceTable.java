@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 public class CustomerItemPriceTable extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "Sicon_item_price_db";
     private static final String TABLE_NAME = "customer_item_price_table";
@@ -265,12 +265,14 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
                 ProductModel productModel = productView.getProductById(item_id);
                 routeTargetModel.setItem_name(productModel.getItemName());
                 routeTargetModel.setItemSequence(productModel.getITEMSEQUENCE());
+                routeTargetModel.setDemand(productModel.getDemandQty());
 
                 // get the product invoice count from the local table
                 routeTargetModel.setAchieved(invoiceOutTable.soldItemTargetCount(item_id));
-                routeTargetModel.setVariance(routeTargetModel.getTarget() - routeTargetModel.getAchieved());
+                routeTargetModel.setVariance(routeTargetModel.getAchieved() - routeTargetModel.getTarget());
 
-                array_list.add(routeTargetModel);
+                if (routeTargetModel.getAchieved() > 0 || routeTargetModel.getTarget() > 0 || routeTargetModel.getDemand() > 0)
+                    array_list.add(routeTargetModel);
                 res.moveToNext();
             }
         }

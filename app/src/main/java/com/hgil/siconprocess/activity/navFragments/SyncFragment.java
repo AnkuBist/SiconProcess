@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
@@ -19,6 +18,7 @@ import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 
@@ -85,6 +85,11 @@ public class SyncFragment extends BaseFragment {
 
     /*preparing data to sync whole day process*/
     private void initiateDataSync() {
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+            }
+        });
         // finally convert all object and array data into jsonObject and send as object data to server side api;
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
@@ -94,7 +99,7 @@ public class SyncFragment extends BaseFragment {
 
         syncData.setSyncRejDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
         syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
-        syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
+        //syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         /*actual database synchronisation*/

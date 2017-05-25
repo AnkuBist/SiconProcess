@@ -32,6 +32,7 @@ public class ProductView extends SQLiteOpenHelper {
     private static final String ITEM_ID = "Item_id";
     private static final String ITEM_NAME = "Item_Name";
     private static final String TARGET_REJ = "Target_Rej";
+    private static final String DEMAND_QTY = "demand_qty";
     private static final String ITEMGROUPID = "ITEMGROUPID";
 
     private Context mContext;
@@ -45,7 +46,7 @@ public class ProductView extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + ITEMSEQUENCE + " INTEGER NOT NULL, "
                 + ITEM_ID + " TEXT NULL, " + ITEM_NAME + " TEXT NULL, " + TARGET_REJ + " REAL NULL, "
-                + ITEMGROUPID + " TEXT NULL)");
+                + DEMAND_QTY + " INTEGER NULL, " + ITEMGROUPID + " TEXT NULL)");
     }
 
     @Override
@@ -69,6 +70,7 @@ public class ProductView extends SQLiteOpenHelper {
             contentValues.put(ITEM_ID, productModel.getItemId());
             contentValues.put(ITEM_NAME, productModel.getItemName());
             contentValues.put(TARGET_REJ, productModel.getTargetRej());
+            contentValues.put(DEMAND_QTY, productModel.getDemandQty());
             contentValues.put(ITEMGROUPID, productModel.getITEMGROUPID());
             db.insert(TABLE_NAME, null, contentValues);
         }
@@ -86,6 +88,7 @@ public class ProductView extends SQLiteOpenHelper {
             productModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
             productModel.setItemName(res.getString(res.getColumnIndex(ITEM_NAME)));
             productModel.setITEMGROUPID(res.getString(res.getColumnIndex(ITEMGROUPID)));
+            productModel.setDemandQty(res.getInt(res.getColumnIndex(DEMAND_QTY)));
         }
         res.close();
         db.close();
@@ -204,7 +207,7 @@ public class ProductView extends SQLiteOpenHelper {
 
                 int leftOver = loadingQty - saleQty - sampleQty;
                 vanStockModel.setLeft_over(leftOver);
-                
+
                 if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0)
                     array_list.add(vanStockModel);
 
@@ -290,6 +293,4 @@ public class ProductView extends SQLiteOpenHelper {
         db.close();
         return array_list;
     }
-
-
 }

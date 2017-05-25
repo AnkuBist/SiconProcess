@@ -38,6 +38,7 @@ public class RouteTargetAdapter extends RecyclerView.Adapter<RouteTargetAdapter.
     public void onBindViewHolder(final RouteTargetAdapter.ViewHolder holder, int position) {
         RouteTargetModel routeTargetModel = mDataset.get(position);
         holder.tvItemName.setText(routeTargetModel.getItem_name());
+        holder.tvDemand.setText(String.valueOf(routeTargetModel.getDemand()));
         holder.tvTarget.setText(String.valueOf(routeTargetModel.getTarget()));
         holder.tvAchieved.setText(String.valueOf(routeTargetModel.getAchieved()));
         holder.tvVariance.setText(String.valueOf(routeTargetModel.getVariance()));
@@ -52,6 +53,8 @@ public class RouteTargetAdapter extends RecyclerView.Adapter<RouteTargetAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvItemName)
         TextView tvItemName;
+        @BindView(R.id.tvDemand)
+        TextView tvDemand;
         @BindView(R.id.tvTarget)
         TextView tvTarget;
         @BindView(R.id.tvAchieved)
