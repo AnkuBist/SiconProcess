@@ -36,7 +36,7 @@ public class ItemStockCheckAdapter extends RecyclerView.Adapter<ItemStockCheckAd
     // Create new views (invoked by the layout manager)
     @Override
     public ItemStockCheckAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_next_day_order, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_route_van_stock, parent, false);
         ItemStockCheckAdapter.ViewHolder vh = new ItemStockCheckAdapter.ViewHolder(v);
         return vh;
     }
@@ -45,9 +45,10 @@ public class ItemStockCheckAdapter extends RecyclerView.Adapter<ItemStockCheckAd
     public void onBindViewHolder(final ItemStockCheckAdapter.ViewHolder holder, int position) {
         final ItemStockCheck itemStockCheck = mDataset.get(position);
         holder.tvItemName.setText(itemStockCheck.getItem_name());
-        holder.etQuantity.setText(String.valueOf(itemStockCheck.getPhysical_leftover()));
+        if (itemStockCheck.getFresh_rejection() > 0)
+            holder.etFRej.setText(String.valueOf(itemStockCheck.getFresh_rejection()));
 
-        holder.etQuantity.addTextChangedListener(new TextWatcher() {
+        holder.etFRej.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -61,7 +62,55 @@ public class ItemStockCheckAdapter extends RecyclerView.Adapter<ItemStockCheckAd
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    itemStockCheck.setPhysical_leftover(Utility.getInteger(holder.etQuantity.getText().toString()));
+                    itemStockCheck.setFresh_rejection(Utility.getInteger(holder.etFRej.getText().toString()));
+                } else {
+                    itemStockCheck.setFresh_rejection(0);
+                }
+            }
+        });
+
+        if (itemStockCheck.getMarket_rejection() > 0)
+            holder.etMRej.setText(String.valueOf(itemStockCheck.getMarket_rejection()));
+
+        holder.etMRej.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    itemStockCheck.setMarket_rejection(Utility.getInteger(holder.etMRej.getText().toString()));
+                } else {
+                    itemStockCheck.setMarket_rejection(0);
+                }
+            }
+        });
+
+        if (itemStockCheck.getPhysical_leftover() > 0)
+            holder.etLeft.setText(String.valueOf(itemStockCheck.getPhysical_leftover()));
+
+        holder.etLeft.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    itemStockCheck.setPhysical_leftover(Utility.getInteger(holder.etLeft.getText().toString()));
                     itemStockCheck.setItem_variance(itemStockCheck.getActual_leftover() - itemStockCheck.getPhysical_leftover());
                 } else {
                     itemStockCheck.setPhysical_leftover(0);
@@ -81,8 +130,12 @@ public class ItemStockCheckAdapter extends RecyclerView.Adapter<ItemStockCheckAd
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvItemName)
         public TextView tvItemName;
-        @BindView(R.id.etQuantity)
-        public EditText etQuantity;
+        @BindView(R.id.etFRej)
+        public EditText etFRej;
+        @BindView(R.id.etMRej)
+        public EditText etMRej;
+        @BindView(R.id.etLeft)
+        public EditText etLeft;
 
         public ViewHolder(View v) {
             super(v);

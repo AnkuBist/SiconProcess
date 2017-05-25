@@ -276,8 +276,8 @@ public class ProductView extends SQLiteOpenHelper {
                 int marketRejection = customerRejTable.productMarketRejection(item_id);
                 int freshRejection = customerRejTable.productFreshRejection(item_id);
 
-                itemStockCheck.setMarket_rejection(marketRejection);
-                itemStockCheck.setFresh_rejection(freshRejection);
+                itemStockCheck.setMarket_rejection(0);
+                itemStockCheck.setFresh_rejection(0);
 
                 int leftOver = loadingQty - saleQty - sampleQty;
                 itemStockCheck.setActual_leftover(leftOver);

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -118,29 +119,27 @@ public class LoginActivity extends AppCompatActivity {
             if (checkUserId(username)) {
                 // if the user is logged in today but somehow logged out then check for the last logged in date
                 // and local data in invoice if there exists any data then simply make user in
-               /* if ((Utility.getCurDate()).matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE))) {
+                if ((Utility.getCurDate()).matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE))) {
                     //match here user saved username and password
                     String last_login_id = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_ID);
                     String last_login_password = Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_PASSWORD);
-                    // if (username.matches(last_login_id) &&
-                    //        password.matches(last_login_password)) {
-                    startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
-                    finish();
-                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
-                    // } else {
-                    //      Snackbar.make(coordinateLayout, "Username and password combination wrong.", Snackbar.LENGTH_LONG).show();
-                    // }
-                } else */
-                {
+                    if (username.matches(last_login_id) &&
+                            password.matches(last_login_password)) {
+                        startActivity(new Intent(LoginActivity.this, NavBaseActivity.class));
+                        finish();
+                        overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                    } else {
+                        Snackbar.make(coordinateLayout, "Username and password combination wrong.", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
                     // check for login
                     getUserLogin(username, password, imeiNumber);
                 }
             } else {
-
                 //TODO--- this is a test code remove these lines and uncomment the below code after this
                 // check for login
-                getUserLogin(username, password, imeiNumber);
-                //Snackbar.make(coordinateLayout, "Please erase app data before login with different user!", Snackbar.LENGTH_LONG).show();
+                //getUserLogin(username, password, imeiNumber);
+                Snackbar.make(coordinateLayout, "Please erase app data before login with different user!", Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -276,8 +275,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 // erase table to sync
                 //do not erase these sync tables if the last login by the user in the same date in case it will erase all data
-                // if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
-                eraseAllSyncTables();
+                if (!Utility.getCurDate().matches(Utility.readPreference(LoginActivity.this, Utility.LAST_LOGIN_DATE)))
+                    eraseAllSyncTables();
 
                 ObjLoginResponse objResponse = loginResponse.getObjLoginResponse();
 

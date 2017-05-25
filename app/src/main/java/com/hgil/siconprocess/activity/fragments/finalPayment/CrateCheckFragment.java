@@ -9,10 +9,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashierSyncModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.tables.PaymentTable;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashierSyncModel;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
+import com.hgil.siconprocess.utils.Utility;
 
 import butterknife.BindView;
 
@@ -58,13 +59,15 @@ public class CrateCheckFragment extends BaseFragment {
 
         cashierSyncModel = new CashierSyncModel();
         showSaveButton();
+        setTitle("Crate Stock");
 
         // crate stock verifying
-        crateStockCheck = new PaymentTable(getContext()).syncCrateStock(getRouteId());
+        crateStockCheck = new PaymentTable(getContext()).syncCrateStock(getRouteId(), getRouteModel().getCrateLoading());
 
         etCrateOpening.setText(String.valueOf(crateStockCheck.getOpening()));
         etCrateIssued.setText(String.valueOf(crateStockCheck.getIssued()));
-        etCrateReceived.setText(String.valueOf(crateStockCheck.getReceived()));
+        if (crateStockCheck.getReceived() > 0)
+            etCrateReceived.setText(String.valueOf(crateStockCheck.getReceived()));
         etCrateBalance.setText(String.valueOf(crateStockCheck.getBalance()));
 
         etCrateReceived.addTextChangedListener(new TextWatcher() {
@@ -91,8 +94,8 @@ public class CrateCheckFragment extends BaseFragment {
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crateStockCheck.setReceived(Integer.parseInt(etCrateReceived.getText().toString()));
-                crateStockCheck.setBalance(Integer.parseInt(etCrateBalance.getText().toString()));
+                crateStockCheck.setReceived(Utility.getInteger(etCrateReceived.getText().toString()));
+                crateStockCheck.setBalance(Utility.getInteger(etCrateBalance.getText().toString()));
 
                 // crate stock verifying
                 cashierSyncModel.setCrateStockCheck(crateStockCheck);

@@ -66,7 +66,7 @@ public class VanInventoryFragment extends BaseFragment {
         tvVanClosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SyncFragment fragment = SyncFragment.newInstance();
+                FinalPaymentFragment fragment = FinalPaymentFragment.newInstance();
                 String fragClassName = fragment.getClass().getName();
                 FragmentManager fragmentManager = ((NavBaseActivity) getActivity()).getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();

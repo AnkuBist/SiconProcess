@@ -8,15 +8,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.activity.fragments.dashboard.DaySummaryAmountCollectionModel;
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCashModel;
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionChequeModel;
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCrateModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.database.dbModels.ChequeDetailsModel;
 import com.hgil.siconprocess.database.dbModels.CrateDetailModel;
 import com.hgil.siconprocess.database.dbModels.PaymentModel;
 import com.hgil.siconprocess.database.dbModels.UpiPaymentModel;
 import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCashModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionChequeModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCrateModel;
+import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
 import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
@@ -439,7 +439,7 @@ public class PaymentTable extends SQLiteOpenHelper {
     }
 
     // get total crate info
-    public CrateStockCheck syncCrateStock(String route_id) {
+    public CrateStockCheck syncCrateStock(String route_id, int crateLoading) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(mContext);
@@ -450,8 +450,9 @@ public class PaymentTable extends SQLiteOpenHelper {
         if (res.moveToFirst()) {
             crateStock.setRouteId(route_id);
             crateStock.setOpening(routeCustomerView.vanOpeningCrates());
-            crateStock.setIssued(res.getInt(res.getColumnIndex("issued")));
-            crateStock.setReceived(res.getInt(res.getColumnIndex("received")));
+            // crateStock.setIssued(res.getInt(res.getColumnIndex("issued")));
+            crateStock.setIssued(crateLoading);
+            crateStock.setReceived(0);
             crateStock.setBalance(crateStock.getOpening() - crateStock.getIssued() + crateStock.getReceived());
         }
         res.close();
@@ -517,9 +518,9 @@ public class PaymentTable extends SQLiteOpenHelper {
 
         Cursor res = db.rawQuery("SELECT sum(" + CASH_PAID + ") as cash_paid FROM " + TABLE_NAME, null);
 
-       double cash_paid = 0;
+        double cash_paid = 0;
         if (res.moveToFirst()) {
-            cash_paid= (res.getDouble(res.getColumnIndex("cash_paid")));
+            cash_paid = (res.getDouble(res.getColumnIndex("cash_paid")));
         }
         res.close();
         db.close();

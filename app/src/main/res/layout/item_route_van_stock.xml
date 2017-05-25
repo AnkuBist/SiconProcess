@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvItemName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="12dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:textColor="@color/colorTextBlue"
+        android:textSize="@dimen/text_size_large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:text="M_Rej"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <EditText
+                android:id="@+id/etMRej"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/et_round_shape"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:text="F_Rej"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <EditText
+                android:id="@+id/etFRej"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/et_round_shape"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:text="LeftOver"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <EditText
+                android:id="@+id/etLeft"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/et_round_shape"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="6dp"
+        android:background="@color/colorBackgroundBlack" />
+</LinearLayout>

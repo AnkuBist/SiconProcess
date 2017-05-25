@@ -70,6 +70,7 @@ public class ItemCheckFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         showSaveButton();
+        setTitle("Van Stock");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

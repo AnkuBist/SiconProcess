@@ -71,7 +71,18 @@ public class SyncFragment extends BaseFragment {
         btnSyncData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateDataSync();
+                updateBarHandler.post(new Runnable() {
+                    public void run() {
+                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+                    }
+                });
+                // call sync data here
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initiateDataSync();
+                    }
+                }).start();
             }
         });
     }
@@ -85,11 +96,6 @@ public class SyncFragment extends BaseFragment {
 
     /*preparing data to sync whole day process*/
     private void initiateDataSync() {
-        updateBarHandler.post(new Runnable() {
-            public void run() {
-                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
-            }
-        });
         // finally convert all object and array data into jsonObject and send as object data to server side api;
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
@@ -128,7 +134,7 @@ public class SyncFragment extends BaseFragment {
                                  String cashier_paycode, JSONObject route_data, String imei_number) {
         updateBarHandler.post(new Runnable() {
             public void run() {
-                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+                RetrofitUtil.updateDialogTitle(getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
