@@ -49,7 +49,8 @@
             android:name=".activity.HomeInvoiceActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.fragments.customerTomorrowOrder.TomorrowOrderProductListActivity" />
-        <activity android:name=".activity.fragments.customerInvoice.customerMarketProducts.MarketProductListActivity"></activity>
+        <activity android:name=".activity.fragments.customerInvoice.customerMarketProducts.MarketProductListActivity"/>
+        <activity android:name=".activity.fragments.customerInvoice.makeSaleInvoice.NoOrderActivity"/>
     </application>
 
 </manifest>

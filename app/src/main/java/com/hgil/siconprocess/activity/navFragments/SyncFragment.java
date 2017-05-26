@@ -100,17 +100,18 @@ public class SyncFragment extends BaseFragment {
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
         // invoice sync
-        syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
-        syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
 
+        //TODO
+        /*syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
+        syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
         syncData.setSyncRejDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
-        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
+        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));*/
         //syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
-        syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         /*actual database synchronisation*/
         syncData.setSyncInvoiceSaleRej(new CustomerItemPriceTable(getContext()).syncInvoiceSaleRej(getRouteId()));
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
+        syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         String json = new Gson().toJson(syncData);
         JSONObject jObj = null;

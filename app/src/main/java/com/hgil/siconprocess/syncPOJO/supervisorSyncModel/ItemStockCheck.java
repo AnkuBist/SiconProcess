@@ -1,10 +1,12 @@
 package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
 
+import java.io.Serializable;
+
 /**
  * Created by mohan.giri on 23-05-2017.
  */
 
-public class ItemStockCheck {
+public class ItemStockCheck implements Serializable {
 
     private String item_id;
     private String item_name;

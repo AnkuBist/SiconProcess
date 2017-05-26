@@ -40,6 +40,9 @@ public class RouteModel implements Serializable {
     @SerializedName("Flag")
     @Expose
     private int flag;
+    @SerializedName("arrRouteCloseReason")
+    @Expose
+    private List<RcReason> arrRcReason;
     @SerializedName("arrCustomerRouteMap")
     @Expose
     private List<CustomerRouteMapModel> arrCustomerRouteMap;
@@ -180,5 +183,13 @@ public class RouteModel implements Serializable {
 
     public void setCrateLoading(int crateLoading) {
         this.crateLoading = crateLoading;
+    }
+
+    public List<RcReason> getArrRcReason() {
+        return arrRcReason;
+    }
+
+    public void setArrRcReason(List<RcReason> arrRcReason) {
+        this.arrRcReason = arrRcReason;
     }
 }

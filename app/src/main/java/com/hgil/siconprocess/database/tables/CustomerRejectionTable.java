@@ -7,14 +7,14 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.RejectionDetailModel;
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.CRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.FreshRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.RejectionDetailModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
@@ -181,7 +181,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
                     market_total_rej = marketRejection.getTotal();
                 }
 
-                double grand_total = (market_total_rej + fresh_total_rej) * rejectionModel.getPrice();
+                double grand_total = (market_total_rej) * rejectionModel.getPrice();
 
                 ih.bind(grandTotalColumn, grand_total);
                 ih.bind(imeiNoColumn, rejectionModel.getImei_no());
@@ -189,7 +189,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
                 ih.bind(curtimeColumn, Utility.timeStamp());
                 ih.bind(loginIdColumn, rejectionModel.getLogin_id());
                 ih.bind(dateColumn, Utility.getCurDate());
-                if (grand_total > 0)
+                if (market_total_rej > 0 || fresh_total_rej > 0)
                     ih.execute();
             }
             db.setTransactionSuccessful();
@@ -288,6 +288,23 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         db.close();
         return amount;
     }
+
+    // get market rejctions for customer
+    public double custMRejTotalAmount(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select sum(" + MARKET_DAMAGED + "+" + MARKET_EXPIRED + "+" + MARKET_RAT_EATEN + ") as total " +
+                "from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        double m_Rej = 0;
+        if (res.moveToFirst()) {
+            m_Rej = res.getDouble(res.getColumnIndex("total"));
+        }
+        res.close();
+        db.close();
+        return m_Rej;
+    }
+
 
     // get product total market rejection
     public int productMarketRejection(String item_id) {

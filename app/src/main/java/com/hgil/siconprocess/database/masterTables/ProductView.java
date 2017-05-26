@@ -205,7 +205,7 @@ public class ProductView extends SQLiteOpenHelper {
                 vanStockModel.setMarket_rejection(marketRejection);
                 vanStockModel.setFresh_rejection(freshRejection);
 
-                int leftOver = loadingQty - saleQty - sampleQty;
+                int leftOver = loadingQty - saleQty - sampleQty - freshRejection;
                 vanStockModel.setLeft_over(leftOver);
 
                 if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0)
@@ -279,7 +279,7 @@ public class ProductView extends SQLiteOpenHelper {
                 itemStockCheck.setMarket_rejection(0);
                 itemStockCheck.setFresh_rejection(0);
 
-                int leftOver = loadingQty - saleQty - sampleQty;
+                int leftOver = loadingQty - saleQty - sampleQty - freshRejection;
                 itemStockCheck.setActual_leftover(leftOver);
 
                 if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0 || leftOver > 0)

@@ -350,7 +350,7 @@ public class CustomerItemPriceTable extends SQLiteOpenHelper {
                 }
 
                 // final details
-                int actual_sale_count = saleCount - fresh_rej - market_rej;
+                int actual_sale_count = saleCount - market_rej;
                 syncModel.setActual_sale_count(actual_sale_count);
 
                 //can be calculated here only

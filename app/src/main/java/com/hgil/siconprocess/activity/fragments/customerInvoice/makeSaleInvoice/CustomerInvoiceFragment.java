@@ -1,24 +1,27 @@
 package com.hgil.siconprocess.activity.fragments.customerInvoice.makeSaleInvoice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
+import com.hgil.siconprocess.activity.HomeInvoiceActivity;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.adapter.invoice.invoiceSale.CustomerInvoiceAdapter;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
+import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RcReason;
 import com.hgil.siconprocess.utils.UtilBillNo;
 import com.hgil.siconprocess.utils.UtilNetworkLocation;
 import com.hgil.siconprocess.utils.Utility;
@@ -35,6 +38,7 @@ public class CustomerInvoiceFragment extends BaseFragment {
     //@BindView(R.id.tvCustomerTotal)
     public static TextView tvInvoiceTotal;
     public static double grandTotal = 0;
+    public static final int NO_ORDER = 113;
 
     @BindView(R.id.tvCustomerName)
     TextView tvCustomerName;
@@ -48,11 +52,15 @@ public class CustomerInvoiceFragment extends BaseFragment {
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
 
+    @BindView(R.id.btnNoOrder)
+    Button btnNoOrder;
+
     boolean mAlreadyLoaded;
     String TAG = getClass().getName();
     private String bill_no;
     private CustomerInvoiceAdapter invoiceAdapter;
     private DepotInvoiceView customerInvoice;
+    private CustomerRouteMappingView customerRouteMappingView;
     private CustomerRejectionTable rejectionTable;
     private InvoiceOutTable invoiceOutTable;
     private ArrayList<InvoiceModel> arrInvoiceItems = new ArrayList<>();
@@ -81,6 +89,7 @@ public class CustomerInvoiceFragment extends BaseFragment {
         }
 
         // initialise the values at first time
+        customerRouteMappingView = new CustomerRouteMappingView(getContext());
         customerInvoice = new DepotInvoiceView(getContext());
         invoiceOutTable = new InvoiceOutTable(getContext());
         rejectionTable = new CustomerRejectionTable(getContext());
@@ -108,11 +117,6 @@ public class CustomerInvoiceFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -131,6 +135,18 @@ public class CustomerInvoiceFragment extends BaseFragment {
         // Do this code only first time, not after rotation or reuse fragment from backstack
         tvInvoiceTotal = (TextView) view.findViewById(R.id.tvInvoiceTotal);
         onFragmentStart();
+
+        btnNoOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), NoOrderActivity.class);
+                intent.putExtra("customer_id", customer_id);
+                intent.putExtra("customer_name", customer_name);
+                startActivityForResult(intent, NO_ORDER);
+                ((HomeInvoiceActivity) getContext()).overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+
+            }
+        });
     }
 
     private void onFragmentStart() {
@@ -174,18 +190,22 @@ public class CustomerInvoiceFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         tvInvoiceTotal.setText("Total\n" + strRupee + Utility.roundTwoDecimals(grandTotal));
-        if (arrInvoiceItems.size() == 0) {
-            tvEmpty.setVisibility(View.VISIBLE);
-            rvCustomerInvoice.setVisibility(View.GONE);
+
+        RcReason rcReason = customerRouteMappingView.custNoOrderReason(customer_id);
+        if (rcReason.getReasonId() != 0) {
+            if (arrInvoiceItems.size() == 0) {
+                tvEmpty.setVisibility(View.VISIBLE);
+                rvCustomerInvoice.setVisibility(View.GONE);
+            } else {
+                tvEmpty.setVisibility(View.GONE);
+                rvCustomerInvoice.setVisibility(View.VISIBLE);
+            }
         } else {
-            tvEmpty.setVisibility(View.GONE);
-            rvCustomerInvoice.setVisibility(View.VISIBLE);
+            rvCustomerInvoice.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+            tvEmpty.setText(rcReason.getReason());
         }
     }
-
-   /* public void setInvoiceTotal(String invoiceAmount) {
-        tvInvoiceTotal.setText(invoiceAmount);
-    }*/
 
     private String getBill_no() {
         String tempBill = null;
@@ -220,5 +240,16 @@ public class CustomerInvoiceFragment extends BaseFragment {
         tempBill = UtilBillNo.generateBillNo(getRouteModel().getRecId(), expectedLastBillNo);
 
         return tempBill;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK) {
+            if (requestCode == NO_ORDER) {
+                // refresh button color if any status is saved.
+                onResume();
+            }
+        }
     }
 }

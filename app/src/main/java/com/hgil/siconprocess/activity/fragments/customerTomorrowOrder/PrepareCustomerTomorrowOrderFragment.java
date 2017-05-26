@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
@@ -35,11 +36,11 @@ public class PrepareCustomerTomorrowOrderFragment extends BaseFragment {
     RecyclerView rvCustomerOrder;
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
-/*    @BindView(R.id.btnAddItems)
-    Button btnAddItems;*/
+    @BindView(R.id.btnAddItems)
+    Button btnAddItems;
 
-    @BindView(R.id.fabAddItems)
-    FloatingActionButton fabAddItems;
+  /*  @BindView(R.id.fabAddItems)
+    FloatingActionButton fabAddItems;*/
     private NextDayOrderAdapter orderAdapter;
     private NextDayOrderTable orderTable;
     private ArrayList<NextDayOrderModel> arrOrder = new ArrayList<>();
@@ -124,7 +125,7 @@ public class PrepareCustomerTomorrowOrderFragment extends BaseFragment {
             }
         });
 
-        fabAddItems.setOnClickListener(new View.OnClickListener() {
+        btnAddItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TomorrowOrderProductListActivity.class);

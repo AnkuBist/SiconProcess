@@ -1,10 +1,12 @@
 package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
 
+import java.io.Serializable;
+
 /**
  * Created by mohan.giri on 23-05-2017.
  */
 
-public class CashCheckModel {
+public class CashCheckModel implements Serializable {
 
     private String route_id;
     private double total_amount;        //net sale amount

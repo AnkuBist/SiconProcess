@@ -48,11 +48,11 @@ public class CustomerRejectionFragment extends BaseFragment {
     RecyclerView rvCustomerRejection;
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
- /*   @BindView(R.id.btnAddItems)
-    Button btnAddItems;*/
+    @BindView(R.id.btnAddItems)
+    Button btnAddItems;
 
-    @BindView(R.id.fabAddItems)
-    FloatingActionButton fabAddItems;
+ /*   @BindView(R.id.fabAddItems)
+    FloatingActionButton fabAddItems;*/
 
     private InvoiceRejectionAdapter rejectionAdapter;
     private CustomerRejectionTable rejectionTable;
@@ -157,7 +157,7 @@ public class CustomerRejectionFragment extends BaseFragment {
                     if (marketRejection != null)
                         market_total_rej = marketRejection.getTotal();
 
-                    customer_rejection_amount += ((market_total_rej + fresh_total_rej) * rejModel.getPrice());
+                    customer_rejection_amount += ((market_total_rej) * rejModel.getPrice());
                 }
 
                 if (customer_rejection_amount <= customer_sale_amount) {
@@ -176,7 +176,7 @@ public class CustomerRejectionFragment extends BaseFragment {
             }
         });
 
-        fabAddItems.setOnClickListener(new View.OnClickListener() {
+        btnAddItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ProductListSelectActivity.class);

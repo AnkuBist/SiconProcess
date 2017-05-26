@@ -1,10 +1,12 @@
 package com.hgil.siconprocess.syncPOJO.invoiceSyncModel;
 
+import java.io.Serializable;
+
 /**
  * Created by mohan.giri on 20-02-2017.
  */
 
-public class SyncInvoiceDetailModel {
+public class SyncInvoiceDetailModel implements Serializable {
 
     private String route_management_id;
     private String bill_no;

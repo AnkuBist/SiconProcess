@@ -91,6 +91,7 @@ public class CrateCheckFragment extends BaseFragment {
                 }
             }
         });
+
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

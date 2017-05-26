@@ -24,6 +24,7 @@ import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DepotEmployeeView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.masterTables.ProductView;
+import com.hgil.siconprocess.database.masterTables.RcReasonTable;
 import com.hgil.siconprocess.database.masterTables.RouteView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -62,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     CoordinatorLayout coordinateLayout;
 
     private RouteView dbRouteView;
+    private RcReasonTable dbRcReason;
     private CustomerRouteMappingView dbRouteMapView;
     private CustomerItemPriceTable dbCustomerItemPrice;
     private ProductView dbProductView;
@@ -159,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initialiseDBObj() {
         dbRouteView = new RouteView(this);
+        dbRcReason = new RcReasonTable(this);
         dbRouteMapView = new CustomerRouteMappingView(this);
         dbCustomerItemPrice = new CustomerItemPriceTable(this);
         dbProductView = new ProductView(this);
@@ -168,6 +171,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void eraseAllTableData() {
         dbRouteView.eraseTable();
+        dbRcReason.eraseTable();
         dbRouteMapView.eraseTable();
         dbCustomerItemPrice.eraseTable();
         dbProductView.eraseTable();
@@ -285,6 +289,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 RouteModel routeData = objResponse.getRouteDetail();
 
+                dbRcReason.insertReason(routeData.getArrRcReason());
                 dbRouteMapView.insertCustomerRouteMap(routeData.getArrCustomerRouteMap());
                 dbCustomerItemPrice.insertCustomerItemPrice(routeData.getArrItemDiscountPrice());
                 dbProductView.insertProducts(routeData.getArrItemsMaster());

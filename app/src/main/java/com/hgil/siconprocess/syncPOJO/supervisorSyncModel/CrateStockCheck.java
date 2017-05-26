@@ -1,10 +1,12 @@
 package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
 
+import java.io.Serializable;
+
 /**
  * Created by mohan.giri on 20-02-2017.
  */
 
-public class CrateStockCheck {
+public class CrateStockCheck implements Serializable {
 
     private String routeId;
     private int opening;

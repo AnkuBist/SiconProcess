@@ -84,12 +84,14 @@ public class ItemCheckFragment extends BaseFragment {
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cashierSyncModel.setArrItemStock(new ArrayList<ItemStockCheck>());
                 cashierSyncModel.setArrItemStock(arrItemStockCheck);
 
                 CustomerItemPriceTable customerItemPriceTable = new CustomerItemPriceTable(getContext());
                 String routeManagementId = getRouteModel().getRouteManagementId();
                 String invoiceNumber = new DepotInvoiceView(getContext()).commonInvoiceNumber();
                 String invoiceDate = Utility.getCurDate();
+                String billNo = getBill_no();
                 String cashierCode = getRouteModel().getCashierCode();
 
                 // generate temporary invoice for the retails customer for variance items
@@ -120,7 +122,7 @@ public class ItemCheckFragment extends BaseFragment {
                         syncModel.setSample(sample);
 
                         syncModel.setRoute_management_id(routeManagementId);
-                        syncModel.setBill_no(getBill_no());
+                        syncModel.setBill_no(billNo);
                         syncModel.setInvoice_no(invoiceNumber);
                         syncModel.setInvoice_date(invoiceDate);
                         syncModel.setRoute_id(getRouteId());
@@ -131,7 +133,7 @@ public class ItemCheckFragment extends BaseFragment {
                         int market_rej = 0;
 
                         // final details
-                        int actual_sale_count = saleCount - fresh_rej - market_rej;
+                        int actual_sale_count = saleCount - market_rej;
                         syncModel.setActual_sale_count(actual_sale_count);
 
                         //can be calculated here only
@@ -170,16 +172,9 @@ public class ItemCheckFragment extends BaseFragment {
         String tempBill = null;
         String expectedLastBillNo = null;
         double max_bill_1 = 0, max_bill_2 = 0;
-        String tempBill1 = invoiceOutTable.returnCustomerBillNo(customer_id);
-        String tempBill2 = rejectionTable.returnCustomerBillNo(customer_id);
 
         String last_max_bill_1 = invoiceOutTable.returnMaxBillNo();
         String last_max_bill_2 = rejectionTable.returnMaxBillNo();
-
-        if (tempBill1 != null && !tempBill1.isEmpty() && tempBill1.length() == 14)
-            return tempBill1;
-        else if (tempBill2 != null && !tempBill2.isEmpty() && tempBill2.length() == 14)
-            return tempBill2;
 
         // case to find the last max bill no
         if (last_max_bill_1 != null && !last_max_bill_1.isEmpty() && last_max_bill_1.length() == 14)

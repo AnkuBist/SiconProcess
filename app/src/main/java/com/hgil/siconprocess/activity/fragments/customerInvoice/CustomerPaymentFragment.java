@@ -125,6 +125,7 @@ public class CustomerPaymentFragment extends BaseFragment {
         CustomerRejectionTable rejectionTable = new CustomerRejectionTable(getContext());
         double invoiceTotal = invoiceOutTable.custInvoiceTotalAmount(customer_id);
         double rejectionTotal = rejectionTable.custRejTotalAmount(customer_id);
+        // double marketRejTotal = rejectionTable.custMRejTotalAmount(customer_id);
         final double saleTotal = invoiceTotal - rejectionTotal;
         tvSaleAmount.setText(strRupee + Utility.roundTwoDecimals(saleTotal));
 

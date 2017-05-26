@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.hgil.siconprocess.adapter.routeMap.RouteCustomerModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerRouteMapModel;
+import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RcReason;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 
 public class CustomerRouteMappingView extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Sicon_route_map";
     private static final String TABLE_NAME = "V_SD_Customer_Route_Mapping";
@@ -39,6 +40,12 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
 
     // customer status
     private static final String CUST_STATUS = "Customer_status";
+    //private static final String CUST_SALE_AMT = "cust_sale_amt";
+    //private static final String CUST_RECEIVED_AMT = "received_amt";
+    private static final String REASON_ID = "reason_id";
+    private static final String REASON_STATUS = "reason_status";
+    private static final String UPDATE_TIME = "update_time";
+
 
     private Context mContext;
 
@@ -54,7 +61,8 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
                 + CUSTOMER_ID + " TEXT NULL, " + CUSTOMER_NAME + " TEXT NOT NULL, " + PRICEGROUP + " TEXT NOT NULL, "
                 + LINEDISC + " TEXT NOT NULL, " + C_TYPE + " TEXT NOT NULL, " + CUSTCLASSIFICATIONID + " TEXT NULL, "
                 + CRATE_LOADING + " INTEGER NULL, " + CRATE_CREDIT + " INTEGER NULL, " + AMOUNT_CREDIT + " REAL NULL, "
-                + CUST_STATUS + " TEXT NULL)");
+                + CUST_STATUS + " TEXT NULL, " + REASON_ID + " INTEGER NULL, " + REASON_STATUS + " TEXT NULL, "
+                + UPDATE_TIME + " TEXT NULL)");
     }
 
     @Override
@@ -69,11 +77,22 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         db.close();
     }
 
-    //update route customer status
+    //update customer no order reason
+    public void updateOrderReason(String customer_id, int reason_id, String reason) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(REASON_ID, reason_id);
+        contentValues.put(REASON_STATUS, reason);
+        db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
+        db.close();
+    }
+
+    //update route customer status and update time
     public void updateCustomerStatus(String customer_id, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CUST_STATUS, status);
+        contentValues.put(UPDATE_TIME, Utility.timeStamp());
         db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{customer_id});
         db.close();
     }
@@ -102,9 +121,24 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         return true;
     }
 
+    public RcReason custNoOrderReason(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT " + REASON_ID + ", " + REASON_STATUS + " FROM "
+                + TABLE_NAME + " WHERE " + CUSTOMER_ID + "=?", new String[]{customer_id});
+
+        RcReason rcReason = new RcReason();
+        if (res.moveToFirst()) {
+            rcReason.setReasonId(res.getInt(res.getColumnIndex(REASON_ID)));
+            rcReason.setReason(res.getString(res.getColumnIndex(REASON_STATUS)));
+        }
+        res.close();
+        db.close();
+        return rcReason;
+    }
+
     public CustomerRouteMapModel getCustomerRouteMapByCustomer(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "='" + customer_id + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "=?", new String[]{customer_id});
 
         CustomerRouteMapModel customerRouteMapModel = new CustomerRouteMapModel();
         if (res.moveToFirst()) {
