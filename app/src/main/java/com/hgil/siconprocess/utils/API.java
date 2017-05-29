@@ -11,6 +11,8 @@ public class API {
 
     //live address
     //public static final String BASE_URL = "http://123.63.89.83:8080/SiconRestApi/LEON_REST/webService_v1/";
+
+    // other api's
     public static final String LOGIN_URL = "leon_loginUser";
     public static final String SYNC_URL = "leon_syncRoute";
     public static final String SYNC_CASHIER_URL = "leon_syncRouteByCashier";

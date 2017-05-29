@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.HomeInvoiceActivity;
+import com.hgil.siconprocess.activity.fragments.customerInvoice.CustomerPaymentFragment;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.adapter.invoice.invoiceSale.CustomerInvoiceAdapter;
 import com.hgil.siconprocess.base.BaseFragment;
@@ -55,7 +55,8 @@ public class CustomerInvoiceFragment extends BaseFragment {
     @BindView(R.id.btnNoOrder)
     Button btnNoOrder;
 
-    boolean mAlreadyLoaded;
+    private boolean NO_ORDER_STATUS = false;
+
     String TAG = getClass().getName();
     private String bill_no;
     private CustomerInvoiceAdapter invoiceAdapter;
@@ -81,7 +82,6 @@ public class CustomerInvoiceFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, "onCreate");
         grandTotal = 0;
         if (getArguments() != null) {
             customer_id = getArguments().getString(CUSTOMER_ID);
@@ -164,24 +164,29 @@ public class CustomerInvoiceFragment extends BaseFragment {
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<InvoiceModel> reviewOrderData = new ArrayList<InvoiceModel>();
-                for (int i = 0; i < arrInvoiceItems.size(); i++) {
-                    InvoiceModel invoiceModel = arrInvoiceItems.get(i);
-                    if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getInvQtyPs() > 0) {
-                        // update bill_no, device imei_no, location and login_id
-                        // time_stamp will be updated automatically;
-                        invoiceModel.setBill_no(bill_no);
-                        invoiceModel.setImei_no(UtilIMEI.getIMEINumber(getContext()));
-                        invoiceModel.setLat_lng(UtilNetworkLocation.getLatLng(UtilNetworkLocation.getLocation(getContext())));
-                        invoiceModel.setLogin_id(getLoginId());
+                if (NO_ORDER_STATUS) {
+                    CustomerPaymentFragment fragment = CustomerPaymentFragment.newInstance(customer_id, customer_name);
+                    launchInvoiceFragment(fragment);
+                } else {
+                    ArrayList<InvoiceModel> reviewOrderData = new ArrayList<InvoiceModel>();
+                    for (int i = 0; i < arrInvoiceItems.size(); i++) {
+                        InvoiceModel invoiceModel = arrInvoiceItems.get(i);
+                        if (invoiceModel.getOrderAmount() > 0 && invoiceModel.getInvQtyPs() > 0) {
+                            // update bill_no, device imei_no, location and login_id
+                            // time_stamp will be updated automatically;
+                            invoiceModel.setBill_no(bill_no);
+                            invoiceModel.setImei_no(UtilIMEI.getIMEINumber(getContext()));
+                            invoiceModel.setLat_lng(UtilNetworkLocation.getLatLng(UtilNetworkLocation.getLocation(getContext())));
+                            invoiceModel.setLogin_id(getLoginId());
 
-                        reviewOrderData.add(invoiceModel);
+                            reviewOrderData.add(invoiceModel);
+                        }
                     }
-                }
 
-                // here simply forward the collected array data to the next fragmen to let the user choose whether to save invoice or not
-                InvoiceOutFragment fragment = InvoiceOutFragment.newInstance(customer_id, customer_name, reviewOrderData);
-                launchInvoiceFragment(fragment);
+                    // here simply forward the collected array data to the next fragmen to let the user choose whether to save invoice or not
+                    InvoiceOutFragment fragment = InvoiceOutFragment.newInstance(customer_id, customer_name, reviewOrderData);
+                    launchInvoiceFragment(fragment);
+                }
             }
         });
     }
@@ -192,7 +197,8 @@ public class CustomerInvoiceFragment extends BaseFragment {
         tvInvoiceTotal.setText("Total\n" + strRupee + Utility.roundTwoDecimals(grandTotal));
 
         RcReason rcReason = customerRouteMappingView.custNoOrderReason(customer_id);
-        if (rcReason.getReasonId() != 0) {
+        if (rcReason.getReasonId() == 0) {
+            NO_ORDER_STATUS = false;
             if (arrInvoiceItems.size() == 0) {
                 tvEmpty.setVisibility(View.VISIBLE);
                 rvCustomerInvoice.setVisibility(View.GONE);
@@ -201,6 +207,7 @@ public class CustomerInvoiceFragment extends BaseFragment {
                 rvCustomerInvoice.setVisibility(View.VISIBLE);
             }
         } else {
+            NO_ORDER_STATUS = true;
             rvCustomerInvoice.setVisibility(View.GONE);
             tvEmpty.setVisibility(View.VISIBLE);
             tvEmpty.setText(rcReason.getReason());

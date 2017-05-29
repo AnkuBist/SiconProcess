@@ -527,5 +527,20 @@ public class PaymentTable extends SQLiteOpenHelper {
         return cash_paid;
     }
 
+    /*customer cash paid amount*/
+    public double custCashPaidAmt(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + CASH_PAID + " FROM " + TABLE_NAME + " where " + CUSTOMER_ID + "=?", new String[]{customer_id});
+
+        double cash_paid = 0;
+        if (res.moveToFirst()) {
+            cash_paid = (res.getDouble(res.getColumnIndex("cash_paid")));
+        }
+        res.close();
+        db.close();
+        return cash_paid;
+    }
+
 
 }

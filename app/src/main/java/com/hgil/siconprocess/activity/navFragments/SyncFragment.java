@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.database.tables.MarketProductTable;
@@ -109,6 +110,7 @@ public class SyncFragment extends BaseFragment {
         //syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
 
         /*actual database synchronisation*/
+        syncData.setArrClosedCustDetails(new CustomerRouteMappingView(getContext()).closedOutletDetails());
         syncData.setSyncInvoiceSaleRej(new CustomerItemPriceTable(getContext()).syncInvoiceSaleRej(getRouteId()));
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());

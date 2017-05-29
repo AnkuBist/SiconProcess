@@ -3,6 +3,7 @@ package com.hgil.siconprocess.syncPOJO.invoiceSyncModel;
 import com.hgil.siconprocess.database.dbModels.MarketProductModel;
 import com.hgil.siconprocess.database.dbModels.NextDayOrderModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -11,16 +12,25 @@ import java.util.ArrayList;
 
 public class SyncData {
 
-    private ArrayList<SyncInvoiceDetailModel> syncInvoice;
-    private ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection;
-    private ArrayList<RejectionDetailModel> syncRejDetails;
+    //private ArrayList<SyncInvoiceDetailModel> syncInvoice;
+   // private ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection;
+   // private ArrayList<RejectionDetailModel> syncRejDetails;
     private ArrayList<CollectionCashModel> cashCollection;
     private ArrayList<CollectionCrateModel> crateCollection;
-    private ArrayList<CollectionChequeModel> chequeCollection;
+   // private ArrayList<CollectionChequeModel> chequeCollection;
     //private ArrayList<NextDayOrderModel> arrNextDayOrder;
     //private ArrayList<MarketProductModel> arrMarketProductsSummary;
 
     private ArrayList<SyncInvoiceDetailModel> syncInvoiceSaleRej;
+    private ArrayList<OutletCloseDetail> arrClosedCustDetails;
+
+    public ArrayList<OutletCloseDetail> getArrClosedCustDetails() {
+        return arrClosedCustDetails;
+    }
+
+    public void setArrClosedCustDetails(ArrayList<OutletCloseDetail> arrClosedCustDetails) {
+        this.arrClosedCustDetails = arrClosedCustDetails;
+    }
 
     public ArrayList<SyncInvoiceDetailModel> getSyncInvoiceSaleRej() {
         return syncInvoiceSaleRej;
@@ -38,13 +48,13 @@ public class SyncData {
         this.arrMarketProductsSummary = arrMarketProductsSummary;
     }*/
 
-    public ArrayList<CollectionChequeModel> getChequeCollection() {
+   /* public ArrayList<CollectionChequeModel> getChequeCollection() {
         return chequeCollection;
     }
 
     public void setChequeCollection(ArrayList<CollectionChequeModel> chequeCollection) {
         this.chequeCollection = chequeCollection;
-    }
+    }*/
 
    /* public ArrayList<NextDayOrderModel> getArrNextDayOrder() {
         return arrNextDayOrder;
@@ -54,15 +64,15 @@ public class SyncData {
         this.arrNextDayOrder = arrNextDayOrder;
     }*/
 
-    public ArrayList<SyncInvoiceDetailModel> getSyncInvoice() {
+  /*  public ArrayList<SyncInvoiceDetailModel> getSyncInvoice() {
         return syncInvoice;
     }
 
     public void setSyncInvoice(ArrayList<SyncInvoiceDetailModel> syncInvoice) {
         this.syncInvoice = syncInvoice;
-    }
+    }*/
 
-    public ArrayList<SyncInvoiceDetailModel> getSyncInvoiceRejection() {
+ /*   public ArrayList<SyncInvoiceDetailModel> getSyncInvoiceRejection() {
         return syncInvoiceRejection;
     }
 
@@ -76,7 +86,7 @@ public class SyncData {
 
     public void setSyncRejDetails(ArrayList<RejectionDetailModel> syncRejDetails) {
         this.syncRejDetails = syncRejDetails;
-    }
+    }*/
 
     public ArrayList<CollectionCashModel> getCashCollection() {
         return cashCollection;

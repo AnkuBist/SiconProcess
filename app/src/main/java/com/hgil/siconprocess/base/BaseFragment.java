@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,26 @@ public abstract class BaseFragment extends Fragment {
         Snackbar mSnackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         // get snackbar view
         View mView = mSnackbar.getView();
+        // get textview inside snackbar view
+        TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
+        // set text to center
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        else
+            mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        // show the snackbar
+        mSnackbar.show();
+    }  // sample snackbar
+
+    public static void showTopSnackbar(View view, String message) {
+        // make snackbar
+        Snackbar mSnackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        // get snackbar view
+        View mView = mSnackbar.getView();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+        params.gravity = Gravity.TOP;
+        view.setLayoutParams(params);
+
         // get textview inside snackbar view
         TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
         // set text to center

@@ -141,7 +141,6 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
-            //}
         }
         res.close();
         db.close();

@@ -9,7 +9,9 @@ import android.widget.TextView;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.finalPayment.CrateCheckFragment;
 import com.hgil.siconprocess.base.BaseFragment;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.utils.Constant;
+import com.hgil.siconprocess.utils.ui.SampleDialog;
 
 import butterknife.BindView;
 
@@ -21,6 +23,8 @@ public class FinalPaymentFragment extends BaseFragment {
     EditText etCashierCode;
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
+
+    private CustomerRouteMappingView customerRouteMappingView;
 
     public FinalPaymentFragment() {
         // Required empty public constructor
@@ -44,6 +48,8 @@ public class FinalPaymentFragment extends BaseFragment {
         tvRouteName.setText(getRouteName());
         hideSaveButton();
 
+        customerRouteMappingView = new CustomerRouteMappingView(getContext());
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,10 +57,14 @@ public class FinalPaymentFragment extends BaseFragment {
                 if (head_cashier_code.isEmpty()) {
                     showSnackbar(getView(), "Please enter head cashier code");
                 } else if (head_cashier_code.matches(Constant.HEAD_CASHIER_CODE)) {
-                    CrateCheckFragment fragment = CrateCheckFragment.newInstance();
-                    launchNavFragment(fragment);
+                    if (customerRouteMappingView.numberPendingCustomers() > 0) {
+                        new SampleDialog("Please Complete Sale on Pending Customers before closing route.", getContext());
+                    } else {
+                        CrateCheckFragment fragment = CrateCheckFragment.newInstance();
+                        launchNavFragment(fragment);
+                    }
                 } else {
-                    showSnackbar(getView(), "Please enter a valid head cashier code");
+                    showTopSnackbar(getView(), "Please enter a valid head cashier code");
                 }
             }
         });

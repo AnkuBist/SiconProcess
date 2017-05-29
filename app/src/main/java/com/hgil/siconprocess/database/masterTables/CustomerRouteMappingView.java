@@ -9,8 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.adapter.routeMap.RouteCustomerModel;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
+import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerRouteMapModel;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RcReason;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.OutletCloseDetail;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;
@@ -39,13 +42,14 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
     private static final String CUSTCLASSIFICATIONID = "CUSTCLASSIFICATIONID";
 
     // customer status
+    private static final String INVOICE_NUMBER = "invoice_number";
+    private static final String BILL_NO = "bill_no";
     private static final String CUST_STATUS = "Customer_status";
-    //private static final String CUST_SALE_AMT = "cust_sale_amt";
-    //private static final String CUST_RECEIVED_AMT = "received_amt";
+    private static final String CUST_SALE_AMT = "cust_sale_amt";
+    private static final String CUST_RECEIVED_AMT = "received_amt";
     private static final String REASON_ID = "reason_id";
     private static final String REASON_STATUS = "reason_status";
     private static final String UPDATE_TIME = "update_time";
-
 
     private Context mContext;
 
@@ -61,8 +65,9 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
                 + CUSTOMER_ID + " TEXT NULL, " + CUSTOMER_NAME + " TEXT NOT NULL, " + PRICEGROUP + " TEXT NOT NULL, "
                 + LINEDISC + " TEXT NOT NULL, " + C_TYPE + " TEXT NOT NULL, " + CUSTCLASSIFICATIONID + " TEXT NULL, "
                 + CRATE_LOADING + " INTEGER NULL, " + CRATE_CREDIT + " INTEGER NULL, " + AMOUNT_CREDIT + " REAL NULL, "
-                + CUST_STATUS + " TEXT NULL, " + REASON_ID + " INTEGER NULL, " + REASON_STATUS + " TEXT NULL, "
-                + UPDATE_TIME + " TEXT NULL)");
+                + INVOICE_NUMBER + " TEXT NULL, " + BILL_NO + " TEXT NULL, " + CUST_SALE_AMT + " REAL NULL, "
+                + CUST_RECEIVED_AMT + " REAL NULL, " + CUST_STATUS + " TEXT NULL, " + REASON_ID + " INTEGER NULL, "
+                + REASON_STATUS + " TEXT NULL, " + UPDATE_TIME + " TEXT NULL)");
     }
 
     @Override
@@ -335,4 +340,47 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         db.close();
         return Utility.roundTwoDecimals(amount);
     }
+
+
+    /*closed customer details*/
+    /*route completed customers list*/
+    public ArrayList<OutletCloseDetail> closedOutletDetails() {
+        ArrayList<OutletCloseDetail> array_list = new ArrayList<OutletCloseDetail>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        PaymentTable paymentTable = new PaymentTable(mContext);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUST_STATUS + "=?", new String[]{"COMPLETED"});
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                OutletCloseDetail routeCustomerModel = new OutletCloseDetail();
+                String customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
+
+                routeCustomerModel.setRoute_id(res.getString(res.getColumnIndex(ROUTE_ID)));
+                routeCustomerModel.setRoute_name(res.getString(res.getColumnIndex(ROUTE_NAME)));
+                routeCustomerModel.setCustomer_id(customer_id);
+                routeCustomerModel.setCustomer_name(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
+                routeCustomerModel.setSale_amount(invoiceOutTable.custInvoiceTotalAmount(customer_id));
+                routeCustomerModel.setReceived_amount(paymentTable.custCashPaidAmt(customer_id));
+                routeCustomerModel.setReason_id(res.getString(res.getColumnIndex(REASON_ID)));
+                routeCustomerModel.setReason(res.getString(res.getColumnIndex(REASON_STATUS)));
+                routeCustomerModel.setClose_time(res.getString(res.getColumnIndex(UPDATE_TIME)));
+
+                array_list.add(routeCustomerModel);
+                res.moveToNext();
+            }
+        }
+        res.close();
+        db.close();
+        return array_list;
+    }
+
+    public int numberPendingCustomers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME, CUST_STATUS + "<>?",
+                new String[]{Constant.STATUS_COMPLETE});
+        db.close();
+        return numRows;
+    }
+
 }
