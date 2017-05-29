@@ -1,4 +1,4 @@
-package com.hgil.siconprocess.activity.fragments.finalPayment;
+package com.hgil.siconprocess.activity.fragments.vanClose;
 
 
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.widget.EditText;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.tables.PaymentTable;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashierSyncModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
+import com.hgil.siconprocess.syncPOJO.vanCloseModel.SyncVanClose;
+import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.utils.Utility;
 
 import butterknife.BindView;
@@ -31,7 +31,7 @@ public class CrateCheckFragment extends BaseFragment {
     @BindView(R.id.etCrateBalance)
     EditText etCrateBalance;
 
-    private CashierSyncModel cashierSyncModel;
+    private SyncVanClose syncVanClose;
     private CrateStockCheck crateStockCheck;
 
     public CrateCheckFragment() {
@@ -57,7 +57,7 @@ public class CrateCheckFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cashierSyncModel = new CashierSyncModel();
+        syncVanClose = new SyncVanClose();
         showSaveButton();
         setTitle("Crate Stock");
 
@@ -99,10 +99,10 @@ public class CrateCheckFragment extends BaseFragment {
                 crateStockCheck.setBalance(Utility.getInteger(etCrateBalance.getText().toString()));
 
                 // crate stock verifying
-                cashierSyncModel.setCrateStockCheck(crateStockCheck);
+                syncVanClose.setCrateStockCheck(crateStockCheck);
 
-                ItemCheckFragment fragment = ItemCheckFragment.newInstance(cashierSyncModel);
-                launchNavFragment(fragment);
+               /* ItemCheckFragment fragment = ItemCheckFragment.newInstance(syncVanClose);
+                launchNavFragment(fragment);*/
             }
         });
     }

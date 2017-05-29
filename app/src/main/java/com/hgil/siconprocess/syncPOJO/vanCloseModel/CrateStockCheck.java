@@ -1,4 +1,4 @@
-package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
+package com.hgil.siconprocess.syncPOJO.vanCloseModel;
 
 import java.io.Serializable;
 

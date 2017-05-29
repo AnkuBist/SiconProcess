@@ -15,5 +15,6 @@ public class API {
     // other api's
     public static final String LOGIN_URL = "leon_loginUser";
     public static final String SYNC_URL = "leon_syncRoute";
-    public static final String SYNC_CASHIER_URL = "leon_syncRouteByCashier";
+    public static final String VAN_CLOSE_URL = "leon_vanClose";
+    public static final String FINAL_PAYMENT_URL = "leon_finalPayment";
 }

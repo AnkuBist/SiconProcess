@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
-    tools:context="com.hgil.siconprocess.activity.navFragments.FinalPaymentFragment">
+    tools:context="com.hgil.siconprocess.activity.fragments.vanClose.VanCloseFragment">
 
     <TextView
         android:id="@+id/tvRouteName"
@@ -52,5 +51,8 @@
             android:text="Submit"
             android:textAllCaps="false"
             android:textSize="@dimen/text_size_large" />
+
+
     </LinearLayout>
+
 </FrameLayout>

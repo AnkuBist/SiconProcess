@@ -2,54 +2,156 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hgil.siconprocess.activity.fragments.finalPayment.ItemCheckFragment">
+    tools:context="com.hgil.siconprocess.activity.fragments.vanClose.ItemCheckFragment">
 
-    <!--van item stock check-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/colorTextGrey"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:text="Van Stock"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_size_large" />
-
+        <!--layout van crate stock check-->
         <LinearLayout
+            android:id="@+id/layoutCrate"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorTextLightGrey"
-            android:orientation="vertical"
-            android:padding="4dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvItemStockCheck"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:weightSum="5">
 
             <TextView
-                android:id="@+id/tvEmpty"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_horizontal"
-                android:text="No Customer found"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="@dimen/text_size_large"
-                android:visibility="gone" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:paddingLeft="6dp"
+                android:paddingTop="6dp"
+                android:text="Crates"
+                android:textColor="@color/colorTextBlue"
+                android:textSize="@dimen/text_size_large" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="vertical"
+                android:padding="6dp"
+                android:weightSum="4">
+
+                <LinearLayout
+                    style="@style/VanStockAdapterLayoutTop"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/VanStockAdapterTitle"
+                        android:text="Opening" />
+
+                    <TextView
+                        style="@style/VanStockAdapterTitle"
+                        android:text="Issued" />
+
+                    <TextView
+                        style="@style/VanStockAdapterTitle"
+                        android:text="Received" />
+
+                    <TextView
+                        style="@style/VanStockAdapterTitle"
+                        android:text="Balance" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/VanStockAdapterLayoutTop"
+                    android:layout_marginTop="5dp"
+                    android:weightSum="4">
+
+                    <EditText
+                        android:id="@+id/etCrateOpening"
+                        style="@style/VanStockAdapterDesc"
+                        android:background="@drawable/et_uneditable_round_shape"
+                        android:editable="false"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:id="@+id/etCrateIssued"
+                        style="@style/VanStockAdapterDesc"
+                        android:background="@drawable/et_uneditable_round_shape"
+                        android:editable="false"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:id="@+id/etCrateReceived"
+                        style="@style/VanStockAdapterDesc" />
+
+                    <EditText
+                        android:id="@+id/etCrateBalance"
+                        style="@style/VanStockAdapterDesc"
+                        android:background="@drawable/et_uneditable_round_shape"
+                        android:editable="false"
+                        android:enabled="false" />
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <View
+            android:id="@+id/crateView"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/layoutCrate"
             android:background="@color/colorBackgroundBlack" />
-    </LinearLayout>
+
+        <!--van item stock check-->
+        <LinearLayout
+            android:id="@+id/layoutStock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btnVanClose"
+            android:layout_below="@+id/crateView"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorTextLightGrey"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvItemStockCheck"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/tvEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="No Customer found"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="@dimen/text_size_large"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBackgroundBlack" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnVanClose"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorTextBlue"
+            android:elevation="5dp"
+            android:text="Van Close"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_large" />
+    </RelativeLayout>
 
 </FrameLayout>

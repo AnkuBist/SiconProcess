@@ -1,4 +1,4 @@
-package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
+package com.hgil.siconprocess.syncPOJO;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by mohan.giri on 23-05-2017.
  */
 
-public class CashCheckModel implements Serializable {
+public class FinalPaymentModel implements Serializable {
 
     private String route_id;
     private double total_amount;        //net sale amount

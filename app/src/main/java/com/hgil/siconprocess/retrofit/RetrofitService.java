@@ -36,13 +36,23 @@ public interface RetrofitService {
                                      @Field("imei_number") String imei_number);
 
     @FormUrlEncoded
-    @POST(API.SYNC_CASHIER_URL)
-    Call<syncResponse> syncRouteCashierCheck(@Field("depot_id") String depot_id,
+    @POST(API.VAN_CLOSE_URL)
+    Call<syncResponse> syncRouteVanClose(@Field("depot_id") String depot_id,
                                              @Field("route_id") String username,
                                              @Field("routeManagementId") String routeManagementId,
                                              @Field("cashier_paycode") String cashier_paycode,
                                              @Field("supervisor_paycode") String supervisor_paycode,
-                                             @Field("cashier_data") String cashier_data,
+                                             @Field("van_close_data") String cashier_data,
+                                             @Field("imei_number") String imei_number);
+
+    @FormUrlEncoded
+    @POST(API.FINAL_PAYMENT_URL)
+    Call<syncResponse> syncFinalPayment(@Field("depot_id") String depot_id,
+                                             @Field("route_id") String username,
+                                             @Field("routeManagementId") String routeManagementId,
+                                             @Field("cashier_paycode") String cashier_paycode,
+                                             @Field("supervisor_paycode") String supervisor_paycode,
+                                             @Field("payment_data") String cashier_data,
                                              @Field("imei_number") String imei_number);
 
 

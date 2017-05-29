@@ -3,19 +3,20 @@ package com.hgil.siconprocess.activity.fragments.finalPayment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashierSyncModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CashCheckModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.ItemStockCheck;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.tables.PaymentTable;
+import com.hgil.siconprocess.database.masterTables.RouteView;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
+import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 
@@ -32,37 +33,33 @@ import retrofit2.Response;
  */
 public class CashCheckFragment extends BaseFragment {
 
-    private static final String SYNC_OBJECT = "sync_object";
     @BindView(R.id.etNetSale)
     EditText etNetSale;
     @BindView(R.id.etCashCollection)
     EditText etCashCollection;
     @BindView(R.id.etCashReceived)
     EditText etCashReceived;
+    @BindView(R.id.etShortExcess)
+    EditText etShortExcess;
 
-    private double net_total_amount;
-    private double m_rej_amount = 0;
-    private double f_rej_amount = 0;
-    private double leftover_amount = 0;     //supervisor leftover amount..,...not mandatory
-    private double sample_amount = 0;       //  not manadatory
-    private double cashier_receive_amount;
+    @BindView(R.id.btnFinalPayment)
+    Button btnFinalPayment;
+
     private double supervisor_received_amount;
     private double short_excess_amount;      //cashier short_Excess
     private double discount_amount;         //not calculated
 
-
-    private CashierSyncModel cashierSyncModel;
     private Handler updateBarHandler;
+
+    private RouteView routeView;
+    private FinalPaymentModel finalPaymentModel;
 
     public CashCheckFragment() {
         // Required empty public constructor
     }
 
-    public static CashCheckFragment newInstance(CashierSyncModel cashierSyncModel) {
+    public static CashCheckFragment newInstance() {
         CashCheckFragment fragment = new CashCheckFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SYNC_OBJECT, cashierSyncModel);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -72,62 +69,55 @@ public class CashCheckFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            cashierSyncModel = (CashierSyncModel) getArguments().getSerializable(SYNC_OBJECT);
-        }
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        showSaveButton();
+        hideSaveButton();
         updateBarHandler = new Handler();
 
-        PaymentTable paymentTable = new PaymentTable(getContext());
+        routeView = new RouteView(getContext());
 
-        // final payment information
-        net_total_amount = paymentTable.getRouteSale();       //net sale amount
-
-        // get sample and rejection amount from last table values
-        for (ItemStockCheck itemStockCheck : cashierSyncModel.getArrItemStock()) {
-            m_rej_amount += itemStockCheck.getItem_price() * itemStockCheck.getMarket_rejection();
-            f_rej_amount += itemStockCheck.getItem_price() * itemStockCheck.getFresh_rejection();
-            sample_amount += itemStockCheck.getItem_price() * itemStockCheck.getSample();
-            leftover_amount += itemStockCheck.getItem_price() * itemStockCheck.getPhysical_leftover();
-        }
-
-        cashier_receive_amount = paymentTable.routeCashPaidAmount();      // cashier collected amount upi+cash....supervisor entered figure
+        finalPaymentModel = routeView.routeFinalPayment(getRouteId());
 
         //editText values set
-        etNetSale.setText(String.valueOf(net_total_amount));
-        etCashCollection.setText(String.valueOf(cashier_receive_amount));
+        etNetSale.setText(String.valueOf(finalPaymentModel.getTotal_amount()));
+        etCashCollection.setText(String.valueOf(finalPaymentModel.getCashier_receive_amount()));
+        etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
 
-        imgSave.setOnClickListener(new View.OnClickListener() {
+        etCashReceived.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    supervisor_received_amount = Utility.getDouble(etCashReceived.getText().toString());
+                    etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
+                } else {
+                    supervisor_received_amount = 0;
+                    etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
+                }
+            }
+        });
+
+        btnFinalPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 supervisor_received_amount = Utility.getDouble(etCashReceived.getText().toString());
-                short_excess_amount = cashier_receive_amount - supervisor_received_amount;
+                short_excess_amount = supervisor_received_amount - finalPaymentModel.getCashier_receive_amount();
+                finalPaymentModel.setSupervisor_received_amount(supervisor_received_amount);
+                finalPaymentModel.setShort_excess_amount(short_excess_amount);
+                finalPaymentModel.setDiscount_amount(discount_amount);
 
-                CashCheckModel cashCheckModel = new CashCheckModel();
-                cashCheckModel.setRoute_id(getRouteId());
-                cashCheckModel.setTotal_amount(net_total_amount);
-                cashCheckModel.setF_rej_amount(f_rej_amount);
-                cashCheckModel.setM_rej_amount(m_rej_amount);
-                cashCheckModel.setLeftover_amount(leftover_amount);
-                cashCheckModel.setSample_amount(sample_amount);
-                cashCheckModel.setCashier_receive_amount(cashier_receive_amount);
-                cashCheckModel.setSupervisor_received_amount(supervisor_received_amount);
-                cashCheckModel.setShort_excess_amount(short_excess_amount);
-                cashCheckModel.setDiscount_amount(discount_amount);
-
-                cashierSyncModel.setCashCheckModel(cashCheckModel);
-
-                //sync the above cashierSyncModel to server.
-                String json = new Gson().toJson(cashierSyncModel);
+                //sync the above syncVanClose to server.
+                String json = new Gson().toJson(finalPaymentModel);
                 JSONObject jObj = null;
                 try {
                     jObj = new JSONObject(json);
@@ -136,23 +126,22 @@ public class CashCheckFragment extends BaseFragment {
                 }
                 String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
                 String supervisor_paycode = "android";
-                syncRouteByCashier(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getRouteManagementId(), getRouteModel().getCashierCode(),
+                finalPayment(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getRouteManagementId(), getRouteModel().getCashierCode(),
                         supervisor_paycode, jObj, imei_number);
             }
         });
     }
 
     // sync process retrofit call
-    /*retrofit call test example*/
-    public void syncRouteByCashier(String depotId, final String route_id, String routeManagementId, String cashierPaycode, String supervisor_paycode,
-                                   JSONObject cashier_data, String imei_no) {
+    public void finalPayment(String depotId, final String route_id, String routeManagementId, String cashierPaycode, String supervisor_paycode,
+                             JSONObject cashier_data, String imei_no) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteCashierCheck(depotId, route_id, routeManagementId, cashierPaycode, supervisor_paycode,
+        Call<syncResponse> apiCall = service.syncFinalPayment(depotId, route_id, routeManagementId, cashierPaycode, supervisor_paycode,
                 cashier_data.toString(), imei_no);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
@@ -166,6 +155,9 @@ public class CashCheckFragment extends BaseFragment {
                 syncResponse syncResponse = response.body();
                 // rest call to read data from api service
                 if (syncResponse.getReturnCode()) {
+                    //update final payment status
+                    routeView.updateFinalPaymentStatus(route_id);
+
                     //check if call completed or not
                     new SampleDialog("", syncResponse.getStrMessage(), true, getContext());
                 } else {

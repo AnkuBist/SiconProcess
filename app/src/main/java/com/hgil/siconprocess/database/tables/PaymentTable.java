@@ -16,7 +16,7 @@ import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCashModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionChequeModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.CollectionCrateModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.CrateStockCheck;
+import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
 

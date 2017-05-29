@@ -1,5 +1,6 @@
 package com.hgil.siconprocess.database.masterTables;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -7,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RouteModel;
+import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,21 @@ public class RouteView extends SQLiteOpenHelper {
     private static final String FLAG = "Flag";
     private static final String LAST_BILL_NO = "last_bill_no";
 
+    private static final String VAN_CLOSE_STATUS = "van_close_status";
+    private static final String FINAL_PAYMENT_STATUS = "final_payment_status";
+
+    /*route close details*/
+    //update details at van close time
+    private static final String NET_TOTAL_SALE = "net_total_amount";
+    private static final String M_REJ_AMOUNT = "m_rej_amount";
+    private static final String F_REJ_AMOUNT = "f_rej_amount";
+    private static final String SAMPLE_AMOUNT = "sample_amount";
+    private static final String LEFTOVER_AMOUNT = "leftover_amount";
+    private static final String CASHIER_RECEIVED_AMOUNT = "cashier_receive_amount";
+
+    /*route close*/
+    private static final String ROUTE_CLOSE = "route_close";
+
     public RouteView(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -41,7 +58,10 @@ public class RouteView extends SQLiteOpenHelper {
                 + DEPOT_ID + " TEXT NULL, " + SUB_COMPANY_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
                 + ROUTE_NAME + " TEXT NULL, " + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
                 + ROUTE_CASHIER_NAME + " TEXT NULL, " + ROUTE_CRATE_LOADING + " INTEGER NULL, "
-                + FLAG + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
+                + FLAG + " INTEGER NULL, " + VAN_CLOSE_STATUS + " INTEGER NULL, " + FINAL_PAYMENT_STATUS + " INTEGER NULL, "
+                + NET_TOTAL_SALE + " REAL NULL, " + M_REJ_AMOUNT + " REAL NULL, " + F_REJ_AMOUNT + " REAL NULL, "
+                + SAMPLE_AMOUNT + " REAL NULL, " + LEFTOVER_AMOUNT + " REAL NULL, " + CASHIER_RECEIVED_AMOUNT + " REAL NULL, "
+                + ROUTE_CLOSE + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
     }
 
     @Override
@@ -94,6 +114,87 @@ public class RouteView extends SQLiteOpenHelper {
 
         db.close();
         return true;
+    }
+
+    public FinalPaymentModel routeFinalPayment(String route_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ROUTE_ID + "=?", new String[]{route_id});
+
+        FinalPaymentModel paymentModel = new FinalPaymentModel();
+        if (res.moveToFirst()) {
+            paymentModel.setRoute_id(res.getString(res.getColumnIndex(ROUTE_ID)));
+            paymentModel.setTotal_amount(res.getDouble(res.getColumnIndex(NET_TOTAL_SALE)));
+            paymentModel.setF_rej_amount(res.getDouble(res.getColumnIndex(F_REJ_AMOUNT)));
+            paymentModel.setM_rej_amount(res.getDouble(res.getColumnIndex(M_REJ_AMOUNT)));
+            paymentModel.setLeftover_amount(res.getDouble(res.getColumnIndex(LEFTOVER_AMOUNT)));
+            paymentModel.setSample_amount(res.getDouble(res.getColumnIndex(SAMPLE_AMOUNT)));
+            paymentModel.setCashier_receive_amount(res.getDouble(res.getColumnIndex(CASHIER_RECEIVED_AMOUNT)));
+        }
+        res.close();
+        db.close();
+        return paymentModel;
+    }
+
+    /*update route final payment model*/
+    public void updateRouteFinalPayment(FinalPaymentModel paymentModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NET_TOTAL_SALE, paymentModel.getTotal_amount());
+        contentValues.put(F_REJ_AMOUNT, paymentModel.getF_rej_amount());
+        contentValues.put(M_REJ_AMOUNT, paymentModel.getM_rej_amount());
+        contentValues.put(LEFTOVER_AMOUNT, paymentModel.getLeftover_amount());
+        contentValues.put(SAMPLE_AMOUNT, paymentModel.getSample_amount());
+        contentValues.put(CASHIER_RECEIVED_AMOUNT, paymentModel.getCashier_receive_amount());
+        db.update(TABLE_NAME, contentValues, ROUTE_ID + "=?", new String[]{paymentModel.getRoute_id()});
+        db.close();
+    }
+
+    //get van close status
+    public int vanCloseStatus(String route_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + VAN_CLOSE_STATUS + " from " + TABLE_NAME + " WHERE " + ROUTE_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{route_id});
+
+        int status = 0;
+        if (res.moveToFirst()) {
+            status = res.getInt(res.getColumnIndex(VAN_CLOSE_STATUS));
+        }
+        res.close();
+        db.close();
+        return status;
+    }
+
+    //update van close status
+    public void updateVanClose(String route_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(VAN_CLOSE_STATUS, 1);
+        db.update(TABLE_NAME, contentValues, ROUTE_ID + "=?", new String[]{route_id});
+        db.close();
+    }
+
+    //get route close status
+    public int finalPaymentStatus(String route_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + FINAL_PAYMENT_STATUS + " from " + TABLE_NAME + " WHERE " + ROUTE_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{route_id});
+
+        int status = 0;
+        if (res.moveToFirst()) {
+            status = res.getInt(res.getColumnIndex(FINAL_PAYMENT_STATUS));
+        }
+        res.close();
+        db.close();
+        return status;
+    }
+
+    //update route close status
+    public void updateFinalPaymentStatus(String route_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FINAL_PAYMENT_STATUS, 1);
+        db.update(TABLE_NAME, contentValues, ROUTE_ID + "=?", new String[]{route_id});
+        db.close();
     }
 
     public RouteModel geRouteInfoByRouteId(String route_id) {

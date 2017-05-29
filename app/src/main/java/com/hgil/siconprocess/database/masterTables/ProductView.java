@@ -12,7 +12,7 @@ import com.hgil.siconprocess.adapter.vanStock.VanStockModel;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.ProductModel;
-import com.hgil.siconprocess.syncPOJO.supervisorSyncModel.ItemStockCheck;
+import com.hgil.siconprocess.syncPOJO.vanCloseModel.ItemStockCheck;
 import com.hgil.siconprocess.utils.Utility;
 
 import java.util.ArrayList;

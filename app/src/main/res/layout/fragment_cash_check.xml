@@ -4,72 +4,96 @@
     android:layout_height="match_parent"
     tools:context="com.hgil.siconprocess.activity.fragments.finalPayment.CashCheckFragment">
 
-    <!--layout cash collection details-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
+        <!--layout cash collection details-->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/colorTextGrey"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout style="@style/finalPaymentItemHolder">
+
+                <TextView
+                    style="@style/FinalTvLabel"
+                    android:layout_toLeftOf="@+id/etNetSale"
+                    android:text="Net Sale Amount" />
+
+                <EditText
+                    android:id="@+id/etNetSale"
+                    style="@style/RejectionEtStyle"
+                    android:background="@drawable/et_uneditable_round_shape"
+                    android:editable="false"
+                    android:enabled="false" />
+            </RelativeLayout>
+
+            <RelativeLayout style="@style/finalPaymentItemHolder">
+
+                <TextView
+                    style="@style/FinalTvLabel"
+                    android:layout_toLeftOf="@+id/etCashCollection"
+                    android:text="Collected" />
+
+                <EditText
+                    android:id="@+id/etCashCollection"
+                    style="@style/RejectionEtStyle"
+                    android:background="@drawable/et_uneditable_round_shape"
+                    android:editable="false"
+                    android:enabled="false" />
+            </RelativeLayout>
+
+
+            <RelativeLayout style="@style/finalPaymentItemHolder">
+
+                <TextView
+                    style="@style/FinalTvLabel"
+                    android:layout_toLeftOf="@+id/etCashReceived"
+                    android:text="Paid" />
+
+                <EditText
+                    android:id="@+id/etCashReceived"
+                    style="@style/RejectionEtStyle"
+                    android:inputType="numberDecimal" />
+            </RelativeLayout>
+
+            <RelativeLayout style="@style/finalPaymentItemHolder">
+
+                <TextView
+                    style="@style/FinalTvLabel"
+                    android:layout_toLeftOf="@+id/etShortExcess"
+                    android:text="Balance" />
+
+                <EditText
+                    android:id="@+id/etShortExcess"
+                    style="@style/RejectionEtStyle"
+                    android:background="@drawable/et_uneditable_round_shape"
+                    android:editable="false"
+                    android:enabled="false" />
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBackgroundBlack" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnFinalPayment"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorTextBlue"
             android:elevation="5dp"
-            android:gravity="center"
-            android:text="Route Cash Collection"
-            android:textColor="@color/colorBlack"
+            android:text="Submit Final Payment"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_size_large" />
 
-        <RelativeLayout style="@style/finalPaymentItemHolder">
-
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etNetSale"
-                android:text="Net Sale Amount" />
-
-            <EditText
-                android:id="@+id/etNetSale"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
-
-        <RelativeLayout style="@style/finalPaymentItemHolder">
-
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etCashCollection"
-                android:text="Route Cash Collection" />
-
-            <EditText
-                android:id="@+id/etCashCollection"
-                style="@style/RejectionEtStyle"
-                android:background="@drawable/et_uneditable_round_shape"
-                android:editable="false"
-                android:enabled="false" />
-        </RelativeLayout>
-
-
-        <RelativeLayout style="@style/finalPaymentItemHolder">
-
-            <TextView
-                style="@style/FinalTvLabel"
-                android:layout_toLeftOf="@+id/etCashReceived"
-                android:text="Cash Amount collected by Supervisor" />
-
-            <EditText
-                android:id="@+id/etCashReceived"
-                style="@style/RejectionEtStyle"
-                android:inputType="numberDecimal" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorBackgroundBlack" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>

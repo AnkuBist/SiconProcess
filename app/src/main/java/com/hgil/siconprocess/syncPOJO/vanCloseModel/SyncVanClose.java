@@ -1,4 +1,4 @@
-package com.hgil.siconprocess.syncPOJO.supervisorSyncModel;
+package com.hgil.siconprocess.syncPOJO.vanCloseModel;
 
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 
@@ -9,13 +9,12 @@ import java.util.ArrayList;
  * Created by mohan.giri on 10-03-2017.
  */
 
-public class CashierSyncModel implements Serializable {
+public class SyncVanClose implements Serializable {
 
     //updated models
     private CrateStockCheck crateStockCheck;
     private ArrayList<ItemStockCheck> arrItemStock;
     private ArrayList<SyncInvoiceDetailModel> arrRetailSale;
-    private CashCheckModel cashCheckModel;
 
     public CrateStockCheck getCrateStockCheck() {
         return crateStockCheck;
@@ -41,11 +40,4 @@ public class CashierSyncModel implements Serializable {
         this.arrRetailSale = arrRetailSale;
     }
 
-    public CashCheckModel getCashCheckModel() {
-        return cashCheckModel;
-    }
-
-    public void setCashCheckModel(CashCheckModel cashCheckModel) {
-        this.cashCheckModel = cashCheckModel;
-    }
 }
