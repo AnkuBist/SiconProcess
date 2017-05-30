@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
+import com.hgil.siconprocess.database.masterTables.ProductView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.utils.Constant;
@@ -112,7 +113,7 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // first erase the recent invoice belong to the same user
-        eraseInvoiceUser(db, customer_id);
+        eraseInvoiceUser(customer_id);
 
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
@@ -184,9 +185,89 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         return true;
     }
 
+    /*variance retail sale*/
+    // insert multiple
+    public boolean invoiceVarianceRetailSale(ArrayList<SyncInvoiceDetailModel> arrList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // first erase the recent invoice belong to the same user
+        //eraseInvoiceUser(customer_id);
+
+        ProductView productView = new ProductView(mContext);
+
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
+
+        // Get the numeric indexes for each of the columns that we're updating
+        final int routeManagementIdColumn = ih.getColumnIndex(ROUTE_MANAGEMENT_ID);
+        final int billNoColumn = ih.getColumnIndex(BILL_NO);
+        final int invoiceNumberColumn = ih.getColumnIndex(INVOICE_NO);
+        final int invoiceDateColumn = ih.getColumnIndex(INVOICE_DATE);
+        final int customerIdColumn = ih.getColumnIndex(CUSTOMER_ID);
+        final int routeIdColumn = ih.getColumnIndex(ROUTE_ID);
+        final int vehicleNoColumn = ih.getColumnIndex(VEHICLE_NO);
+        final int itemIdColumn = ih.getColumnIndex(ITEM_ID);
+        final int cashierCodeColumn = ih.getColumnIndex(CASHIER_CODE);
+        final int crateIdColumn = ih.getColumnIndex(CRATE_ID);
+        final int invQtyPsColumn = ih.getColumnIndex(INVQTY_PS);
+        final int itemRateColumn = ih.getColumnIndex(ITEM_RATE);
+        final int totalAmountColumn = ih.getColumnIndex(TOTAL_AMOUNT);
+        final int fixedSampleColumn = ih.getColumnIndex(FIXED_SAMPLE);
+        final int orderAmountColumn = ih.getColumnIndex(ORDER_AMOUNT);
+        final int stockAvailColumn = ih.getColumnIndex(STOCK_AVAIL);
+        final int tempStockColumn = ih.getColumnIndex(TEMP_STOCK);
+        final int itemNameColumn = ih.getColumnIndex(ITEM_NAME);
+        final int imeiNoColumn = ih.getColumnIndex(IMEI_NO);
+        final int latLngColumn = ih.getColumnIndex(LAT_LNG);
+        final int curtimeColumn = ih.getColumnIndex(CURTIME);
+        final int loginIdColumn = ih.getColumnIndex(LOGIN_ID);
+        final int dateColumn = ih.getColumnIndex(DATE);
+
+        try {
+            db.beginTransaction();
+            for (SyncInvoiceDetailModel invoiceModel : arrList) {
+                if (invoiceModel.getTotal_sale_amount() > 0 && invoiceModel.getActual_sale_count() > 0) {
+                    ih.prepareForInsert();
+
+                    ih.bind(routeManagementIdColumn, invoiceModel.getRoute_management_id());
+                    ih.bind(billNoColumn, invoiceModel.getBill_no());
+                    ih.bind(invoiceNumberColumn, invoiceModel.getInvoice_no());
+                    ih.bind(invoiceDateColumn, invoiceModel.getInvoice_date());
+                    ih.bind(customerIdColumn, invoiceModel.getCustomer_id());
+                    ih.bind(routeIdColumn, invoiceModel.getRoute_id());
+                    ih.bind(vehicleNoColumn, "");
+                    ih.bind(itemIdColumn, invoiceModel.getItem_id());
+                    ih.bind(cashierCodeColumn, invoiceModel.getCashier_code());
+                    ih.bind(crateIdColumn, "");
+                    ih.bind(invQtyPsColumn, invoiceModel.getActual_sale_count());
+                    ih.bind(itemRateColumn, invoiceModel.getItem_price());
+                    ih.bind(totalAmountColumn, invoiceModel.getTotal_sale_amount());
+                    ih.bind(fixedSampleColumn, invoiceModel.getSample());
+                    //ih.bind(demandTargetQuantityColumn, invoiceModel.getDemandTargetQty());
+                    ih.bind(orderAmountColumn, invoiceModel.getTotal_sale_amount());
+                    ih.bind(stockAvailColumn, 0);
+                    ih.bind(tempStockColumn, 0);
+                    ih.bind(itemNameColumn, productView.productName(invoiceModel.getItem_id()));
+                    ih.bind(imeiNoColumn, invoiceModel.getImei_no());
+                    ih.bind(latLngColumn, invoiceModel.getLat_lng());
+                    ih.bind(curtimeColumn, Utility.timeStamp());
+                    ih.bind(loginIdColumn, invoiceModel.getLogin_id());
+                    ih.bind(dateColumn, Utility.getCurDate());
+                    ih.execute();
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        return true;
+    }
+
     /* erase customer recent invoice items*/
-    private void eraseInvoiceUser(SQLiteDatabase db, String customer_id) {
+    public void eraseInvoiceUser(String customer_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, CUSTOMER_ID + " = ?", new String[]{customer_id});
+        db.close();
     }
 
     public int numberOfRows() {

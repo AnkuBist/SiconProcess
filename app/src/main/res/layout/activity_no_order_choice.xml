@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tvCustomerName"
-        android:layout_marginBottom="50dp"
         android:scrollbars="none" />
 
     <TextView
@@ -33,32 +32,4 @@
         android:textColor="@color/colorTextBlack"
         android:textSize="@dimen/text_size_large"
         android:visibility="gone" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp">
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Cancel"
-            android:onClick="btnCancel"
-            android:textAllCaps="false"
-            android:textSize="@dimen/text_size_large" />
-
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Submit"
-            android:onClick="btnSubmit"
-            android:textAllCaps="false"
-            android:textSize="@dimen/text_size_large" />
-    </LinearLayout>
-
 </RelativeLayout>

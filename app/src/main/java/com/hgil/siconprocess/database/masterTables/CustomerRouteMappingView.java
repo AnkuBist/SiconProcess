@@ -383,4 +383,35 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
         return numRows;
     }
 
+
+    // retail customer id
+    public String retailCustomer() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + CUSTOMER_ID + " from " + TABLE_NAME + " where " + CUSTOMER_NAME + " LIKE '%retail%'";
+        Cursor res = db.rawQuery(query, null);
+
+        String customer_id = "";
+        if (res.moveToFirst()) {
+            customer_id = res.getString(res.getColumnIndex(CUSTOMER_ID));
+        }
+        res.close();
+        db.close();
+        return customer_id;
+    }
+
+    public String customerName(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select " + CUSTOMER_NAME + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        String customerName = "";
+        if (res.moveToFirst()) {
+            customerName = res.getString(res.getColumnIndex(CUSTOMER_NAME));
+        }
+        res.close();
+        db.close();
+        return customerName;
+    }
+
+
 }

@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.base.BaseFragment;
+import com.hgil.siconprocess.database.dbModels.PaymentModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
+import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.masterTables.ProductView;
 import com.hgil.siconprocess.database.masterTables.RouteView;
@@ -31,6 +33,7 @@ import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.ItemStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.SyncVanClose;
+import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.UtilBillNo;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
@@ -176,8 +179,8 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         syncVanClose.setArrItemStock(arrItemStockCheck);
 
         // route retail sale
-        syncVanClose.setArrRetailSale(varianceRetailSale());
-
+        /*make retail sale and payment to local data here only*/
+        syncVanClose.setArrRetailSale(varianceRetailSale(arrItemStockCheck));
 
         /*update here route close status and details*/
         vanCloseFinalPayment(arrItemStockCheck);
@@ -247,13 +250,17 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     }
 
     // generate temporary invoice for the retails customer for variance items
-    private ArrayList<SyncInvoiceDetailModel> varianceRetailSale() {
+    private ArrayList<SyncInvoiceDetailModel> varianceRetailSale(ArrayList<ItemStockCheck> arrItemStockCheck) {
         CustomerItemPriceTable customerItemPriceTable = new CustomerItemPriceTable(getContext());
+        CustomerRouteMappingView customerRouteMappingView = new CustomerRouteMappingView(getContext());
         String routeManagementId = getRouteModel().getRouteManagementId();
         String invoiceNumber = new DepotInvoiceView(getContext()).commonInvoiceNumber();
         String invoiceDate = Utility.getCurDate();
         String billNo = getBill_no();
         String cashierCode = getRouteModel().getCashierCode();
+        String retailCustomerId = customerRouteMappingView.retailCustomer();
+
+        double retailSaleAmount = 0;
 
         ArrayList<SyncInvoiceDetailModel> arrVarianceInvoice = new ArrayList<>();
         for (ItemStockCheck itemStockCheck : arrItemStockCheck) {
@@ -262,7 +269,6 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 int saleCount = variance;
                 SyncInvoiceDetailModel syncModel = new SyncInvoiceDetailModel();
                 String item_id = itemStockCheck.getItem_id();
-                String customer_id = "";        //TODO
 
                 double item_price = customerItemPriceTable.itemPrice(item_id);
                 double discount_price = 0;
@@ -272,7 +278,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 int sample = 0;
 
                 syncModel.setItem_id(item_id);
-                syncModel.setCustomer_id(customer_id);
+                syncModel.setCustomer_id(retailCustomerId);
 
                 syncModel.setItem_price(item_price);
                 syncModel.setDisc_price(discount_price);
@@ -302,9 +308,29 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 syncModel.setF_rej_amount(discounted_price * fresh_rej);
                 syncModel.setM_rej_amount(discounted_price * market_rej);
 
+                retailSaleAmount += syncModel.getTotal_sale_amount();
+
                 arrVarianceInvoice.add(syncModel);
             }
         }
+
+        /*update this retail sale to local and also make payment for this*/
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(getContext());
+        invoiceOutTable.invoiceVarianceRetailSale(arrVarianceInvoice);
+        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
+        PaymentTable paymentTable = new PaymentTable(getContext());
+
+        PaymentModel paymentModel = new PaymentModel();
+        paymentModel.setCustomerId(retailCustomerId);
+        paymentModel.setCustomerName(customerRouteMappingView.customerName(retailCustomerId));
+        paymentModel.setSaleAmount(retailSaleAmount);
+        paymentModel.setCashPaid(retailSaleAmount);
+        paymentModel.setTotalPaidAmount(retailSaleAmount);
+        paymentModel.setImei_no("");
+        paymentModel.setLat_lng("");
+        paymentModel.setLogin_id(getLoginId());
+
+        paymentTable.varianceInvoicePayment(paymentModel);
 
         return arrVarianceInvoice;
     }

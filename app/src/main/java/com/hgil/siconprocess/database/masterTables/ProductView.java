@@ -281,6 +281,7 @@ public class ProductView extends SQLiteOpenHelper {
 
                 int leftOver = loadingQty - saleQty - sampleQty - freshRejection;
                 itemStockCheck.setActual_leftover(leftOver);
+                itemStockCheck.setItem_variance(leftOver - itemStockCheck.getPhysical_leftover());
 
                 if (loadingQty > 0 || saleQty > 0 || marketRejection > 0 || freshRejection > 0 || leftOver > 0)
                     array_list.add(itemStockCheck);

@@ -113,7 +113,7 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // first erase data belong to the same user
-        eraseCustRejections(db, customer_id);
+        eraseCustRejections(customer_id);
 
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
@@ -207,8 +207,10 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     }
 
     // erase customer rejections
-    public void eraseCustRejections(SQLiteDatabase db, String customer_id) {
+    public void eraseCustRejections(String customer_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, CUSTOMER_ID + "=?", new String[]{customer_id});
+        db.close();
     }
 
     // get user all rejections by date

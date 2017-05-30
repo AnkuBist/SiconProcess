@@ -114,7 +114,7 @@ public class VanCloseItemStockCheckAdapter extends RecyclerView.Adapter<VanClose
                     itemStockCheck.setItem_variance(itemStockCheck.getActual_leftover() - itemStockCheck.getPhysical_leftover());
                 } else {
                     itemStockCheck.setPhysical_leftover(0);
-                    itemStockCheck.setItem_variance(0);
+                    itemStockCheck.setItem_variance(itemStockCheck.getActual_leftover());
                 }
             }
         });

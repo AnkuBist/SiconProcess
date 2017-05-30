@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.base.BaseToolbarActivity;
-import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.RcReasonTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RcReason;
 
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by mohan.giri on 26-05-2017.
  */
 
-public class NoOrderActivity extends BaseToolbarActivity implements View.OnClickListener {
+public class NoOrderActivity extends BaseToolbarActivity {
 
     @Nullable
     @BindView(R.id.tvCustomerName)
@@ -36,15 +35,8 @@ public class NoOrderActivity extends BaseToolbarActivity implements View.OnClick
     @Nullable
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
-    @Nullable
-    @BindView(R.id.btnCancel)
-    Button btnCancel;
-    @Nullable
-    @BindView(R.id.btnSubmit)
-    Button btnSubmit;
 
-    public static int selected_ReasonId = 0;
-    public static String selectedReason = null;
+    public static String customerId = "";
 
     private NoOrderAdapter noOrderAdapter;
     private RcReasonTable rcReasonTable;
@@ -62,6 +54,7 @@ public class NoOrderActivity extends BaseToolbarActivity implements View.OnClick
 
         if (getIntent() != null) {
             customer_id = getIntent().getStringExtra(CUSTOMER_ID);
+            this.customerId = customer_id;
             customer_name = getIntent().getStringExtra(CUSTOMER_NAME);
         }
 
@@ -77,15 +70,11 @@ public class NoOrderActivity extends BaseToolbarActivity implements View.OnClick
 
         noOrderAdapter = new NoOrderAdapter(this, arrReason);
         rvRcReason.setAdapter(noOrderAdapter);
-
-        btnCancel.setOnClickListener(this);
-        btnSubmit.setOnClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         if (arrReason.size() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
             rvRcReason.setVisibility(View.GONE);
@@ -96,24 +85,26 @@ public class NoOrderActivity extends BaseToolbarActivity implements View.OnClick
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnCancel:
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, resultIntent);
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        switch (item.getItemId()) {
+            case android.R.id.home:
                 Intent resultIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, resultIntent);
-                finish();
-                overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-                break;
-            case R.id.btnSubmit:
-                // save reason here only
-                new CustomerRouteMappingView(this).updateOrderReason(customer_id, selected_ReasonId, selectedReason);
-                Intent resultIntent1 = new Intent();
-                setResult(Activity.RESULT_OK, resultIntent1);
-                finish();
+                finish(); // close this activity and return to preview activity (if there is any)
                 overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
                 break;
             default:
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
+
 }

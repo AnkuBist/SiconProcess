@@ -25,6 +25,7 @@ import com.hgil.siconprocess.retrofit.loginResponse.dbModels.RcReason;
 import com.hgil.siconprocess.utils.UtilBillNo;
 import com.hgil.siconprocess.utils.UtilNetworkLocation;
 import com.hgil.siconprocess.utils.Utility;
+import com.hgil.siconprocess.utils.ui.SampleDialog;
 import com.hgil.siconprocess.utils.utilPermission.UtilIMEI;
 
 import java.util.ArrayList;
@@ -165,6 +166,10 @@ public class CustomerInvoiceFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (NO_ORDER_STATUS) {
+                    // erase sale and rejection for this same customer
+                    new InvoiceOutTable(getContext()).eraseInvoiceUser(NoOrderActivity.customerId);
+                    new CustomerRejectionTable(getContext()).eraseCustRejections(NoOrderActivity.customerId);
+
                     CustomerPaymentFragment fragment = CustomerPaymentFragment.newInstance(customer_id, customer_name);
                     launchInvoiceFragment(fragment);
                 } else {
@@ -183,9 +188,13 @@ public class CustomerInvoiceFragment extends BaseFragment {
                         }
                     }
 
-                    // here simply forward the collected array data to the next fragmen to let the user choose whether to save invoice or not
-                    InvoiceOutFragment fragment = InvoiceOutFragment.newInstance(customer_id, customer_name, reviewOrderData);
-                    launchInvoiceFragment(fragment);
+                    if (reviewOrderData.size() == 0) {
+                        new SampleDialog(getString(R.string.str_no_order_warning), getContext());
+                    } else {
+                        // here simply forward the collected array data to the next fragmen to let the user choose whether to save invoice or not
+                        InvoiceOutFragment fragment = InvoiceOutFragment.newInstance(customer_id, customer_name, reviewOrderData);
+                        launchInvoiceFragment(fragment);
+                    }
                 }
             }
         });

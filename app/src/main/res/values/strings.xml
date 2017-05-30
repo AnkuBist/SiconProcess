@@ -12,6 +12,9 @@
     <string name="str_synchronizing_data">Synchronizing Data</string>
     <string name="str_synchronizing_data_started">Synchronizing Data Started</string>
 
+    <!--no order warning message-->
+    <string name="str_no_order_warning">Please select a valid \'No Order\' reason.\nIf there is no order.</string>
+
     <!--van close-->
     <string name="str_van_close">Please wait Closing Van.</string>
 

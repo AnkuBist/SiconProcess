@@ -149,6 +149,31 @@ public class PaymentTable extends SQLiteOpenHelper {
         db.close();
     }
 
+    // insert customer payment information
+    public void varianceInvoicePayment(PaymentModel paymentModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CUSTOMER_ID, paymentModel.getCustomerId());
+        contentValues.put(CUSTOMER_NAME, paymentModel.getCustomerName());
+        contentValues.put(SALE_AMOUNT, paymentModel.getSaleAmount());
+        contentValues.put(CASH_PAID, paymentModel.getCashPaid());
+        contentValues.put(TOTAL_PAID_AMOUNT, paymentModel.getTotalPaidAmount());
+        contentValues.put(IMEI_NO, paymentModel.getImei_no());
+        contentValues.put(LAT_LNG, paymentModel.getLat_lng());
+        contentValues.put(CURTIME, Utility.timeStamp());
+        contentValues.put(LOGIN_ID, paymentModel.getLogin_id());
+        contentValues.put(DATE, Utility.getCurDate());
+
+        // check if row exists for the same user or not
+        // if yes then update the same or simply insert data
+        if (Exists(db, paymentModel.getCustomerId()))
+            db.update(TABLE_NAME, contentValues, CUSTOMER_ID + "=?", new String[]{paymentModel.getCustomerId()});
+        else
+            db.insert(TABLE_NAME, null, contentValues);
+        db.close();
+    }
+
     public void insertCustomerCrates(CrateDetailModel crateDetailModel) {
         SQLiteDatabase db = this.getWritableDatabase();
 
