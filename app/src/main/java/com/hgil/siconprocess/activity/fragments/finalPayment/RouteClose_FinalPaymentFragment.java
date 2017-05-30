@@ -17,11 +17,9 @@ import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
 import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
+import com.hgil.siconprocess.syncPOJO.SRouteModel;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import retrofit2.Call;
@@ -31,7 +29,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CashCheckFragment extends BaseFragment {
+public class RouteClose_FinalPaymentFragment extends BaseFragment {
 
     @BindView(R.id.etNetSale)
     EditText etNetSale;
@@ -54,18 +52,18 @@ public class CashCheckFragment extends BaseFragment {
     private RouteView routeView;
     private FinalPaymentModel finalPaymentModel;
 
-    public CashCheckFragment() {
+    public RouteClose_FinalPaymentFragment() {
         // Required empty public constructor
     }
 
-    public static CashCheckFragment newInstance() {
-        CashCheckFragment fragment = new CashCheckFragment();
+    public static RouteClose_FinalPaymentFragment newInstance() {
+        RouteClose_FinalPaymentFragment fragment = new RouteClose_FinalPaymentFragment();
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_cash_check;
+        return R.layout.fragment_route_close_final_payment;
     }
 
     @Override
@@ -117,32 +115,36 @@ public class CashCheckFragment extends BaseFragment {
                 finalPaymentModel.setDiscount_amount(discount_amount);
 
                 //sync the above syncVanClose to server.
-                String json = new Gson().toJson(finalPaymentModel);
-                JSONObject jObj = null;
-                try {
-                    jObj = new JSONObject(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
                 String supervisor_paycode = "android";
-                finalPayment(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getRouteManagementId(), getRouteModel().getCashierCode(),
-                        supervisor_paycode, jObj, imei_number);
+
+                SRouteModel routeModel = new SRouteModel();
+                routeModel.setLoginId(getLoginId());
+                routeModel.setRouteId(getRouteId());
+                routeModel.setRouteName(getRouteName());
+                routeModel.setDepotId(getRouteModel().getDepotId());
+                routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+                routeModel.setCashierCode(getRouteModel().getCashierCode());
+                routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
+                routeModel.setSupervisorId(supervisor_paycode);
+                routeModel.setImeiNo(imei_number);
+
+                String routeDetails = new Gson().toJson(routeModel);
+                String finalPayment = new Gson().toJson(finalPaymentModel);
+                finalPayment(routeDetails, finalPayment);
             }
         });
     }
 
     // sync process retrofit call
-    public void finalPayment(String depotId, final String route_id, String routeManagementId, String cashierPaycode, String supervisor_paycode,
-                             JSONObject cashier_data, String imei_no) {
+    public void finalPayment(String routeDetails, String finalPayment) {
         updateBarHandler.post(new Runnable() {
             public void run() {
-                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+                RetrofitUtil.showDialog(getContext(), getString(R.string.str_final_payment));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncFinalPayment(depotId, route_id, routeManagementId, cashierPaycode, supervisor_paycode,
-                cashier_data.toString(), imei_no);
+        Call<syncResponse> apiCall = service.syncFinalPayment(routeDetails, finalPayment);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {
@@ -156,7 +158,7 @@ public class CashCheckFragment extends BaseFragment {
                 // rest call to read data from api service
                 if (syncResponse.getReturnCode()) {
                     //update final payment status
-                    routeView.updateFinalPaymentStatus(route_id);
+                    routeView.updateFinalPaymentStatus(getRouteId());
 
                     //check if call completed or not
                     new SampleDialog("", syncResponse.getStrMessage(), true, getContext());

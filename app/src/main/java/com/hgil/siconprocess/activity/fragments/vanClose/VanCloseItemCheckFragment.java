@@ -26,6 +26,7 @@ import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
 import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
+import com.hgil.siconprocess.syncPOJO.SRouteModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.ItemStockCheck;
@@ -33,9 +34,6 @@ import com.hgil.siconprocess.syncPOJO.vanCloseModel.SyncVanClose;
 import com.hgil.siconprocess.utils.UtilBillNo;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -47,7 +45,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ItemCheckFragment extends BaseFragment {
+public class VanCloseItemCheckFragment extends BaseFragment {
 
     /*crate check*/
     @BindView(R.id.etCrateOpening)
@@ -73,22 +71,22 @@ public class ItemCheckFragment extends BaseFragment {
 
     private RouteView routeView;
 
-    private ItemStockCheckAdapter itemStockCheckAdapter;
+    private VanCloseItemStockCheckAdapter vanCloseItemStockCheckAdapter;
     private ProductView productView;
     private ArrayList<ItemStockCheck> arrItemStockCheck = new ArrayList<>();
 
-    public ItemCheckFragment() {
+    public VanCloseItemCheckFragment() {
         // Required empty public constructor
     }
 
-    public static ItemCheckFragment newInstance() {
-        ItemCheckFragment fragment = new ItemCheckFragment();
+    public static VanCloseItemCheckFragment newInstance() {
+        VanCloseItemCheckFragment fragment = new VanCloseItemCheckFragment();
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_item_check;
+        return R.layout.fragment_van_close_item_stock;
     }
 
     @Override
@@ -133,7 +131,6 @@ public class ItemCheckFragment extends BaseFragment {
             }
         });
 
-
         /*item stock validation*/
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -141,46 +138,69 @@ public class ItemCheckFragment extends BaseFragment {
 
         productView = new ProductView(getContext());
         arrItemStockCheck.addAll(productView.checkItemStock());
-        itemStockCheckAdapter = new ItemStockCheckAdapter(getContext(), arrItemStockCheck);
-        rvItemStockCheck.setAdapter(itemStockCheckAdapter);
+        vanCloseItemStockCheckAdapter = new VanCloseItemStockCheckAdapter(getContext(), arrItemStockCheck);
+        rvItemStockCheck.setAdapter(vanCloseItemStockCheckAdapter);
 
         // final submit process
         btnVanClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SyncVanClose syncVanClose = new SyncVanClose();
+                updateBarHandler.post(new Runnable() {
+                    public void run() {
+                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_van_close));
+                    }
+                });
 
-                /*crate check*/
-                crateStockCheck.setReceived(Utility.getInteger(etCrateReceived.getText().toString()));
-                crateStockCheck.setBalance(Utility.getInteger(etCrateBalance.getText().toString()));
-
-                // crate stock verifying
-                syncVanClose.setCrateStockCheck(crateStockCheck);
-
-                /*item stock*/
-                syncVanClose.setArrItemStock(arrItemStockCheck);
-
-                // route retail sale
-                syncVanClose.setArrRetailSale(varianceRetailSale());
-
-
-                /*TODO update here route close status and details*/
-                vanCloseFinalPayment(arrItemStockCheck);
-
-                //sync the above syncVanClose to server.
-                String json = new Gson().toJson(syncVanClose);
-                JSONObject jObj = null;
-                try {
-                    jObj = new JSONObject(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
-                String supervisor_paycode = "android";
-                vanClose(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getRouteManagementId(), getRouteModel().getCashierCode(),
-                        supervisor_paycode, jObj, imei_number);
+                // call van close here
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initializeVanClose();
+                    }
+                }).start();
             }
         });
+    }
+
+    private void initializeVanClose() {
+        SyncVanClose syncVanClose = new SyncVanClose();
+
+        /*crate check*/
+        crateStockCheck.setReceived(Utility.getInteger(etCrateReceived.getText().toString()));
+        crateStockCheck.setBalance(Utility.getInteger(etCrateBalance.getText().toString()));
+
+        // crate stock verifying
+        syncVanClose.setCrateStockCheck(crateStockCheck);
+
+        /*item stock*/
+        syncVanClose.setArrItemStock(arrItemStockCheck);
+
+        // route retail sale
+        syncVanClose.setArrRetailSale(varianceRetailSale());
+
+
+        /*update here route close status and details*/
+        vanCloseFinalPayment(arrItemStockCheck);
+
+        //sync the above syncVanClose to server.
+        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
+        String supervisor_paycode = "android";      //TODO
+
+        SRouteModel routeModel = new SRouteModel();
+        routeModel.setLoginId(getLoginId());
+        routeModel.setRouteId(getRouteId());
+        routeModel.setRouteName(getRouteName());
+        routeModel.setDepotId(getRouteModel().getDepotId());
+        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+        routeModel.setCashierCode(getRouteModel().getCashierCode());
+        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
+        routeModel.setSupervisorId(supervisor_paycode);
+        routeModel.setImeiNo(imei_number);
+
+        String routeDetails = new Gson().toJson(routeModel);
+        String vanCloseData = new Gson().toJson(syncVanClose);
+
+        vanClose(routeDetails, vanCloseData);
     }
 
     @Override
@@ -322,16 +342,14 @@ public class ItemCheckFragment extends BaseFragment {
     }
 
     // sync process retrofit call
-    public void vanClose(String depotId, final String route_id, String routeManagementId, String cashierPaycode,
-                         String supervisor_paycode, JSONObject vanCloseData, String imei_no) {
+    public void vanClose(String routeDetails, String vanCloseData) {
         updateBarHandler.post(new Runnable() {
             public void run() {
-                RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+                RetrofitUtil.updateDialogTitle(getString(R.string.str_van_close));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteVanClose(depotId, route_id, routeManagementId, cashierPaycode, supervisor_paycode,
-                vanCloseData.toString(), imei_no);
+        Call<syncResponse> apiCall = service.syncRouteVanClose(routeDetails, vanCloseData);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {

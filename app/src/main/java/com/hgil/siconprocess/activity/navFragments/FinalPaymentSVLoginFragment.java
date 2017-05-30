@@ -7,16 +7,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.finalPayment.CashCheckFragment;
+import com.hgil.siconprocess.activity.fragments.finalPayment.RouteClose_FinalPaymentFragment;
 import com.hgil.siconprocess.base.BaseFragment;
-import com.hgil.siconprocess.database.masterTables.CustomerRouteMappingView;
 import com.hgil.siconprocess.database.masterTables.RouteView;
 import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 
 import butterknife.BindView;
 
-public class FinalPaymentFragment extends BaseFragment {
+public class FinalPaymentSVLoginFragment extends BaseFragment {
 
     @BindView(R.id.tvRouteName)
     TextView tvRouteName;
@@ -26,14 +25,13 @@ public class FinalPaymentFragment extends BaseFragment {
     Button btnSubmit;
 
     private RouteView routeView;
-    private CustomerRouteMappingView customerRouteMappingView;
 
-    public FinalPaymentFragment() {
+    public FinalPaymentSVLoginFragment() {
         // Required empty public constructor
     }
 
-    public static FinalPaymentFragment newInstance() {
-        FinalPaymentFragment fragment = new FinalPaymentFragment();
+    public static FinalPaymentSVLoginFragment newInstance() {
+        FinalPaymentSVLoginFragment fragment = new FinalPaymentSVLoginFragment();
         return fragment;
     }
 
@@ -56,8 +54,6 @@ public class FinalPaymentFragment extends BaseFragment {
         final int finalPaymentStatus = routeView.finalPaymentStatus(getRouteId());
         final int vanCloseStatus = routeView.vanCloseStatus(getRouteId());
 
-        customerRouteMappingView = new CustomerRouteMappingView(getContext());
-
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +66,7 @@ public class FinalPaymentFragment extends BaseFragment {
                     } else if (finalPaymentStatus == 1) {
                         new SampleDialog("Route is already closed.", getContext());
                     } else {
-                        CashCheckFragment fragment = CashCheckFragment.newInstance();
+                        RouteClose_FinalPaymentFragment fragment = RouteClose_FinalPaymentFragment.newInstance();
                         launchNavFragment(fragment);
                     }
                 } else {

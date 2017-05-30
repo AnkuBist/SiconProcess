@@ -2,7 +2,7 @@
     <!--  <string name="app_name">SiconProcess</string>-->
 
     <!--server calls ERROR messages-->
-    <string name="str_retrofit_failure">Error Server Response</string>
+    <string name="str_retrofit_failure">Error Server Response.\nCheck Internet Connection.</string>
     <string name="str_login">Login</string>
     <string name="str_login_detail_fetch">Fetching Login Data</string>
     <string name="str_login_successful">User Login</string>
@@ -11,6 +11,13 @@
     <string name="str_error_sync_data">Error While Synchronizing Data</string>
     <string name="str_synchronizing_data">Synchronizing Data</string>
     <string name="str_synchronizing_data_started">Synchronizing Data Started</string>
+
+    <!--van close-->
+    <string name="str_van_close">Please wait Closing Van.</string>
+
+    <!--final payment/route close-->
+    <string name="str_final_payment">Please wait submitting final payment details.</string>
+
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

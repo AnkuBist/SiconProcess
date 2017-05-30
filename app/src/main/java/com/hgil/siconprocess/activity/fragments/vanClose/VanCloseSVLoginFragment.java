@@ -20,7 +20,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VanCloseFragment extends BaseFragment {
+public class VanCloseSVLoginFragment extends BaseFragment {
 
     @BindView(R.id.tvRouteName)
     TextView tvRouteName;
@@ -32,18 +32,18 @@ public class VanCloseFragment extends BaseFragment {
     private CustomerRouteMappingView customerRouteMappingView;
     private RouteView routeView;
 
-    public VanCloseFragment() {
+    public VanCloseSVLoginFragment() {
         // Required empty public constructor
     }
 
-    public static VanCloseFragment newInstance() {
-        VanCloseFragment fragment = new VanCloseFragment();
+    public static VanCloseSVLoginFragment newInstance() {
+        VanCloseSVLoginFragment fragment = new VanCloseSVLoginFragment();
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_van_close;
+        return R.layout.fragment_van_close_sv_login;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class VanCloseFragment extends BaseFragment {
                     } else if (customerRouteMappingView.numberPendingCustomers() > 0) {
                         new SampleDialog("Please Complete Sale on Pending Customers before closing route.", getContext());
                     } else {
-                        ItemCheckFragment fragment = ItemCheckFragment.newInstance();
+                        VanCloseItemCheckFragment fragment = VanCloseItemCheckFragment.newInstance();
                         launchNavFragment(fragment);
                     }
                 } else {

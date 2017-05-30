@@ -23,26 +23,26 @@ import butterknife.ButterKnife;
  * Created by mohan.giri on 23-05-2017.
  */
 
-public class ItemStockCheckAdapter extends RecyclerView.Adapter<ItemStockCheckAdapter.ViewHolder> {
+public class VanCloseItemStockCheckAdapter extends RecyclerView.Adapter<VanCloseItemStockCheckAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<ItemStockCheck> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ItemStockCheckAdapter(Context mContext, ArrayList<ItemStockCheck> myDataset) {
+    public VanCloseItemStockCheckAdapter(Context mContext, ArrayList<ItemStockCheck> myDataset) {
         this.mContext = mContext;
         this.mDataset = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ItemStockCheckAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_route_van_stock, parent, false);
-        ItemStockCheckAdapter.ViewHolder vh = new ItemStockCheckAdapter.ViewHolder(v);
+    public VanCloseItemStockCheckAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_route_van_close_sku_stock, parent, false);
+        VanCloseItemStockCheckAdapter.ViewHolder vh = new VanCloseItemStockCheckAdapter.ViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(final ItemStockCheckAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final VanCloseItemStockCheckAdapter.ViewHolder holder, int position) {
         final ItemStockCheck itemStockCheck = mDataset.get(position);
         holder.tvItemName.setText(itemStockCheck.getItem_name());
         if (itemStockCheck.getFresh_rejection() > 0)

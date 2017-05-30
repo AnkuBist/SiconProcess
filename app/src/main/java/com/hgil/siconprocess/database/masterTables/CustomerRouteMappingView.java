@@ -377,7 +377,7 @@ public class CustomerRouteMappingView extends SQLiteOpenHelper {
 
     public int numberPendingCustomers() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME, CUST_STATUS + "<>?",
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME, CUST_STATUS + "<>? and " + CUSTOMER_NAME + " NOT LIKE '%retail%'",
                 new String[]{Constant.STATUS_COMPLETE});
         db.close();
         return numRows;

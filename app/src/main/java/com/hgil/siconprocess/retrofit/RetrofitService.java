@@ -28,32 +28,18 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST(API.SYNC_URL)
-    Call<syncResponse> syncRouteData(@Field("depot_id") String depot_id,
-                                     @Field("route_id") String username,
-                                     @Field("route_management_id") String routeManagementId,
-                                     @Field("cashier_paycode") String cashier_paycode,
-                                     @Field("route_data") String route_data,
-                                     @Field("imei_number") String imei_number);
+    Call<syncResponse> syncRouteData(@Field("route_details") String route_details,
+                                     @Field("sync_route_data") String sync_route_data);
 
     @FormUrlEncoded
     @POST(API.VAN_CLOSE_URL)
-    Call<syncResponse> syncRouteVanClose(@Field("depot_id") String depot_id,
-                                             @Field("route_id") String username,
-                                             @Field("routeManagementId") String routeManagementId,
-                                             @Field("cashier_paycode") String cashier_paycode,
-                                             @Field("supervisor_paycode") String supervisor_paycode,
-                                             @Field("van_close_data") String cashier_data,
-                                             @Field("imei_number") String imei_number);
+    Call<syncResponse> syncRouteVanClose(@Field("route_details") String route_details,
+                                         @Field("sync_van_close_data") String sync_route_data);
 
     @FormUrlEncoded
     @POST(API.FINAL_PAYMENT_URL)
-    Call<syncResponse> syncFinalPayment(@Field("depot_id") String depot_id,
-                                             @Field("route_id") String username,
-                                             @Field("routeManagementId") String routeManagementId,
-                                             @Field("cashier_paycode") String cashier_paycode,
-                                             @Field("supervisor_paycode") String supervisor_paycode,
-                                             @Field("payment_data") String cashier_data,
-                                             @Field("imei_number") String imei_number);
+    Call<syncResponse> syncFinalPayment(@Field("route_details") String route_details,
+                                        @Field("final_payment") String final_payment);
 
 
 }

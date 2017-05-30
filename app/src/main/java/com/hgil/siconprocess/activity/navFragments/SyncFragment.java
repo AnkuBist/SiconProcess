@@ -2,7 +2,6 @@ package com.hgil.siconprocess.activity.navFragments;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,12 +18,10 @@ import com.hgil.siconprocess.database.tables.PaymentTable;
 import com.hgil.siconprocess.retrofit.RetrofitService;
 import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
+import com.hgil.siconprocess.syncPOJO.SRouteModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import retrofit2.Call;
@@ -115,34 +112,36 @@ public class SyncFragment extends BaseFragment {
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
-        String json = new Gson().toJson(syncData);
-        JSONObject jObj = null;
-        try {
-            jObj = new JSONObject(json);
-            Log.e(TAG, json);
-            Log.e(TAG + "1", jObj.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
 
+        SRouteModel routeModel = new SRouteModel();
+        routeModel.setLoginId(getLoginId());
+        routeModel.setRouteId(getRouteId());
+        routeModel.setRouteName(getRouteName());
+        routeModel.setDepotId(getRouteModel().getDepotId());
+        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+        routeModel.setCashierCode(getRouteModel().getCashierCode());
+        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
+        routeModel.setSupervisorId("");
+        routeModel.setImeiNo(imei_number);
+
+        String routeDetails = new Gson().toJson(routeModel);
+        String syncRouteData = new Gson().toJson(syncData);
+
         // make retrofit request call
-        syncRouteInvoice(getRouteModel().getDepotId(), getRouteId(), getRouteModel().getRouteManagementId(),
-                getRouteModel().getCashierCode(), jObj, imei_number);
+        syncRouteInvoice(routeDetails, syncRouteData);
     }
 
     // sync process retrofit call
     /*retrofit call test example*/
-    public void syncRouteInvoice(String depot_id, final String route_id, String route_management_id,
-                                 String cashier_paycode, JSONObject route_data, String imei_number) {
+    public void syncRouteInvoice(String routeDetails, String syncRouteData) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.updateDialogTitle(getString(R.string.str_synchronizing_data));
             }
         });
         RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteData(depot_id, route_id, route_management_id, cashier_paycode,
-                route_data.toString(), imei_number);
+        Call<syncResponse> apiCall = service.syncRouteData(routeDetails, syncRouteData);
         apiCall.enqueue(new Callback<syncResponse>() {
             @Override
             public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {

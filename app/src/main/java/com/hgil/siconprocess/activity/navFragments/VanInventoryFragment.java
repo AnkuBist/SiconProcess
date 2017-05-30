@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.NavBaseActivity;
 import com.hgil.siconprocess.activity.ViewVanStockActivity;
-import com.hgil.siconprocess.activity.fragments.vanClose.VanCloseFragment;
+import com.hgil.siconprocess.activity.fragments.vanClose.VanCloseSVLoginFragment;
 import com.hgil.siconprocess.base.BaseFragment;
 
 import butterknife.BindView;
@@ -67,7 +67,7 @@ public class VanInventoryFragment extends BaseFragment {
         tvVanClosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VanCloseFragment fragment = VanCloseFragment.newInstance();
+                VanCloseSVLoginFragment fragment = VanCloseSVLoginFragment.newInstance();
                 String fragClassName = fragment.getClass().getName();
                 FragmentManager fragmentManager = ((NavBaseActivity) getActivity()).getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();

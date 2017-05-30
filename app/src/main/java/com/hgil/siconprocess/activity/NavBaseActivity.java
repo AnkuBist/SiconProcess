@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.navFragments.CustomerOrderFragment;
 import com.hgil.siconprocess.activity.navFragments.DashboardFragment;
-import com.hgil.siconprocess.activity.navFragments.FinalPaymentFragment;
+import com.hgil.siconprocess.activity.navFragments.FinalPaymentSVLoginFragment;
 import com.hgil.siconprocess.activity.navFragments.HomeFragment;
 import com.hgil.siconprocess.activity.navFragments.OutletInfoFragment;
 import com.hgil.siconprocess.activity.navFragments.SyncFragment;
@@ -161,7 +161,7 @@ public class NavBaseActivity extends BaseActivity {
                 fragment = VanInventoryFragment.newInstance();
                 break;
             case R.id.nav_final_payment:
-                fragment = FinalPaymentFragment.newInstance();
+                fragment = FinalPaymentSVLoginFragment.newInstance();
                 break;
             case R.id.nav_outlet_info:
                 fragment = OutletInfoFragment.newInstance();
