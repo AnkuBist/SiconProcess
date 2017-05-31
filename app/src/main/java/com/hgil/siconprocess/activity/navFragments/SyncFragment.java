@@ -71,14 +71,19 @@ public class SyncFragment extends BaseFragment {
             public void onClick(View v) {
                 updateBarHandler.post(new Runnable() {
                     public void run() {
-                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_synchronizing_data));
+                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_gathering_sync_data));
                     }
                 });
                 // call sync data here
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        initiateDataSync();
+                        /*preparing data to sync whole day process*/
+                        String routeDetails = new Gson().toJson(routeModel());
+                        String syncRouteData = new Gson().toJson(syncRouteData());
+
+                        // make retrofit request call
+                        syncRouteInvoice(routeDetails, syncRouteData);
                     }
                 }).start();
             }
@@ -92,8 +97,26 @@ public class SyncFragment extends BaseFragment {
         marketProductTable = new MarketProductTable(getContext());
     }
 
-    /*preparing data to sync whole day process*/
-    private void initiateDataSync() {
+    //1. route model
+    private SRouteModel routeModel() {
+        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
+
+        SRouteModel routeModel = new SRouteModel();
+        routeModel.setLoginId(getLoginId());
+        routeModel.setRouteId(getRouteId());
+        routeModel.setRouteName(getRouteName());
+        routeModel.setDepotId(getRouteModel().getDepotId());
+        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+        routeModel.setCashierCode(getRouteModel().getCashierCode());
+        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
+        routeModel.setSupervisorId("");
+        routeModel.setImeiNo(imei_number);
+
+        return routeModel;
+    }
+
+    //2. sync route data
+    private SyncData syncRouteData() {
         // finally convert all object and array data into jsonObject and send as object data to server side api;
         SyncData syncData = new SyncData();
         /*invoice data preparation*/
@@ -112,24 +135,7 @@ public class SyncFragment extends BaseFragment {
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
-        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
-
-        SRouteModel routeModel = new SRouteModel();
-        routeModel.setLoginId(getLoginId());
-        routeModel.setRouteId(getRouteId());
-        routeModel.setRouteName(getRouteName());
-        routeModel.setDepotId(getRouteModel().getDepotId());
-        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
-        routeModel.setCashierCode(getRouteModel().getCashierCode());
-        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
-        routeModel.setSupervisorId("");
-        routeModel.setImeiNo(imei_number);
-
-        String routeDetails = new Gson().toJson(routeModel);
-        String syncRouteData = new Gson().toJson(syncData);
-
-        // make retrofit request call
-        syncRouteInvoice(routeDetails, syncRouteData);
+        return syncData;
     }
 
     // sync process retrofit call

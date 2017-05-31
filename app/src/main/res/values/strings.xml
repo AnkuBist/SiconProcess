@@ -10,6 +10,8 @@
     <string name="str_sync_complete">Sync Data Completed</string>
     <string name="str_error_sync_data">Error While Synchronizing Data</string>
     <string name="str_synchronizing_data">Synchronizing Data</string>
+    <string name="str_gathering_sync_data">Gathering Sync Data</string>
+    <string name="str_gathering_v_close_data">Gathering Van Close Data</string>
     <string name="str_synchronizing_data_started">Synchronizing Data Started</string>
 
     <!--no order warning message-->

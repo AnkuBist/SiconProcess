@@ -29,6 +29,7 @@ import com.hgil.siconprocess.retrofit.RetrofitUtil;
 import com.hgil.siconprocess.retrofit.loginResponse.syncResponse;
 import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
 import com.hgil.siconprocess.syncPOJO.SRouteModel;
+import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.ItemStockCheck;
@@ -64,18 +65,22 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     RecyclerView rvItemStockCheck;
     @BindView(R.id.tvEmpty)
     TextView tvEmpty;
-
     @BindView(R.id.btnVanClose)
     Button btnVanClose;
 
     private Handler updateBarHandler;
-
     private CrateStockCheck crateStockCheck;
 
+    private DepotInvoiceView depotInvoiceView;
+    private ProductView productView;
     private RouteView routeView;
+    private CustomerRouteMappingView customerRouteMappingView;
+    private CustomerItemPriceTable customerItemPriceTable;
+    private InvoiceOutTable invoiceOutTable;
+    private CustomerRejectionTable rejectionTable;
+    private PaymentTable paymentTable;
 
     private VanCloseItemStockCheckAdapter vanCloseItemStockCheckAdapter;
-    private ProductView productView;
     private ArrayList<ItemStockCheck> arrItemStockCheck = new ArrayList<>();
 
     public VanCloseItemCheckFragment() {
@@ -100,11 +105,11 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         setTitle("Van Closing");
         updateBarHandler = new Handler();
 
-        routeView = new RouteView(getContext());
+        initializeTableObjects();
 
         /*crate stock validations*/
         // crate stock verifying
-        crateStockCheck = new PaymentTable(getContext()).syncCrateStock(getRouteId(), getRouteModel().getCrateLoading());
+        crateStockCheck = paymentTable.syncCrateStock(getRouteId(), getRouteModel().getCrateLoading());
 
         etCrateOpening.setText(String.valueOf(crateStockCheck.getOpening()));
         etCrateIssued.setText(String.valueOf(crateStockCheck.getIssued()));
@@ -139,7 +144,6 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvItemStockCheck.setLayoutManager(linearLayoutManager);
 
-        productView = new ProductView(getContext());
         arrItemStockCheck.addAll(productView.checkItemStock());
         vanCloseItemStockCheckAdapter = new VanCloseItemStockCheckAdapter(getContext(), arrItemStockCheck);
         rvItemStockCheck.setAdapter(vanCloseItemStockCheckAdapter);
@@ -150,7 +154,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
             public void onClick(View v) {
                 updateBarHandler.post(new Runnable() {
                     public void run() {
-                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_van_close));
+                        RetrofitUtil.showDialog(getContext(), getString(R.string.str_gathering_v_close_data));
                     }
                 });
 
@@ -158,14 +162,39 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        initializeVanClose();
+                        String routeDetails = new Gson().toJson(routeModel());
+                        String vanCloseData = new Gson().toJson(vanCloseData());
+                        String syncRouteData = new Gson().toJson(syncRouteData());
+
+                        routeVanClose(routeDetails, syncRouteData, vanCloseData);
                     }
                 }).start();
             }
         });
     }
 
-    private void initializeVanClose() {
+    //1. route model
+    private SRouteModel routeModel() {
+        //sync the above syncVanClose to server.
+        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
+        String supervisor_paycode = "android";      //TODO
+
+        SRouteModel routeModel = new SRouteModel();
+        routeModel.setLoginId(getLoginId());
+        routeModel.setRouteId(getRouteId());
+        routeModel.setRouteName(getRouteName());
+        routeModel.setDepotId(getRouteModel().getDepotId());
+        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+        routeModel.setCashierCode(getRouteModel().getCashierCode());
+        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
+        routeModel.setSupervisorId(supervisor_paycode);
+
+        routeModel.setImeiNo(imei_number);
+        return routeModel;
+    }
+
+    //2. van close data
+    private SyncVanClose vanCloseData() {
         SyncVanClose syncVanClose = new SyncVanClose();
 
         /*crate check*/
@@ -180,30 +209,32 @@ public class VanCloseItemCheckFragment extends BaseFragment {
 
         // route retail sale
         /*make retail sale and payment to local data here only*/
-        syncVanClose.setArrRetailSale(varianceRetailSale(arrItemStockCheck));
+        varianceRetailSale(arrItemStockCheck);
 
-        /*update here route close status and details*/
-        vanCloseFinalPayment(arrItemStockCheck);
+        return syncVanClose;
+    }
 
-        //sync the above syncVanClose to server.
-        String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
-        String supervisor_paycode = "android";      //TODO
+    //3. sync route data
+    private SyncData syncRouteData() {
+        // finally convert all object and array data into jsonObject and send as object data to server side api;
+        SyncData syncData = new SyncData();
+        /*invoice data preparation*/
+        // invoice sync
 
-        SRouteModel routeModel = new SRouteModel();
-        routeModel.setLoginId(getLoginId());
-        routeModel.setRouteId(getRouteId());
-        routeModel.setRouteName(getRouteName());
-        routeModel.setDepotId(getRouteModel().getDepotId());
-        routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
-        routeModel.setCashierCode(getRouteModel().getCashierCode());
-        routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
-        routeModel.setSupervisorId(supervisor_paycode);
-        routeModel.setImeiNo(imei_number);
+        //TODO
+        /*syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
+        syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
+        syncData.setSyncRejDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
+        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));*/
+        //syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
 
-        String routeDetails = new Gson().toJson(routeModel);
-        String vanCloseData = new Gson().toJson(syncVanClose);
+        /*actual database synchronisation*/
+        syncData.setArrClosedCustDetails(customerRouteMappingView.closedOutletDetails());
+        syncData.setSyncInvoiceSaleRej(customerItemPriceTable.syncInvoiceSaleRej(getRouteId()));
+        syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
+        syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
-        vanClose(routeDetails, vanCloseData);
+        return syncData;
     }
 
     @Override
@@ -218,16 +249,20 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         }
     }
 
-    private String getBill_no() {
-        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(getContext());
-        CustomerRejectionTable rejectionTable = new CustomerRejectionTable(getContext());
-
+    private String getBill_no(String retailCustomerId) {
         String tempBill = null;
         String expectedLastBillNo = null;
         double max_bill_1 = 0, max_bill_2 = 0;
+        String tempBill1 = invoiceOutTable.returnCustomerBillNo(retailCustomerId);
+        String tempBill2 = rejectionTable.returnCustomerBillNo(retailCustomerId);
 
         String last_max_bill_1 = invoiceOutTable.returnMaxBillNo();
         String last_max_bill_2 = rejectionTable.returnMaxBillNo();
+
+        if (tempBill1 != null && !tempBill1.isEmpty() && tempBill1.length() == 14)
+            return tempBill1;
+        else if (tempBill2 != null && !tempBill2.isEmpty() && tempBill2.length() == 14)
+            return tempBill2;
 
         // case to find the last max bill no
         if (last_max_bill_1 != null && !last_max_bill_1.isEmpty() && last_max_bill_1.length() == 14)
@@ -250,15 +285,13 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     }
 
     // generate temporary invoice for the retails customer for variance items
-    private ArrayList<SyncInvoiceDetailModel> varianceRetailSale(ArrayList<ItemStockCheck> arrItemStockCheck) {
-        CustomerItemPriceTable customerItemPriceTable = new CustomerItemPriceTable(getContext());
-        CustomerRouteMappingView customerRouteMappingView = new CustomerRouteMappingView(getContext());
-        String routeManagementId = getRouteModel().getRouteManagementId();
-        String invoiceNumber = new DepotInvoiceView(getContext()).commonInvoiceNumber();
-        String invoiceDate = Utility.getCurDate();
-        String billNo = getBill_no();
-        String cashierCode = getRouteModel().getCashierCode();
+    private void varianceRetailSale(ArrayList<ItemStockCheck> arrItemStockCheck) {
         String retailCustomerId = customerRouteMappingView.retailCustomer();
+        String routeManagementId = getRouteModel().getRouteManagementId();
+        String invoiceNumber = depotInvoiceView.commonInvoiceNumber();
+        String invoiceDate = Utility.getCurDate();
+        String billNo = getBill_no(retailCustomerId);
+        String cashierCode = getRouteModel().getCashierCode();
 
         double retailSaleAmount = 0;
 
@@ -271,21 +304,17 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 String item_id = itemStockCheck.getItem_id();
 
                 double item_price = customerItemPriceTable.itemPrice(item_id);
-                double discount_price = 0;
-                double discount_percentage = 0;
-                String discount_type = "";
                 double discounted_price = item_price;
-                int sample = 0;
 
                 syncModel.setItem_id(item_id);
                 syncModel.setCustomer_id(retailCustomerId);
 
                 syncModel.setItem_price(item_price);
-                syncModel.setDisc_price(discount_price);
-                syncModel.setDisc_percentage(discount_percentage);
-                syncModel.setDisc_type(discount_type);
+                syncModel.setDisc_price(0);
+                syncModel.setDisc_percentage(0);
+                syncModel.setDisc_type("");
                 syncModel.setDiscounted_price(discounted_price);
-                syncModel.setSample(sample);
+                syncModel.setSample(0);
 
                 syncModel.setRoute_management_id(routeManagementId);
                 syncModel.setBill_no(billNo);
@@ -308,6 +337,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 syncModel.setF_rej_amount(discounted_price * fresh_rej);
                 syncModel.setM_rej_amount(discounted_price * market_rej);
 
+                // retail sale amount
                 retailSaleAmount += syncModel.getTotal_sale_amount();
 
                 arrVarianceInvoice.add(syncModel);
@@ -315,10 +345,8 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         }
 
         /*update this retail sale to local and also make payment for this*/
-        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(getContext());
-        invoiceOutTable.invoiceVarianceRetailSale(arrVarianceInvoice);
+        invoiceOutTable.invoiceVarianceRetailSale(retailCustomerId, billNo, arrVarianceInvoice);
         invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
-        PaymentTable paymentTable = new PaymentTable(getContext());
 
         PaymentModel paymentModel = new PaymentModel();
         paymentModel.setCustomerId(retailCustomerId);
@@ -331,14 +359,59 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         paymentModel.setLogin_id(getLoginId());
 
         paymentTable.varianceInvoicePayment(paymentModel);
+        paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_COMPLETE);
+    }
 
-        return arrVarianceInvoice;
+    // retrofit van close data
+    public void routeVanClose(String routeDetails, String routeData, String vanCloseData) {
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.updateDialogTitle(getString(R.string.str_van_close));
+            }
+        });
+        RetrofitService service = RetrofitUtil.retrofitClient();
+        Call<syncResponse> apiCall = service.syncRouteVanClose(routeDetails, routeData, vanCloseData);
+        apiCall.enqueue(new Callback<syncResponse>() {
+            @Override
+            public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
+                syncResponse syncResponse = response.body();
+                // rest call to read data from api service
+                if (syncResponse.getReturnCode()) {
+                    /*update here route close status and details*/
+                    updateVanCloseFinalRoutePayment(arrItemStockCheck);
+
+                    //van close status
+                    routeView.updateVanClose(getRouteId());
+
+                    //check if call completed or not
+                    new SampleDialog("", syncResponse.getStrMessage(), true, getContext());
+                } else {
+                    new SampleDialog("", syncResponse.getStrMessage(), getContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<syncResponse> call, Throwable t) {
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
+                // show some error toast or message to display the api call issue
+                new SampleDialog("", getString(R.string.str_retrofit_failure), getContext());
+            }
+        });
     }
 
     //update van close final payment details
-    private void vanCloseFinalPayment(ArrayList<ItemStockCheck> arrItemStockCheck) {
-        PaymentTable paymentTable = new PaymentTable(getContext());
-
+    private void updateVanCloseFinalRoutePayment(ArrayList<ItemStockCheck> arrItemStockCheck) {
         double m_rej_amount = 0, f_rej_amount = 0, sample_amount = 0, leftover_amount = 0;  //supervisor leftover amount
 
         // final payment information
@@ -367,49 +440,15 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         routeView.updateRouteFinalPayment(finalPaymentModel);
     }
 
-    // sync process retrofit call
-    public void vanClose(String routeDetails, String vanCloseData) {
-        updateBarHandler.post(new Runnable() {
-            public void run() {
-                RetrofitUtil.updateDialogTitle(getString(R.string.str_van_close));
-            }
-        });
-        RetrofitService service = RetrofitUtil.retrofitClient();
-        Call<syncResponse> apiCall = service.syncRouteVanClose(routeDetails, vanCloseData);
-        apiCall.enqueue(new Callback<syncResponse>() {
-            @Override
-            public void onResponse(Call<syncResponse> call, Response<syncResponse> response) {
-                updateBarHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RetrofitUtil.hideDialog();
-                    }
-                }, 500);
-                syncResponse syncResponse = response.body();
-                // rest call to read data from api service
-                if (syncResponse.getReturnCode()) {
-                    //van close status
-                    routeView.updateVanClose(getRouteId());
-
-                    //check if call completed or not
-                    new SampleDialog("", syncResponse.getStrMessage(), true, getContext());
-                } else {
-                    new SampleDialog("", syncResponse.getStrMessage(), getContext());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<syncResponse> call, Throwable t) {
-                updateBarHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RetrofitUtil.hideDialog();
-                    }
-                }, 500);
-                // show some error toast or message to display the api call issue
-                new SampleDialog("", getString(R.string.str_retrofit_failure), getContext());
-            }
-        });
+    public void initializeTableObjects() {
+        depotInvoiceView = new DepotInvoiceView(getContext());
+        productView = new ProductView(getContext());
+        routeView = new RouteView(getContext());
+        customerRouteMappingView = new CustomerRouteMappingView(getContext());
+        customerItemPriceTable = new CustomerItemPriceTable(getContext());
+        invoiceOutTable = new InvoiceOutTable(getContext());
+        rejectionTable = new CustomerRejectionTable(getContext());
+        paymentTable = new PaymentTable(getContext());
     }
 
 }

@@ -34,7 +34,8 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST(API.VAN_CLOSE_URL)
     Call<syncResponse> syncRouteVanClose(@Field("route_details") String route_details,
-                                         @Field("sync_van_close_data") String sync_route_data);
+                                         @Field("sync_route_data") String sync_route_data,
+                                         @Field("sync_van_close_data") String sync_van_close_data);
 
     @FormUrlEncoded
     @POST(API.FINAL_PAYMENT_URL)

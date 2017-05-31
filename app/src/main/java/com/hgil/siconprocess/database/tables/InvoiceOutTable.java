@@ -110,10 +110,10 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
 
     // insert multiple
     public boolean insertInvoiceOut(List<InvoiceModel> arrList, String customer_id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
         // first erase the recent invoice belong to the same user
         eraseInvoiceUser(customer_id);
+
+        SQLiteDatabase db = this.getWritableDatabase();
 
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
@@ -187,11 +187,11 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
 
     /*variance retail sale*/
     // insert multiple
-    public boolean invoiceVarianceRetailSale(ArrayList<SyncInvoiceDetailModel> arrList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
+    public boolean invoiceVarianceRetailSale(String customer_id, String bill_no, ArrayList<SyncInvoiceDetailModel> arrList) {
         // first erase the recent invoice belong to the same user
-        //eraseInvoiceUser(customer_id);
+        eraseInvoiceUser(customer_id, bill_no);
+
+        SQLiteDatabase db = this.getWritableDatabase();
 
         ProductView productView = new ProductView(mContext);
 
@@ -267,6 +267,13 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
     public void eraseInvoiceUser(String customer_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, CUSTOMER_ID + " = ?", new String[]{customer_id});
+        db.close();
+    }
+
+    //erase retail customer sale only
+    public void eraseInvoiceUser(String customer_id, String bill_no) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, CUSTOMER_ID + "=? and " + BILL_NO + "=?", new String[]{customer_id, bill_no});
         db.close();
     }
 

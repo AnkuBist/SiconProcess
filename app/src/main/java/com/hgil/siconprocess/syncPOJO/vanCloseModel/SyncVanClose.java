@@ -1,7 +1,5 @@
 package com.hgil.siconprocess.syncPOJO.vanCloseModel;
 
-import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,7 +12,7 @@ public class SyncVanClose implements Serializable {
     //updated models
     private CrateStockCheck crateStockCheck;
     private ArrayList<ItemStockCheck> arrItemStock;
-    private ArrayList<SyncInvoiceDetailModel> arrRetailSale;
+    /*private ArrayList<SyncInvoiceDetailModel> arrRetailSale;*/
 
     public CrateStockCheck getCrateStockCheck() {
         return crateStockCheck;
@@ -32,12 +30,12 @@ public class SyncVanClose implements Serializable {
         this.arrItemStock = arrItemStock;
     }
 
-    public ArrayList<SyncInvoiceDetailModel> getArrRetailSale() {
+    /*public ArrayList<SyncInvoiceDetailModel> getArrRetailSale() {
         return arrRetailSale;
     }
 
     public void setArrRetailSale(ArrayList<SyncInvoiceDetailModel> arrRetailSale) {
         this.arrRetailSale = arrRetailSale;
-    }
+    }*/
 
 }

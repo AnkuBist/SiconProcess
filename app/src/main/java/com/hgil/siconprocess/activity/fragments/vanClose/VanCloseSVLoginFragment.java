@@ -68,10 +68,9 @@ public class VanCloseSVLoginFragment extends BaseFragment {
                 if (head_cashier_code.isEmpty()) {
                     showSnackbar(getView(), "Please enter head cashier code");
                 } else if (head_cashier_code.matches(Constant.HEAD_CASHIER_CODE)) {
-                   /* if (vanCloseStatus == 1) {
+                    if (vanCloseStatus == 1) {
                         new SampleDialog("Van is already closed.", getContext());
-                    } else*/
-                    if (customerRouteMappingView.numberPendingCustomers() > 0) {
+                    } else if (customerRouteMappingView.numberPendingCustomers() > 0) {
                         new SampleDialog("Please Complete Sale on Pending Customers before closing route.", getContext());
                     } else {
                         VanCloseItemCheckFragment fragment = VanCloseItemCheckFragment.newInstance();

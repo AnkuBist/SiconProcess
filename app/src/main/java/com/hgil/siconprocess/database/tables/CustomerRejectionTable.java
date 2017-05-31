@@ -110,10 +110,10 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
 
     // insert multiple rejections to table for selected user at once
     public void insertCustRejections(List<CRejectionModel> arrList, String customer_id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
         // first erase data belong to the same user
         eraseCustRejections(customer_id);
+
+        SQLiteDatabase db = this.getWritableDatabase();
 
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, TABLE_NAME);
 
