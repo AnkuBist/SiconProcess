@@ -78,9 +78,9 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
         finalPaymentModel = routeView.routeFinalPayment(getRouteId());
 
         //editText values set
-        etNetSale.setText(String.valueOf(finalPaymentModel.getTotal_amount()));
-        etCashCollection.setText(String.valueOf(finalPaymentModel.getCashier_receive_amount()));
-        etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
+        etNetSale.setText(String.valueOf(Utility.roundTwoDecimals(finalPaymentModel.getTotal_amount())));
+        etCashCollection.setText(String.valueOf(Utility.roundTwoDecimals(finalPaymentModel.getCashier_receive_amount())));
+        etShortExcess.setText(String.valueOf(Utility.roundTwoDecimals(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount())));
 
         etCashReceived.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,10 +97,10 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     supervisor_received_amount = Utility.getDouble(etCashReceived.getText().toString());
-                    etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
+                    etShortExcess.setText(String.valueOf(Utility.roundTwoDecimals(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount())));
                 } else {
                     supervisor_received_amount = 0;
-                    etShortExcess.setText(String.valueOf(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount()));
+                    etShortExcess.setText(String.valueOf(Utility.roundTwoDecimals(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount())));
                 }
             }
         });
@@ -108,8 +108,8 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
         btnFinalPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supervisor_received_amount = Utility.getDouble(etCashReceived.getText().toString());
-                short_excess_amount = supervisor_received_amount - finalPaymentModel.getCashier_receive_amount();
+                supervisor_received_amount = Utility.roundTwoDecimals(Utility.getDouble(etCashReceived.getText().toString()));
+                short_excess_amount = Utility.roundTwoDecimals(supervisor_received_amount - finalPaymentModel.getCashier_receive_amount());
                 finalPaymentModel.setSupervisor_received_amount(supervisor_received_amount);
                 finalPaymentModel.setShort_excess_amount(short_excess_amount);
                 finalPaymentModel.setDiscount_amount(discount_amount);

@@ -158,15 +158,17 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                     }
                 });
 
+                final String retailCustomerId = customerRouteMappingView.retailCustomer();
+
                 // call van close here
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         String routeDetails = new Gson().toJson(routeModel());
-                        String vanCloseData = new Gson().toJson(vanCloseData());
+                        String vanCloseData = new Gson().toJson(vanCloseData(retailCustomerId));
                         String syncRouteData = new Gson().toJson(syncRouteData());
 
-                        routeVanClose(routeDetails, syncRouteData, vanCloseData);
+                        routeVanClose(retailCustomerId, routeDetails, syncRouteData, vanCloseData);
                     }
                 }).start();
             }
@@ -194,7 +196,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     }
 
     //2. van close data
-    private SyncVanClose vanCloseData() {
+    private SyncVanClose vanCloseData(String retailCustomerId) {
         SyncVanClose syncVanClose = new SyncVanClose();
 
         /*crate check*/
@@ -209,7 +211,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
 
         // route retail sale
         /*make retail sale and payment to local data here only*/
-        varianceRetailSale(arrItemStockCheck);
+        varianceRetailSale(retailCustomerId, arrItemStockCheck);
 
         return syncVanClose;
     }
@@ -270,7 +272,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         if (last_max_bill_2 != null && !last_max_bill_2.isEmpty() && last_max_bill_2.length() == 14)
             max_bill_2 = Double.valueOf(last_max_bill_2);
 
-        if (max_bill_1 == max_bill_2)
+        if (max_bill_1 == max_bill_2 && max_bill_1 != 0 && max_bill_2 != 0)
             expectedLastBillNo = last_max_bill_1;
         else if (max_bill_1 > max_bill_2)
             expectedLastBillNo = last_max_bill_1;
@@ -285,8 +287,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     }
 
     // generate temporary invoice for the retails customer for variance items
-    private void varianceRetailSale(ArrayList<ItemStockCheck> arrItemStockCheck) {
-        String retailCustomerId = customerRouteMappingView.retailCustomer();
+    private void varianceRetailSale(String retailCustomerId, ArrayList<ItemStockCheck> arrItemStockCheck) {
         String routeManagementId = getRouteModel().getRouteManagementId();
         String invoiceNumber = depotInvoiceView.commonInvoiceNumber();
         String invoiceDate = Utility.getCurDate();
@@ -346,7 +347,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
 
         /*update this retail sale to local and also make payment for this*/
         invoiceOutTable.invoiceVarianceRetailSale(retailCustomerId, billNo, arrVarianceInvoice);
-        invoiceOutTable.updateCustInvStatus(customer_id, Constant.STATUS_COMPLETE);
+        invoiceOutTable.updateCustInvStatus(retailCustomerId, Constant.STATUS_COMPLETE);
 
         PaymentModel paymentModel = new PaymentModel();
         paymentModel.setCustomerId(retailCustomerId);
@@ -359,11 +360,11 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         paymentModel.setLogin_id(getLoginId());
 
         paymentTable.varianceInvoicePayment(paymentModel);
-        paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_COMPLETE);
+        paymentTable.updateCustPaymentStatus(retailCustomerId, Constant.STATUS_COMPLETE);
     }
 
     // retrofit van close data
-    public void routeVanClose(String routeDetails, String routeData, String vanCloseData) {
+    public void routeVanClose(final String retailCustomerId, String routeDetails, String routeData, String vanCloseData) {
         updateBarHandler.post(new Runnable() {
             public void run() {
                 RetrofitUtil.updateDialogTitle(getString(R.string.str_van_close));
@@ -385,6 +386,9 @@ public class VanCloseItemCheckFragment extends BaseFragment {
                 if (syncResponse.getReturnCode()) {
                     /*update here route close status and details*/
                     updateVanCloseFinalRoutePayment(arrItemStockCheck);
+
+                    //update customer status
+                    customerRouteMappingView.updateCustomerStatus(retailCustomerId, Constant.STATUS_COMPLETE);
 
                     //van close status
                     routeView.updateVanClose(getRouteId());

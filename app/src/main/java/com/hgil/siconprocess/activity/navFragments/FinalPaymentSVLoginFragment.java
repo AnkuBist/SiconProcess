@@ -1,6 +1,7 @@
 package com.hgil.siconprocess.activity.navFragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,21 +11,32 @@ import com.hgil.siconprocess.R;
 import com.hgil.siconprocess.activity.fragments.finalPayment.RouteClose_FinalPaymentFragment;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.RouteView;
-import com.hgil.siconprocess.utils.Constant;
+import com.hgil.siconprocess.retrofit.RetrofitService;
+import com.hgil.siconprocess.retrofit.RetrofitUtil;
+import com.hgil.siconprocess.retrofit.loginResponse.loginResponse;
+import com.hgil.siconprocess.utils.Utility;
 import com.hgil.siconprocess.utils.ui.SampleDialog;
 
 import butterknife.BindView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FinalPaymentSVLoginFragment extends BaseFragment {
 
+    private static final String SUPERVISOR_CODE = "supervisor_code";
+
     @BindView(R.id.tvRouteName)
     TextView tvRouteName;
-    @BindView(R.id.etCashierCode)
-    EditText etCashierCode;
+    @BindView(R.id.etSupervisorCode)
+    EditText etSupervisorCode;
+    @BindView(R.id.etPassword)
+    EditText etPassword;
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
 
     private RouteView routeView;
+    private Handler updateBarHandler;
 
     public FinalPaymentSVLoginFragment() {
         // Required empty public constructor
@@ -49,31 +61,99 @@ public class FinalPaymentSVLoginFragment extends BaseFragment {
         hideSaveButton();
         setTitle("Final Payment");
 
+        updateBarHandler = new Handler();
+
         routeView = new RouteView(getContext());
 
         final int finalPaymentStatus = routeView.finalPaymentStatus(getRouteId());
         final int vanCloseStatus = routeView.vanCloseStatus(getRouteId());
+        final String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String head_cashier_code = etCashierCode.getText().toString();
-                if (head_cashier_code.isEmpty()) {
-                    showSnackbar(getView(), "Please enter head cashier code");
-                } else if (head_cashier_code.matches(Constant.HEAD_CASHIER_CODE)) {
+
+                String supervisor_code = etSupervisorCode.getText().toString().trim();
+                String password = etPassword.getText().toString().trim();
+
+                if (supervisor_code.isEmpty()) {
+                    showSnackbar(getView(), "Please enter supervisor code");
+                } else if (password.isEmpty()) {
+                    showSnackbar(getView(), "Please enter password");
+                } else {
                     if (vanCloseStatus != 1) {
                         new SampleDialog("Please Close Van before making final payment.", getContext());
                     } else if (finalPaymentStatus == 1) {
                         new SampleDialog("Route is already closed.", getContext());
                     } else {
-                        RouteClose_FinalPaymentFragment fragment = RouteClose_FinalPaymentFragment.newInstance();
-                        launchNavFragment(fragment);
+                        supervisorLogin(getRouteModel().getDepotId(), supervisor_code, password, imei_number);
                     }
-                } else {
-                    showTopSnackbar(getView(), "Please enter a valid head cashier code");
                 }
             }
         });
     }
 
+    /*supervisor login*/
+    public void supervisorLogin(String depot_id, final String supervisor_code, final String password, String imei_number) {
+        updateBarHandler.post(new Runnable() {
+            public void run() {
+                RetrofitUtil.showDialog(getContext(), getString(R.string.str_supervisor_login));
+            }
+        });
+        RetrofitService service = RetrofitUtil.retrofitClient();
+        Call<loginResponse> apiCall = service.supervisorLogin(depot_id, supervisor_code, password, imei_number);
+        apiCall.enqueue(new Callback<loginResponse>() {
+            @Override
+            public void onResponse(Call<loginResponse> call, Response<loginResponse> response) {
+                updateBarHandler.post(new Runnable() {
+                    public void run() {
+                        RetrofitUtil.updateDialogTitle(getString(R.string.str_supervisor_detail_fetch));
+                    }
+                });
+                try {
+                    final loginResponse loginResult = response.body();
+
+                    if (loginResult.getReturnCode()) {
+                        updateBarHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                RetrofitUtil.hideDialog();
+                            }
+                        }, 500);
+                        showSnackbar(getView(), loginResult.getStrMessage());
+                        RouteClose_FinalPaymentFragment fragment = RouteClose_FinalPaymentFragment.newInstance();
+                        launchNavFragment(fragment);
+                    } else {
+                        updateBarHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                RetrofitUtil.hideDialog();
+                            }
+                        }, 500);
+                        new SampleDialog("", loginResult.getStrMessage(), getContext());
+                    }
+                } catch (Exception e) {
+                    updateBarHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RetrofitUtil.hideDialog();
+                        }
+                    }, 500);
+                    new SampleDialog("", getString(R.string.str_error_supervisor_login), getContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<loginResponse> call, Throwable t) {
+                updateBarHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetrofitUtil.hideDialog();
+                    }
+                }, 500);
+                // show some error toast or message to display the api call issue
+                new SampleDialog("", getString(R.string.str_retrofit_failure), getContext());
+            }
+        });
+    }
 }

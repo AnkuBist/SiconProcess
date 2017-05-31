@@ -14,17 +14,19 @@ import retrofit2.http.POST;
  */
 
 public interface RetrofitService {
-  /*  @GET(API.LOGIN_URL)
-    Call<loginResponse> getUserLogin(@Path("username") String username, @Path("password") String password);*/
 
     @FormUrlEncoded
     @POST(API.LOGIN_URL)
-    Call<loginResponse> postUserLogin(@Field("route_id") String username, @Field("password") String password,
+    Call<loginResponse> postUserLogin(@Field("route_id") String username,
+                                      @Field("password") String password,
                                       @Field("imei_number") String imei_number);
 
-    /*@FormUrlEncoded
-    @POST(API.LOGIN_URL)
-    Call<ResponseBody> testLogin(@Field("username") String username, @Field("password") String password);*/
+    @FormUrlEncoded
+    @POST(API.SUPERVISOR_LOGIN_URL)
+    Call<loginResponse> supervisorLogin(@Field("depot_id") String depot_id,
+                                        @Field("supervisor_id") String supervisor_id,
+                                        @Field("password") String password,
+                                        @Field("imei_number") String imei_number);
 
     @FormUrlEncoded
     @POST(API.SYNC_URL)
@@ -41,6 +43,5 @@ public interface RetrofitService {
     @POST(API.FINAL_PAYMENT_URL)
     Call<syncResponse> syncFinalPayment(@Field("route_details") String route_details,
                                         @Field("final_payment") String final_payment);
-
 
 }

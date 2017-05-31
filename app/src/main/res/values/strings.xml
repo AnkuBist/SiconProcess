@@ -6,6 +6,9 @@
     <string name="str_login">Login</string>
     <string name="str_login_detail_fetch">Fetching Login Data</string>
     <string name="str_login_successful">User Login</string>
+    <string name="str_supervisor_login">Supervisor Login</string>
+    <string name="str_supervisor_detail_fetch">Fetching Supervisor Data</string>
+    <string name="str_error_supervisor_login">Error While Supervisor Login</string>
     <string name="str_error_login">Error While Login</string>
     <string name="str_sync_complete">Sync Data Completed</string>
     <string name="str_error_sync_data">Error While Synchronizing Data</string>
