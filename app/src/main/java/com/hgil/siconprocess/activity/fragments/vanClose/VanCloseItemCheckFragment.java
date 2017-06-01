@@ -236,8 +236,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         //TODO
         /*syncData.setSyncInvoice(invoiceOutTable.syncCompletedInvoice());
         syncData.setSyncInvoiceRejection(rejectionTable.syncCompletedRejection(getRouteId()));
-        syncData.setSyncRejDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));
-        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));*/
+        syncData.setSyncRejDetails(rejectionTable.syncCompletedRejectionDetails(getRouteId()));*/
         //syncData.setArrMarketProductsSummary(marketProductTable.routeCompletedMarketProductDetails());
 
         /*actual database synchronisation*/

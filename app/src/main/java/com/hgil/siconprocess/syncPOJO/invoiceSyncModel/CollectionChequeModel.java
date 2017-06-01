@@ -9,6 +9,7 @@ public class CollectionChequeModel {
     private String bill_no;
     private String route_id;
     private String customer_id;
+    private String customerName;
     private String cheque_no;
     private String cheque_date;
     private double cheque_amount;
@@ -19,6 +20,14 @@ public class CollectionChequeModel {
     private String time_stamp;
     private String login_id;
     private String date;
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
     public String getInvoice_no() {
         return invoice_no;

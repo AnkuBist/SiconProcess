@@ -408,6 +408,7 @@ public class PaymentTable extends SQLiteOpenHelper {
                 chequeModel.setInvoice_no(invoiceOutTable.returnCustomerInvoiceNo(customer_id));
                 chequeModel.setBill_no(invoiceOutTable.returnCustomerBillNo(customer_id));
                 chequeModel.setCustomer_id(customer_id);
+                chequeModel.setCustomerName(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
                 chequeModel.setCheque_no(res.getString(res.getColumnIndex(CHEQUE_NUMBER)));
                 chequeModel.setCheque_date(res.getString(res.getColumnIndex(CHEQUE_DATE)));
                 chequeModel.setCheque_amount(res.getDouble(res.getColumnIndex(CHEQUE_AMOUNT)));
