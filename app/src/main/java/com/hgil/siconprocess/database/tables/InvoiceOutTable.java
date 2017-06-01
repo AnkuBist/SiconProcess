@@ -301,6 +301,21 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         return status;
     }
 
+    // customer total sale qty
+    public int custTotalSaleQty(String customer_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select sum(" + INVQTY_PS + ") as " + INVQTY_PS + " from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id});
+
+        int invQty = 0;
+        if (res.moveToFirst()) {
+            invQty = res.getInt(res.getColumnIndex(INVQTY_PS));
+        }
+        res.close();
+        db.close();
+        return invQty;
+    }
+
     // get invoice item qty for customer
     public int customerInvOutItemQty(String customer_id, String item_id) {
         SQLiteDatabase db = this.getReadableDatabase();

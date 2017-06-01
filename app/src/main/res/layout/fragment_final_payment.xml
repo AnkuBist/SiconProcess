@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorTextLightGrey"
     tools:context="com.hgil.siconprocess.activity.navFragments.FinalPaymentSVLoginFragment">
 
     <TextView
@@ -18,20 +18,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="70dp"
         android:orientation="vertical">
-
 
         <TextView
             style="@style/FinalTvLabel"
             android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
             android:text="Enter the Authorised Head Cashier Code" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="2"
             android:orientation="vertical">
 
@@ -54,8 +54,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:paddingLeft="10dp">
+                        android:layout_marginRight="10dp">
 
                         <EditText
                             android:id="@+id/etSupervisorCode"
@@ -72,7 +71,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:paddingLeft="10dp"
                         app:passwordToggleEnabled="true">
 
                         <EditText

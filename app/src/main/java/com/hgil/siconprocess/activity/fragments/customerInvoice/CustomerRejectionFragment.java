@@ -19,6 +19,7 @@ import com.hgil.siconprocess.adapter.invoiceRejection.InvoiceRejectionAdapter;
 import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;
 import com.hgil.siconprocess.adapter.productSelection.ProductSelectModel;
 import com.hgil.siconprocess.base.BaseFragment;
+import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
@@ -57,6 +58,7 @@ public class CustomerRejectionFragment extends BaseFragment {
     private CustomerRejectionTable rejectionTable;
     private DepotInvoiceView depotInvoiceView;
     private InvoiceOutTable invoiceOutTable;
+    private CustomerItemPriceTable dbPriceTable;
     private ArrayList<CRejectionModel> arrRejection;
 
     public CustomerRejectionFragment() {
@@ -125,6 +127,7 @@ public class CustomerRejectionFragment extends BaseFragment {
         depotInvoiceView = new DepotInvoiceView(getContext());
         rejectionTable = new CustomerRejectionTable(getContext());
         invoiceOutTable = new InvoiceOutTable(getContext());
+        dbPriceTable = new CustomerItemPriceTable(getContext());
 
         // generate bill no. here only
         bill_no = getBill_no();
@@ -236,11 +239,19 @@ public class CustomerRejectionFragment extends BaseFragment {
 
                     rejectionModel.setCashier_code(depotInvoiceView.getRouteCashierCode());
 
-                    rejectionModel.setItem_id(pModel.getItem_id());
+                    String item_id = pModel.getItem_id();
+                    rejectionModel.setItem_id(item_id);
                     rejectionModel.setItem_name(pModel.getItem_name());
                     rejectionModel.setCustomer_id(customer_id);
                     rejectionModel.setCustomer_name(customer_name);
                     rejectionModel.setPrice(pModel.getItem_price());
+
+                    int stock_left = depotInvoiceView.itemVanStockLoadingCount(item_id)
+                            - invoiceOutTable.getItemOrderQty(item_id)
+                            - dbPriceTable.itemTotalSampleCount(item_id)
+                            -rejectionTable.freshRejOtherThenCust(customer_id, item_id);
+
+                    rejectionModel.setStock_left(stock_left);
 
                     // update bill_no, device imei_no, location and login_id
                     // time_stamp will be updated automatically;

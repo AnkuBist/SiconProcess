@@ -1,9 +1,5 @@
 package com.hgil.siconprocess.syncPOJO.invoiceSyncModel;
 
-import com.hgil.siconprocess.database.dbModels.MarketProductModel;
-import com.hgil.siconprocess.database.dbModels.NextDayOrderModel;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -13,11 +9,11 @@ import java.util.ArrayList;
 public class SyncData {
 
     //private ArrayList<SyncInvoiceDetailModel> syncInvoice;
-   // private ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection;
-   // private ArrayList<RejectionDetailModel> syncRejDetails;
+    // private ArrayList<SyncInvoiceDetailModel> syncInvoiceRejection;
+    // private ArrayList<RejectionDetailModel> syncRejDetails;
     private ArrayList<CollectionCashModel> cashCollection;
     private ArrayList<CollectionCrateModel> crateCollection;
-   // private ArrayList<CollectionChequeModel> chequeCollection;
+    private ArrayList<CollectionChequeModel> chequeCollection;
     //private ArrayList<NextDayOrderModel> arrNextDayOrder;
     //private ArrayList<MarketProductModel> arrMarketProductsSummary;
 
@@ -48,13 +44,13 @@ public class SyncData {
         this.arrMarketProductsSummary = arrMarketProductsSummary;
     }*/
 
-   /* public ArrayList<CollectionChequeModel> getChequeCollection() {
+    public ArrayList<CollectionChequeModel> getChequeCollection() {
         return chequeCollection;
     }
 
     public void setChequeCollection(ArrayList<CollectionChequeModel> chequeCollection) {
         this.chequeCollection = chequeCollection;
-    }*/
+    }
 
    /* public ArrayList<NextDayOrderModel> getArrNextDayOrder() {
         return arrNextDayOrder;

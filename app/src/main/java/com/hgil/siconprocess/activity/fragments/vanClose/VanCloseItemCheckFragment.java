@@ -87,9 +87,20 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    public static VanCloseItemCheckFragment newInstance() {
+    public static VanCloseItemCheckFragment newInstance(String supervisorCode) {
         VanCloseItemCheckFragment fragment = new VanCloseItemCheckFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SUPERVISOR_CODE, supervisorCode);
+        fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            supervisor_code = getArguments().getString(SUPERVISOR_CODE);
+        }
     }
 
     @Override
@@ -179,7 +190,6 @@ public class VanCloseItemCheckFragment extends BaseFragment {
     private SRouteModel routeModel() {
         //sync the above syncVanClose to server.
         String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
-        String supervisor_paycode = "android";      //TODO
 
         SRouteModel routeModel = new SRouteModel();
         routeModel.setLoginId(getLoginId());
@@ -189,7 +199,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
         routeModel.setCashierCode(getRouteModel().getCashierCode());
         routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
-        routeModel.setSupervisorId(supervisor_paycode);
+        routeModel.setSupervisorId(supervisor_code);
 
         routeModel.setImeiNo(imei_number);
         return routeModel;
@@ -234,6 +244,7 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         syncData.setArrClosedCustDetails(customerRouteMappingView.closedOutletDetails());
         syncData.setSyncInvoiceSaleRej(customerItemPriceTable.syncInvoiceSaleRej(getRouteId()));
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
+        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(getRouteId()));
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         return syncData;

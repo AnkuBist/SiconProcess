@@ -47,7 +47,7 @@ public class InvoiceRejectionAdapter extends RecyclerView.Adapter<InvoiceRejecti
     @Override
     public void onBindViewHolder(InvoiceRejectionAdapter.ViewHolder holder, final int position) {
         final CRejectionModel cRejectionModel = mDataset.get(position);
-        holder.tvItemName.setText(cRejectionModel.getItem_name());
+        holder.tvItemName.setText(cRejectionModel.getItem_name() + "-" + cRejectionModel.getStock_left() + "stk");
 
         double price = cRejectionModel.getPrice();
         holder.etMarketRetPrice.setText(holder.strRupee + String.valueOf(cRejectionModel.getPrice()));

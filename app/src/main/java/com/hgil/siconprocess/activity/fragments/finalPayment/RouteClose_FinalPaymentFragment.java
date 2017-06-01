@@ -30,7 +30,6 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class RouteClose_FinalPaymentFragment extends BaseFragment {
-
     @BindView(R.id.etNetSale)
     EditText etNetSale;
     @BindView(R.id.etCashCollection)
@@ -56,14 +55,25 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    public static RouteClose_FinalPaymentFragment newInstance() {
+    public static RouteClose_FinalPaymentFragment newInstance(String supervisorCode) {
         RouteClose_FinalPaymentFragment fragment = new RouteClose_FinalPaymentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SUPERVISOR_CODE, supervisorCode);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_route_close_final_payment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            supervisor_code = getArguments().getString(SUPERVISOR_CODE);
+        }
     }
 
     @Override
@@ -116,7 +126,6 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
 
                 //sync the above syncVanClose to server.
                 String imei_number = Utility.readPreference(getContext(), Utility.DEVICE_IMEI);
-                String supervisor_paycode = "android";
 
                 SRouteModel routeModel = new SRouteModel();
                 routeModel.setLoginId(getLoginId());
@@ -126,7 +135,7 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
                 routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
                 routeModel.setCashierCode(getRouteModel().getCashierCode());
                 routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
-                routeModel.setSupervisorId(supervisor_paycode);
+                routeModel.setSupervisorId(supervisor_code);
                 routeModel.setImeiNo(imei_number);
 
                 String routeDetails = new Gson().toJson(routeModel);
@@ -160,7 +169,6 @@ public class RouteClose_FinalPaymentFragment extends BaseFragment {
                     //update final payment status
                     routeView.updateFinalPaymentStatus(getRouteId());
 
-                    //check if call completed or not
                     new SampleDialog("", syncResponse.getStrMessage(), true, getContext());
                 } else {
                     new SampleDialog("", syncResponse.getStrMessage(), getContext());

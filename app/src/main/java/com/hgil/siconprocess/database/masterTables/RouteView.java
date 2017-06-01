@@ -32,6 +32,7 @@ public class RouteView extends SQLiteOpenHelper {
     private static final String ROUTE_CRATE_LOADING = "crateLoading";
     private static final String FLAG = "Flag";
     private static final String LAST_BILL_NO = "last_bill_no";
+    private static final String CUSTOMER_CARE_NO = "customer_care_no";
 
     private static final String VAN_CLOSE_STATUS = "van_close_status";
     private static final String FINAL_PAYMENT_STATUS = "final_payment_status";
@@ -61,7 +62,7 @@ public class RouteView extends SQLiteOpenHelper {
                 + FLAG + " INTEGER NULL, " + VAN_CLOSE_STATUS + " INTEGER NULL, " + FINAL_PAYMENT_STATUS + " INTEGER NULL, "
                 + NET_TOTAL_SALE + " REAL NULL, " + M_REJ_AMOUNT + " REAL NULL, " + F_REJ_AMOUNT + " REAL NULL, "
                 + SAMPLE_AMOUNT + " REAL NULL, " + LEFTOVER_AMOUNT + " REAL NULL, " + CASHIER_RECEIVED_AMOUNT + " REAL NULL, "
-                + ROUTE_CLOSE + " INTEGER NULL, " + LAST_BILL_NO + " TEXT NULL)");
+                + ROUTE_CLOSE + " INTEGER NULL, " + CUSTOMER_CARE_NO + " TEXT NULL, " + LAST_BILL_NO + " TEXT NULL)");
     }
 
     @Override
@@ -92,6 +93,7 @@ public class RouteView extends SQLiteOpenHelper {
         final int routeCrateLoadingColumn = ih.getColumnIndex(ROUTE_CRATE_LOADING);
         final int flagColumn = ih.getColumnIndex(FLAG);
         final int lastBillNoColumn = ih.getColumnIndex(LAST_BILL_NO);
+        final int customerCareNoColumn = ih.getColumnIndex(CUSTOMER_CARE_NO);
 
         try {
             db.beginTransaction();
@@ -105,6 +107,7 @@ public class RouteView extends SQLiteOpenHelper {
             ih.bind(routeCashierNameColumn, routeModel.getCashierCode());
             ih.bind(routeCrateLoadingColumn, routeModel.getCrateLoading());
             ih.bind(flagColumn, routeModel.getFlag());
+            ih.bind(customerCareNoColumn, routeModel.getCustomerCareNo());
             ih.bind(lastBillNoColumn, routeModel.getExpectedLastBillNo());
             ih.execute();
             db.setTransactionSuccessful();
@@ -212,6 +215,7 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
             routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
+            routeModel.setCustomerCareNo(res.getString(res.getColumnIndex(CUSTOMER_CARE_NO)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
         }
         res.close();
@@ -241,6 +245,7 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
             routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
             routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
+            routeModel.setCustomerCareNo(res.getString(res.getColumnIndex(CUSTOMER_CARE_NO)));
             routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
         }
         res.close();
@@ -265,6 +270,7 @@ public class RouteView extends SQLiteOpenHelper {
                 routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
                 routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
                 routeModel.setFlag(res.getInt(res.getColumnIndex(FLAG)));
+                routeModel.setCustomerCareNo(res.getString(res.getColumnIndex(CUSTOMER_CARE_NO)));
                 routeModel.setExpectedLastBillNo(res.getString(res.getColumnIndex(LAST_BILL_NO)));
 
                 array_list.add(routeModel);

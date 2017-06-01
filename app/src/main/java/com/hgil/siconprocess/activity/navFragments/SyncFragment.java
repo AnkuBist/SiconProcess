@@ -133,6 +133,7 @@ public class SyncFragment extends BaseFragment {
         syncData.setArrClosedCustDetails(new CustomerRouteMappingView(getContext()).closedOutletDetails());
         syncData.setSyncInvoiceSaleRej(new CustomerItemPriceTable(getContext()).syncInvoiceSaleRej(getRouteId()));
         syncData.setCashCollection(paymentTable.syncCompletedCashDetail());
+        syncData.setChequeCollection(paymentTable.syncCompletedChequeDetail(routeId));
         syncData.setCrateCollection(paymentTable.syncCompletedCrateDetail());
 
         return syncData;

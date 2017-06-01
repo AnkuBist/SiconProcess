@@ -23,9 +23,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FinalPaymentSVLoginFragment extends BaseFragment {
-
-    private static final String SUPERVISOR_CODE = "supervisor_code";
-
     @BindView(R.id.tvRouteName)
     TextView tvRouteName;
     @BindView(R.id.etSupervisorCode)
@@ -121,7 +118,7 @@ public class FinalPaymentSVLoginFragment extends BaseFragment {
                             }
                         }, 500);
                         showSnackbar(getView(), loginResult.getStrMessage());
-                        RouteClose_FinalPaymentFragment fragment = RouteClose_FinalPaymentFragment.newInstance();
+                        RouteClose_FinalPaymentFragment fragment = RouteClose_FinalPaymentFragment.newInstance(supervisor_code);
                         launchNavFragment(fragment);
                     } else {
                         updateBarHandler.postDelayed(new Runnable() {

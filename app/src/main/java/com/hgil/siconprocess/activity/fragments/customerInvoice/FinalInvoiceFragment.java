@@ -53,12 +53,15 @@ public class FinalInvoiceFragment extends BaseFragment {
     //TODO
     // for now values are static
     private String mobile = "9023503384";
-    private String message = "Hello, \nthis is a test message.";
 
     private CustomerRejectionTable customerRejectionTable;
     private InvoiceOutTable invoiceOutTable;
     private PaymentTable paymentTable;
     private MarketProductTable marketProductTable;
+
+    private int qtyPcs;
+    private double creditOs, todaySale, amountCollected, osBalance;
+    private String customerInvoiceBillNo, date, harvestCareNo;
 
     public FinalInvoiceFragment() {
         // Required empty public constructor
@@ -106,22 +109,25 @@ public class FinalInvoiceFragment extends BaseFragment {
 
         // get customer credit outstanding
         CustomerRouteMappingView routeCustomerView = new CustomerRouteMappingView(getContext());
-        double creditOs = routeCustomerView.custCreditAmount(customer_id);
-        tvOpeningBalance.setText(strRupee + Utility.roundTwoDecimals(creditOs));
+        creditOs = Utility.roundTwoDecimals(routeCustomerView.custCreditAmount(customer_id));
+        tvOpeningBalance.setText(strRupee + creditOs);
 
         PaymentTable paymentTable = new PaymentTable(getContext());
         PaymentModel paymentModel = paymentTable.getCustomerPaymentInfo(customer_id);
-        double todaySale = paymentModel.getSaleAmount();
-        double amountCollected = paymentModel.getTotalPaidAmount();
-        double osBalance = 0;
-        //if (todaySale > 0)
-        osBalance = creditOs + todaySale - amountCollected;
-        //  else if (todaySale < 0)
-        //      osBalance = creditOs + todaySale + amountCollected;
+        todaySale = Utility.roundTwoDecimals(paymentModel.getSaleAmount());
+        amountCollected = Utility.roundTwoDecimals(paymentModel.getTotalPaidAmount());
+        osBalance = Utility.roundTwoDecimals(creditOs + todaySale - amountCollected);
 
-        tvTodaySale.setText(strRupee + Utility.roundTwoDecimals(todaySale));
-        tvAmountCollected.setText(strRupee + Utility.roundTwoDecimals(amountCollected));
-        tvOsBalance.setText(strRupee + Utility.roundTwoDecimals(osBalance));
+        //message related info
+        customerInvoiceBillNo = invoiceOutTable.returnCustomerBillNo(customer_id);
+        date = Utility.getDate();
+        // saleQty-marketRejQty
+        qtyPcs = invoiceOutTable.custTotalSaleQty(customer_id) - customerRejectionTable.custTotalMRej(customer_id);
+        harvestCareNo = getRouteModel().getCustomerCareNo();
+
+        tvTodaySale.setText(strRupee + todaySale);
+        tvAmountCollected.setText(strRupee + amountCollected);
+        tvOsBalance.setText(strRupee + osBalance);
 
         setTitle("Invoice");
         hideSaveButton();
@@ -160,11 +166,15 @@ public class FinalInvoiceFragment extends BaseFragment {
         paymentTable.updateCustPaymentStatus(customer_id, Constant.STATUS_COMPLETE);
         //marketProductTable.updateCustMarketStatus(customer_id, Constant.STATUS_COMPLETE);
 
-        if (mobile != null && mobile.matches(""))
+        if (mobile != null && !mobile.matches("")) {
+            String message = messageFormat(customerInvoiceBillNo, date, qtyPcs,
+                    creditOs, amountCollected, todaySale,
+                    osBalance, harvestCareNo);
             UtilsSms.checkAndroidVersionForSms(getContext(), mobile, message);
-        else
+        } else {
             new SampleDialog().SampleMessageDialog("No Contact found with this customer", getContext());
-        //showSnackbar(getView(), "No contact found with this customer");
+            //showSnackbar(getView(), "No contact found with this customer");
+        }
     }
 
     @Override
@@ -173,7 +183,10 @@ public class FinalInvoiceFragment extends BaseFragment {
             case SEND_SMS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
-                    UtilsSms.sendSMS(getContext(), mobile, message);
+                    String message = messageFormat(customerInvoiceBillNo, date, qtyPcs,
+                            creditOs, amountCollected, todaySale,
+                            osBalance, harvestCareNo);
+                    UtilsSms.sendSMS(getContext(), mobile, "");
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -184,4 +197,20 @@ public class FinalInvoiceFragment extends BaseFragment {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    private String messageFormat(String billNo, String date, int qtyPcs,
+                                 double openingAmt, double paidAmt, double saleAmt,
+                                 double balAmt, String harvestCareNo) {
+        String strMessage = String.format("Harvest Gold\n " +
+                "B.NO:%s;" +
+                "Dt:%s;" +
+                "All Qty:%d Pcs;" +
+                "Prev:%f/-;" +
+                "Paid:%f/-;" +
+                "Sale:%f/-;" +
+                "Bal:%f/-;" +
+                " Customer Care No.:%s", billNo, date, qtyPcs, openingAmt, paidAmt, saleAmt, balAmt, harvestCareNo);
+        return strMessage;
+    }
+
 }

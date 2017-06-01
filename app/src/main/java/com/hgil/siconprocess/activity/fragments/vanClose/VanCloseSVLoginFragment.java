@@ -28,8 +28,6 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class VanCloseSVLoginFragment extends BaseFragment {
-    private static final String SUPERVISOR_CODE = "supervisor_code";
-
     @BindView(R.id.tvRouteName)
     TextView tvRouteName;
     @BindView(R.id.etSupervisorCode)
@@ -128,7 +126,7 @@ public class VanCloseSVLoginFragment extends BaseFragment {
                             }
                         }, 500);
                         showSnackbar(getView(), loginResult.getStrMessage());
-                        VanCloseItemCheckFragment fragment = VanCloseItemCheckFragment.newInstance();
+                        VanCloseItemCheckFragment fragment = VanCloseItemCheckFragment.newInstance(supervisor_code);
                         launchNavFragment(fragment);
                     } else {
                         updateBarHandler.postDelayed(new Runnable() {

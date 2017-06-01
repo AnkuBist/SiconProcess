@@ -64,6 +64,18 @@ public class RouteModel implements Serializable {
     @Expose
     private String expectedLastBillNo;
 
+    @SerializedName("customerCareNo")
+    @Expose
+    private String customerCareNo;
+
+    public String getCustomerCareNo() {
+        return customerCareNo;
+    }
+
+    public void setCustomerCareNo(String customerCareNo) {
+        this.customerCareNo = customerCareNo;
+    }
+
     public String getSubCompanyId() {
         return subCompanyId;
     }

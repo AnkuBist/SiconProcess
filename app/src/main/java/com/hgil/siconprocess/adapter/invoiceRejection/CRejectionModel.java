@@ -15,6 +15,7 @@ public class CRejectionModel {
     private String customer_id;
     private String customer_name;
     private int van_stock;
+    private int stock_left;
     private int rej_qty;
     private double price;
     private double total;
@@ -32,6 +33,14 @@ public class CRejectionModel {
 
     public void setRoute_management_id(String route_management_id) {
         this.route_management_id = route_management_id;
+    }
+
+    public int getStock_left() {
+        return stock_left;
+    }
+
+    public void setStock_left(int stock_left) {
+        this.stock_left = stock_left;
     }
 
     public String getBill_no() {

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hgil.siconprocess.adapter.invoice.InvoiceModel;
+import com.hgil.siconprocess.database.tables.CustomerRejectionTable;
 import com.hgil.siconprocess.database.tables.InvoiceOutTable;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.InvoiceDetailModel;
@@ -149,6 +150,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ProductView dbItemDetails = new ProductView(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        CustomerRejectionTable rejectionTable = new CustomerRejectionTable(mContext);
         CustomerItemPriceTable dbPriceTable = new CustomerItemPriceTable(mContext);
 
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "=?", new String[]{customer_id});
@@ -184,7 +186,8 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                 // subtract ordered quantity from stock and also the sample collected
                 int stock = itemVanStockLoadingCount(item_id)
                         - invoiceOutTable.totalItemOrderQtyOTSelf(customer_id, item_id)
-                        - dbPriceTable.itemTotalSampleCount(item_id);
+                        - dbPriceTable.itemTotalSampleCount(item_id)
+                        - rejectionTable.freshRejOtherThenCust(customer_id, item_id);
 
                 invoiceModel.setStockAvail(stock);
 
@@ -232,6 +235,7 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ProductView dbItemDetails = new ProductView(mContext);
         InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        CustomerRejectionTable rejectionTable = new CustomerRejectionTable(mContext);
         CustomerItemPriceTable dbPriceTable = new CustomerItemPriceTable(mContext);
 
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "=''", null);
@@ -267,7 +271,8 @@ public class DepotInvoiceView extends SQLiteOpenHelper {
                 // subtract ordered quantity from stock and also the sample collected
                 int stock = itemVanStockLoadingCount(item_id)
                         - invoiceOutTable.totalItemOrderQtyOTSelf(customer_id, item_id)
-                        - dbPriceTable.itemTotalSampleCount(item_id);
+                        - dbPriceTable.itemTotalSampleCount(item_id)
+                        - rejectionTable.freshRejOtherThenCust(customer_id, item_id);
 
                 invoiceModel.setStockAvail(stock);
 

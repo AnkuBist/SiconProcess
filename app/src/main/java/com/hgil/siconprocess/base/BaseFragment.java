@@ -30,7 +30,9 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment {
     protected static final String CUSTOMER_ID = "customer_id";
     protected static final String CUSTOMER_NAME = "customer_name";
-    protected String customer_id, customer_name;
+    protected static final String SUPERVISOR_CODE = "supervisor_code";
+
+    protected String customer_id, customer_name, supervisor_code;
 
     protected TextView tvNavTitle, tvNavDate;
     protected ImageView imgSave;
@@ -87,7 +89,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setRetainInstance(true);
+        setRetainInstance(true);
         routeModel = SiconApp.getInstance().getRouteModel();
         routeId = SiconApp.getInstance().getRouteId();
         routeName = SiconApp.getInstance().getRouteName();
@@ -106,7 +108,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // setRetainInstance(true);
+        setRetainInstance(true);
         Utility.closeKeyboard(getActivity(), getView());
         bindViews(view);
         getToolbarView();

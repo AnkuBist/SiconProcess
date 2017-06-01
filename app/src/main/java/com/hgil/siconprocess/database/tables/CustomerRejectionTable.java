@@ -218,20 +218,34 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
     public ArrayList<CRejectionModel> getCustomerRejections(String customer_id) {
         ArrayList<CRejectionModel> array_list = new ArrayList<CRejectionModel>();
 
+        DepotInvoiceView depotInvoiceView = new DepotInvoiceView(mContext);
+        CustomerItemPriceTable itemPriceTable = new CustomerItemPriceTable(mContext);
+        InvoiceOutTable invoiceOutTable = new InvoiceOutTable(mContext);
+        CustomerRejectionTable rejectionTable = new CustomerRejectionTable(mContext);
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CUSTOMER_ID + "='" + customer_id + "'", null);
         if (res.moveToFirst()) {
             while (res.isAfterLast() == false) {
                 CRejectionModel rejectionModel = new CRejectionModel();
+                String item_id = res.getString(res.getColumnIndex(ITEM_ID));
+
                 rejectionModel.setRoute_management_id(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 rejectionModel.setBill_no(res.getString(res.getColumnIndex(BILL_NO)));
                 rejectionModel.setInvoice_no(res.getString(res.getColumnIndex(INVOICE_NO)));
                 rejectionModel.setCashier_code(res.getString(res.getColumnIndex(CASHIER_CODE)));
-                rejectionModel.setItem_id(res.getString(res.getColumnIndex(ITEM_ID)));
+                rejectionModel.setItem_id(item_id);
                 rejectionModel.setItem_name(res.getString(res.getColumnIndex(ITEM_NAME)));
                 rejectionModel.setCustomer_id(res.getString(res.getColumnIndex(CUSTOMER_ID)));
                 rejectionModel.setCustomer_name(res.getString(res.getColumnIndex(CUSTOMER_NAME)));
                 rejectionModel.setVan_stock(res.getInt(res.getColumnIndex(VAN_STOCK)));
+
+                int stock_left = depotInvoiceView.itemVanStockLoadingCount(item_id)
+                        - invoiceOutTable.getItemOrderQty(item_id)
+                        - itemPriceTable.itemTotalSampleCount(item_id)
+                        - rejectionTable.freshRejOtherThenCust(customer_id, item_id);
+
+                rejectionModel.setStock_left(stock_left);
                 rejectionModel.setRej_qty(res.getInt(res.getColumnIndex(REJ_QTY)));
                 rejectionModel.setPrice(res.getDouble(res.getColumnIndex(PRICE)));
 
@@ -291,20 +305,37 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         return amount;
     }
 
-    // get market rejctions for customer
-    public double custMRejTotalAmount(String customer_id) {
+    // get total market rejctions for customer
+    public int custTotalMRej(String customer_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "select sum(" + MARKET_DAMAGED + "+" + MARKET_EXPIRED + "+" + MARKET_RAT_EATEN + ") as total " +
-                "from " + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
+        String query = "select sum(" + MARKET_DAMAGED + "+" + MARKET_EXPIRED + "+" + MARKET_RAT_EATEN + ") as total from "
+                + TABLE_NAME + " where " + CUSTOMER_ID + "=?";
         Cursor res = db.rawQuery(query, new String[]{customer_id});
 
-        double m_Rej = 0;
+        int m_Rej = 0;
         if (res.moveToFirst()) {
-            m_Rej = res.getDouble(res.getColumnIndex("total"));
+            m_Rej = res.getInt(res.getColumnIndex("total"));
         }
         res.close();
         db.close();
         return m_Rej;
+    }
+
+    // get van sold item count other than same customer
+    public int freshRejOtherThenCust(String customer_id, String item_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select sum(" + FRESH_M_SHAPED + "+" + FRESH_TORN_POLLY + "+"
+                + FRESH_FUNGUS + "+" + FRESH_WET_BREAD + "+" + FRESH_OTHERS + ") as total from "
+                + TABLE_NAME + " where " + CUSTOMER_ID + "<>? and " + ITEM_ID + "=?";
+        Cursor res = db.rawQuery(query, new String[]{customer_id, item_id});
+
+        int freshRej = 0;
+        if (res.moveToFirst()) {
+            freshRej = res.getInt(res.getColumnIndex("total"));
+        }
+        res.close();
+        db.close();
+        return freshRej;
     }
 
 
