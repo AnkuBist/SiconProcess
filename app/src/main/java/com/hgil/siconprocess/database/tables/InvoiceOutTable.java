@@ -12,6 +12,7 @@ import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.database.masterTables.ProductView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.syncPOJO.autoSaleUpdate.InvoiceSaleModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.utils.Constant;
 import com.hgil.siconprocess.utils.Utility;
@@ -543,5 +544,33 @@ public class InvoiceOutTable extends SQLiteOpenHelper {
         res.close();
         db.close();
         return syncModel;
+    }
+
+
+    /*route invoice sale auto sync*/
+    public ArrayList<InvoiceSaleModel> autoSyncInvoiceSale() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ArrayList<InvoiceSaleModel> arrInvoiceSale = new ArrayList<>();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
+
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                InvoiceSaleModel syncModel = new InvoiceSaleModel();
+                syncModel.setInvoiceId(res.getString(res.getColumnIndex(INVOICE_NO)));
+                syncModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                syncModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
+                syncModel.setSaleQty(res.getInt(res.getColumnIndex(INVQTY_PS)));
+                syncModel.setUpdatebydate(res.getString(res.getColumnIndex(CURTIME)));
+
+                arrInvoiceSale.add(syncModel);
+                res.moveToNext();
+            }
+        }
+        res.close();
+        db.close();
+        return arrInvoiceSale;
     }
 }

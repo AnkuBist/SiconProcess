@@ -13,6 +13,7 @@ import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
 import com.hgil.siconprocess.retrofit.loginResponse.dbModels.CustomerItemPriceModel;
+import com.hgil.siconprocess.syncPOJO.autoSaleUpdate.InvoiceRejectionModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.RejectionDetailModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
 import com.hgil.siconprocess.utils.Constant;
@@ -586,6 +587,42 @@ public class CustomerRejectionTable extends SQLiteOpenHelper {
         res.close();
         db.close();
         return rejectionModel;
+    }
+
+    /*route invoice rejection auto sync*/
+    public ArrayList<InvoiceRejectionModel> autoSyncInvoiceRejection() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ArrayList<InvoiceRejectionModel> arrInvoiceSale = new ArrayList<>();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " where " + INV_STATUS + "=?",
+                new String[]{Constant.STATUS_COMPLETE});
+
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                InvoiceRejectionModel syncModel = new InvoiceRejectionModel();
+                syncModel.setInvoiceId(res.getString(res.getColumnIndex(INVOICE_NO)));
+                syncModel.setCustomerId(res.getString(res.getColumnIndex(CUSTOMER_ID)));
+                syncModel.setItemId(res.getString(res.getColumnIndex(ITEM_ID)));
+                int marketRection = res.getInt(res.getColumnIndex(MARKET_DAMAGED))
+                        + res.getInt(res.getColumnIndex(MARKET_EXPIRED))
+                        + res.getInt(res.getColumnIndex(MARKET_RAT_EATEN));
+                int freshRejection = res.getInt(res.getColumnIndex(FRESH_M_SHAPED))
+                        + res.getInt(res.getColumnIndex(FRESH_TORN_POLLY))
+                        + res.getInt(res.getColumnIndex(FRESH_FUNGUS))
+                        + res.getInt(res.getColumnIndex(FRESH_WET_BREAD))
+                        + res.getInt(res.getColumnIndex(FRESH_OTHERS));
+                syncModel.setMRQty(marketRection);
+                syncModel.setFRQty(freshRejection);
+                syncModel.setUpdatebydate(res.getString(res.getColumnIndex(CURTIME)));
+
+                arrInvoiceSale.add(syncModel);
+                res.moveToNext();
+            }
+        }
+        res.close();
+        db.close();
+        return arrInvoiceSale;
     }
 
 }

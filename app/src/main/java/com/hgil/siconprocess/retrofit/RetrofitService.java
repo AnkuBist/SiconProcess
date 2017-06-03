@@ -29,6 +29,11 @@ public interface RetrofitService {
                                         @Field("imei_number") String imei_number);
 
     @FormUrlEncoded
+    @POST(API.SYNC_INVOICE_URL)
+    Call<syncResponse> syncInvoiceSaleRej(@Field("route_details") String route_details,
+                                          @Field("invoice_sync") String invoice_sync);
+
+    @FormUrlEncoded
     @POST(API.SYNC_URL)
     Call<syncResponse> syncRouteData(@Field("route_details") String route_details,
                                      @Field("sync_route_data") String sync_route_data);

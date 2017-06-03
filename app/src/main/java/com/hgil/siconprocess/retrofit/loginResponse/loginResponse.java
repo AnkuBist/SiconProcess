@@ -4,6 +4,8 @@ package com.hgil.siconprocess.retrofit.loginResponse;
  * Created by mohan.giri on 24-01-2017.
  */
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,6 +19,7 @@ public class loginResponse implements Serializable {
     @SerializedName("strMessage")
     @Expose
     private String strMessage;
+    @Nullable
     @SerializedName("objLoginResponse")
     @Expose
     private ObjLoginResponse objLoginResponse;

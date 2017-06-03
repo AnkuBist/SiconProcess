@@ -11,6 +11,7 @@ public class SyncVanClose implements Serializable {
 
     //updated models
     private CrateStockCheck crateStockCheck;
+    private ArrayList<ActualItemStockCheck> arrActualItemStock;
     private ArrayList<ItemStockCheck> arrItemStock;
     /*private ArrayList<SyncInvoiceDetailModel> arrRetailSale;*/
 
@@ -20,6 +21,14 @@ public class SyncVanClose implements Serializable {
 
     public void setCrateStockCheck(CrateStockCheck crateStockCheck) {
         this.crateStockCheck = crateStockCheck;
+    }
+
+    public ArrayList<ActualItemStockCheck> getArrActualItemStock() {
+        return arrActualItemStock;
+    }
+
+    public void setArrActualItemStock(ArrayList<ActualItemStockCheck> arrActualItemStock) {
+        this.arrActualItemStock = arrActualItemStock;
     }
 
     public ArrayList<ItemStockCheck> getArrItemStock() {

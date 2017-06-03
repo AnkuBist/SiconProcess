@@ -18,6 +18,7 @@ import com.hgil.siconprocess.adapter.invoiceRejection.FreshRejectionModel;
 import com.hgil.siconprocess.adapter.invoiceRejection.InvoiceRejectionAdapter;
 import com.hgil.siconprocess.adapter.invoiceRejection.MarketRejectionModel;
 import com.hgil.siconprocess.adapter.productSelection.ProductSelectModel;
+import com.hgil.siconprocess.base.AutoSyncInvoiceSaleRej;
 import com.hgil.siconprocess.base.BaseFragment;
 import com.hgil.siconprocess.database.masterTables.CustomerItemPriceTable;
 import com.hgil.siconprocess.database.masterTables.DepotInvoiceView;
@@ -165,6 +166,9 @@ public class CustomerRejectionFragment extends BaseFragment {
                 if (customer_rejection_amount <= customer_sale_amount) {
                     rejectionTable.insertCustRejections(arrRejection, customer_id);
 
+                    // call server auto sync method to push sale and rejection details
+                    new AutoSyncInvoiceSaleRej().startSyncData();
+
                     // show snackbar message
                     showSnackbar(getView(), "Rejected items details saved successfully to Invoice.");
 
@@ -249,7 +253,7 @@ public class CustomerRejectionFragment extends BaseFragment {
                     int stock_left = depotInvoiceView.itemVanStockLoadingCount(item_id)
                             - invoiceOutTable.getItemOrderQty(item_id)
                             - dbPriceTable.itemTotalSampleCount(item_id)
-                            -rejectionTable.freshRejOtherThenCust(customer_id, item_id);
+                            - rejectionTable.freshRejOtherThenCust(customer_id, item_id);
 
                     rejectionModel.setStock_left(stock_left);
 

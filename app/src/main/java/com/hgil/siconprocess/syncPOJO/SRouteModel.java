@@ -6,15 +6,26 @@ package com.hgil.siconprocess.syncPOJO;
 
 public class SRouteModel {
 
+    private String invoiceDate;
     private String loginId;
     private String routeId;
     private String routeName;
     private String depotId;
+    private String groupId;
     private String routeManagementId;
     private String cashierCode;
+    private String loadingSupervisor;
     private String subCompanyId;
     private String supervisorId;
     private String imeiNo;
+
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(String invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
 
     public String getLoginId() {
         return loginId;
@@ -86,5 +97,21 @@ public class SRouteModel {
 
     public void setImeiNo(String imeiNo) {
         this.imeiNo = imeiNo;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getLoadingSupervisor() {
+        return loadingSupervisor;
+    }
+
+    public void setLoadingSupervisor(String loadingSupervisor) {
+        this.loadingSupervisor = loadingSupervisor;
     }
 }

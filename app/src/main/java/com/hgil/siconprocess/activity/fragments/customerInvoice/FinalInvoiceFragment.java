@@ -170,7 +170,10 @@ public class FinalInvoiceFragment extends BaseFragment {
             String message = messageFormat(customerInvoiceBillNo, date, qtyPcs,
                     creditOs, amountCollected, todaySale,
                     osBalance, harvestCareNo);
-            UtilsSms.checkAndroidVersionForSms(getContext(), mobile, message);
+            if (Utility.getDouble(customerInvoiceBillNo) > 0)
+                UtilsSms.checkAndroidVersionForSms(getContext(), mobile, message);
+            else
+                new SampleDialog().SampleMessageDialog("Customer Closed Successfully", getContext());
         } else {
             new SampleDialog().SampleMessageDialog("No Contact found with this customer", getContext());
             //showSnackbar(getView(), "No contact found with this customer");
@@ -186,7 +189,10 @@ public class FinalInvoiceFragment extends BaseFragment {
                     String message = messageFormat(customerInvoiceBillNo, date, qtyPcs,
                             creditOs, amountCollected, todaySale,
                             osBalance, harvestCareNo);
-                    UtilsSms.sendSMS(getContext(), mobile, "");
+                    if (Utility.getDouble(customerInvoiceBillNo) > 0)
+                        UtilsSms.sendSMS(getContext(), mobile, message);
+                    else
+                        new SampleDialog().SampleMessageDialog("Customer Closed Successfully", getContext());
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.

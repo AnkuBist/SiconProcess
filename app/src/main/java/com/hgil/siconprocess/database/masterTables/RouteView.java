@@ -27,6 +27,8 @@ public class RouteView extends SQLiteOpenHelper {
     private static final String SUB_COMPANY_ID = "subCompanyId";
     private static final String ROUTE_ID = "Route_Id";
     private static final String ROUTE_NAME = "Route_Name";
+    private static final String GROUP_ID = "group_id";
+    private static final String SUPERVISOR_PAYCODE = "supervisor_paycode";
     private static final String ROUTE_MANAGEMENT_ID = "route_management_id";
     private static final String ROUTE_CASHIER_NAME = "cashier_name";
     private static final String ROUTE_CRATE_LOADING = "crateLoading";
@@ -57,8 +59,8 @@ public class RouteView extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + REC_ID + " INTEGER NULL, "
                 + DEPOT_ID + " TEXT NULL, " + SUB_COMPANY_ID + " TEXT NULL, " + ROUTE_ID + " TEXT NULL, "
-                + ROUTE_NAME + " TEXT NULL, " + ROUTE_MANAGEMENT_ID + " TEXT NULL, "
-                + ROUTE_CASHIER_NAME + " TEXT NULL, " + ROUTE_CRATE_LOADING + " INTEGER NULL, "
+                + ROUTE_NAME + " TEXT NULL, " + GROUP_ID + " TEXT NULL, " + SUPERVISOR_PAYCODE + " TEXT NULL, "
+                + ROUTE_MANAGEMENT_ID + " TEXT NULL, " + ROUTE_CASHIER_NAME + " TEXT NULL, " + ROUTE_CRATE_LOADING + " INTEGER NULL, "
                 + FLAG + " INTEGER NULL, " + VAN_CLOSE_STATUS + " INTEGER NULL, " + FINAL_PAYMENT_STATUS + " INTEGER NULL, "
                 + NET_TOTAL_SALE + " REAL NULL, " + M_REJ_AMOUNT + " REAL NULL, " + F_REJ_AMOUNT + " REAL NULL, "
                 + SAMPLE_AMOUNT + " REAL NULL, " + LEFTOVER_AMOUNT + " REAL NULL, " + CASHIER_RECEIVED_AMOUNT + " REAL NULL, "
@@ -241,6 +243,8 @@ public class RouteView extends SQLiteOpenHelper {
             routeModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
             routeModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
             routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
+            routeModel.setGroupId(res.getString(res.getColumnIndex(GROUP_ID)));
+            routeModel.setSupervisorPaycode(res.getString(res.getColumnIndex(SUPERVISOR_PAYCODE)));
             routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
             routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
             routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));
@@ -266,6 +270,8 @@ public class RouteView extends SQLiteOpenHelper {
                 routeModel.setSubCompanyId(res.getString(res.getColumnIndex(SUB_COMPANY_ID)));
                 routeModel.setRouteId(res.getString(res.getColumnIndex(ROUTE_ID)));
                 routeModel.setRouteName(res.getString(res.getColumnIndex(ROUTE_NAME)));
+                routeModel.setGroupId(res.getString(res.getColumnIndex(GROUP_ID)));
+                routeModel.setSupervisorPaycode(res.getString(res.getColumnIndex(SUPERVISOR_PAYCODE)));
                 routeModel.setRouteManagementId(res.getString(res.getColumnIndex(ROUTE_MANAGEMENT_ID)));
                 routeModel.setCashierCode(res.getString(res.getColumnIndex(ROUTE_CASHIER_NAME)));
                 routeModel.setCrateLoading(res.getInt(res.getColumnIndex(ROUTE_CRATE_LOADING)));

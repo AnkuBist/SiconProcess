@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hgil.siconprocess.R;
-import com.hgil.siconprocess.activity.fragments.customerInvoice.customerMarketProducts.CustOtherMarketProductDetailsFragment;
 import com.hgil.siconprocess.activity.fragments.customerInvoice.CratesManagementFragment;
 import com.hgil.siconprocess.activity.fragments.customerInvoice.CustomerPaymentFragment;
 import com.hgil.siconprocess.activity.fragments.customerInvoice.CustomerRejectionFragment;

@@ -31,6 +31,7 @@ import com.hgil.siconprocess.syncPOJO.FinalPaymentModel;
 import com.hgil.siconprocess.syncPOJO.SRouteModel;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncData;
 import com.hgil.siconprocess.syncPOJO.invoiceSyncModel.SyncInvoiceDetailModel;
+import com.hgil.siconprocess.syncPOJO.vanCloseModel.ActualItemStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.CrateStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.ItemStockCheck;
 import com.hgil.siconprocess.syncPOJO.vanCloseModel.SyncVanClose;
@@ -155,7 +156,9 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvItemStockCheck.setLayoutManager(linearLayoutManager);
 
+        //fetch actual data
         arrItemStockCheck.addAll(productView.checkItemStock());
+
         vanCloseItemStockCheckAdapter = new VanCloseItemStockCheckAdapter(getContext(), arrItemStockCheck);
         rvItemStockCheck.setAdapter(vanCloseItemStockCheckAdapter);
 
@@ -196,7 +199,9 @@ public class VanCloseItemCheckFragment extends BaseFragment {
         routeModel.setRouteId(getRouteId());
         routeModel.setRouteName(getRouteName());
         routeModel.setDepotId(getRouteModel().getDepotId());
+        routeModel.setGroupId(getRouteModel().getGroupId());
         routeModel.setRouteManagementId(getRouteModel().getRouteManagementId());
+        routeModel.setLoadingSupervisor(getRouteModel().getSupervisorPaycode());
         routeModel.setCashierCode(getRouteModel().getCashierCode());
         routeModel.setSubCompanyId(getRouteModel().getSubCompanyId());
         routeModel.setSupervisorId(supervisor_code);
@@ -218,6 +223,29 @@ public class VanCloseItemCheckFragment extends BaseFragment {
 
         /*item stock*/
         syncVanClose.setArrItemStock(arrItemStockCheck);
+
+
+        // actual van item stock
+        ArrayList<ActualItemStockCheck> arrActualItemStockCheck = new ArrayList<>();
+        for (ItemStockCheck itemStockCheck : arrItemStockCheck) {
+            ActualItemStockCheck actualStock = new ActualItemStockCheck();
+            String item_id = itemStockCheck.getItem_id();
+
+            actualStock.setItem_id(item_id);
+            actualStock.setItem_name(itemStockCheck.getItem_name());
+            actualStock.setItem_price(itemStockCheck.getItem_price());
+            actualStock.setStockORejection(rejectionTable.productMarketRejection(item_id));
+            actualStock.setVanStockORejection(itemStockCheck.getMarket_rejection());
+            actualStock.setoVariance(-actualStock.getStockORejection() + actualStock.getVanStockORejection());
+            actualStock.setoAmount(actualStock.getoVariance() * actualStock.getItem_price());
+            actualStock.setStockLeftover(itemStockCheck.getActual_leftover());
+            actualStock.setVanLeftover(itemStockCheck.getPhysical_leftover());
+            actualStock.setlVariance(-actualStock.getStockLeftover() + actualStock.getVanLeftover());
+            actualStock.setlAmount(actualStock.getoVariance() * actualStock.getItem_price());
+
+            arrActualItemStockCheck.add(actualStock);
+        }
+        syncVanClose.setArrActualItemStock(arrActualItemStockCheck);
 
         // route retail sale
         /*make retail sale and payment to local data here only*/

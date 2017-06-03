@@ -28,6 +28,12 @@ public class RouteModel implements Serializable {
     @SerializedName("Route_Name")
     @Expose
     private String routeName;
+    @SerializedName("groupId")
+    @Expose
+    private String groupId;
+    @SerializedName("supervisorPaycode")
+    @Expose
+    private String supervisorPaycode;
     @SerializedName("routeManagementId")
     @Expose
     private String routeManagementId;
@@ -67,6 +73,22 @@ public class RouteModel implements Serializable {
     @SerializedName("customerCareNo")
     @Expose
     private String customerCareNo;
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getSupervisorPaycode() {
+        return supervisorPaycode;
+    }
+
+    public void setSupervisorPaycode(String supervisorPaycode) {
+        this.supervisorPaycode = supervisorPaycode;
+    }
 
     public String getCustomerCareNo() {
         return customerCareNo;
